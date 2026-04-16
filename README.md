@@ -65,3 +65,6 @@ https://chatgpt.com/share/69e02edf-8078-83e9-9142-fae5a7bca875
   -w /var/www/html \
   laravelsail/php84-composer:latest \
   composer install`
+
+  ## Guia 
+  https://apricot-temper-c0d.notion.site/Gu-a-Inicial-343187172b308025ba26f25148a88d79?source=copy_link
