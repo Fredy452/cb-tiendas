@@ -58,6 +58,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Comando para levantar docker 
+https://chatgpt.com/share/69e02edf-8078-83e9-9142-fae5a7bca875
 `docker run --rm \
   -u $(id -u):$(id -g) \
   -v $(pwd):/var/www/html \
