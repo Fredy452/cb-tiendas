@@ -35,7 +35,7 @@ git config --global user.email "tu.correo@universidad.edu"
 
 ## 2. Estrategia de ramas (Gitflow simplificado)
 
-El proyecto utiliza un Gitflow acortado con **tres ramas principales** y **ramas de trabajo** individuales.
+El proyecto utiliza un Gitflow reducido con **dos ramas principales** y **ramas de trabajo** individuales. Se elimina la rama `develop` para reducir complejidad, ya que el entorno academico solo requiere un unico despliegue apuntando a `main`.
 
 ### 2.1 Ramas principales
 
@@ -43,19 +43,15 @@ El proyecto utiliza un Gitflow acortado con **tres ramas principales** y **ramas
 main          Produccion estable, lista para despliegue.
  ^
  |  MR
-test          Validacion y QA. Se revisan los cambios antes de produccion.
- ^
- |  MR
-develop       Integracion. Recibe los aportes de todas las features.
+test          Integracion, validacion y QA. Recibe las features y se revisan antes de produccion.
 ```
 
 | Rama | Proposito | Proteccion |
 |------|-----------|------------|
 | `main` | Versiones estables del sistema. Lista para despliegue. | **Protegida** — no se permite push directo. Solo Merge Request aprobado. |
-| `test` | Entorno de validacion y pruebas. Aqui se revisan los cambios antes de pasar a produccion. | **Protegida** — solo mediante Merge Request aprobado. |
-| `develop` | Rama de integracion de desarrollo. Recibe los aportes de todas las ramas `feature/*`. | **Protegida** — solo mediante Merge Request aprobado. |
+| `test` | Rama de integracion y validacion. Recibe los aportes de todas las ramas `feature/*`. Aqui se revisan y prueban los cambios antes de pasar a produccion. | **Protegida** — solo mediante Merge Request aprobado. |
 
-> **Importante:** Nunca hagas `git push` directo a `main`, `test` o `develop`. Todo cambio entra unicamente a traves de un Merge Request revisado y aprobado.
+> **Importante:** Nunca hagas `git push` directo a `main` o `test`. Todo cambio entra unicamente a traves de un Merge Request revisado y aprobado.
 
 ### 2.2 Ramas de trabajo
 
@@ -91,15 +87,15 @@ feature/arreglar bug # Espacios no permitidos
 ```
 feature/registro-emprendedor ─┐
 feature/catalogo-categorias ──┤
-feature/panel-admin ──────────┼──► develop ──► test ──► main
-feature/busqueda-filtros ─────┤       MR         MR       MR
+feature/panel-admin ──────────┼──► test ──► main
+feature/busqueda-filtros ─────┤      MR       MR
 feature/calificaciones ───────┘
 ```
 
 El recorrido de cada cambio es siempre:
 
 ```
-feature/* → develop → test → main
+feature/* → test → main
 ```
 
 ---
@@ -109,9 +105,9 @@ feature/* → develop → test → main
 ### 3.1 Comenzar una nueva feature
 
 ```bash
-# 1. Asegurate de estar en develop y actualizado
-git checkout develop
-git pull origin develop
+# 1. Asegurate de estar en test y actualizado
+git checkout test
+git pull origin test
 
 # 2. Crea tu rama de feature
 git checkout -b feature/registro-emprendedor
@@ -134,25 +130,25 @@ git push origin feature/registro-emprendedor
 
 ### 3.3 Mantener tu rama actualizada
 
-Mientras trabajas, otros companeros pueden haber integrado cambios en `develop`. Mantene tu rama al dia:
+Mientras trabajas, otros companeros pueden haber integrado cambios en `test`. Mantene tu rama al dia:
 
 ```bash
-# Traer los ultimos cambios de develop
-git checkout develop
-git pull origin develop
+# Traer los ultimos cambios de test
+git checkout test
+git pull origin test
 
 # Volver a tu feature y aplicar los cambios
 git checkout feature/registro-emprendedor
-git merge develop
+git merge test
 ```
 
-> Si hay conflictos, resolvelos en tu rama de feature, **nunca en develop**.
+> Si hay conflictos, resolvelos en tu rama de feature, **nunca en test**.
 
 ### 3.4 Crear el Merge Request
 
 1. Subi tu rama con `git push origin feature/registro-emprendedor`.
 2. Anda a la interfaz web del repositorio (GitLab/GitHub).
-3. Crea un **Merge Request** (o Pull Request) desde `feature/registro-emprendedor` hacia `develop`.
+3. Crea un **Merge Request** (o Pull Request) desde `feature/registro-emprendedor` hacia `test`.
 4. Completa la descripcion explicando **que** cambiaste y **por que**.
 5. Asigna al menos un revisor (companero o Scrum Master).
 6. Espera la aprobacion antes de hacer merge.
@@ -160,22 +156,26 @@ git merge develop
 ### 3.5 Despues del merge
 
 ```bash
-# Volver a develop y actualizar
-git checkout develop
-git pull origin develop
+# Volver a test y actualizar
+git checkout test
+git pull origin test
 
 # Eliminar la rama local de feature (ya no se necesita)
 git branch -d feature/registro-emprendedor
 ```
 
-### 3.6 Promocion a test y main
+### 3.6 Promocion a main
 
-La promocion de `develop` a `test` y de `test` a `main` la realiza el **Scrum Master** o un responsable designado mediante Merge Request, nunca un estudiante de forma individual.
+La promocion de `test` a `main` la realiza el **Scrum Master** o un responsable designado mediante Merge Request, nunca un estudiante de forma individual.
 
 ```
-develop → test    Lo hace el Scrum Master al cierre de sprint o cuando hay un incremento listo.
-test    → main    Lo hace el Scrum Master despues de validar que las pruebas pasan correctamente.
+test → main    Lo hace el Scrum Master al cierre de sprint, despues de validar que las pruebas pasan correctamente.
 ```
+
+Al hacer la promocion a `main`, el Scrum Master tambien debe:
+1. Actualizar la version en `package.json` segun [SemVer](#5-control-de-versiones-semver).
+2. Agregar la entrada correspondiente en [CHANGELOG.md](CHANGELOG.md).
+3. Crear el tag de Git (ver seccion [5.3](#53-como-etiquetar-una-version)).
 
 ---
 
@@ -309,17 +309,50 @@ MAJOR.MINOR.PATCH
 
 ### 5.3 Como etiquetar una version
 
-Las versiones se marcan con tags de Git al hacer la promocion a `main`:
+Las versiones se marcan con tags de Git al hacer la promocion a `main`. Ademas, se deben actualizar `package.json` y `CHANGELOG.md`:
 
 ```bash
-# El Scrum Master etiqueta la version despues del merge a main
+# El Scrum Master actualiza la version en package.json antes del merge a main
+# (editar el campo "version" en package.json)
+
+# Despues del merge a main, etiquetar:
 git checkout main
 git pull origin main
 git tag -a v0.2.0 -m "v0.2.0: registro de emprendedores"
 git push origin v0.2.0
 ```
 
-### 5.4 Relacion entre commits y version
+### 5.4 Registro de cambios (CHANGELOG)
+
+Cada version que llega a `main` debe quedar registrada en [CHANGELOG.md](CHANGELOG.md). El formato sigue la convencion [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
+
+Cada entrada agrupa los cambios bajo estas categorias (usar solo las que apliquen):
+
+| Categoria | Que incluir |
+|-----------|-------------|
+| **Agregado** | Funcionalidades nuevas (`feat`) |
+| **Corregido** | Correcciones de errores (`fix`) |
+| **Cambiado** | Cambios en funcionalidad existente (`refactor`, `perf`, `style`) |
+| **Eliminado** | Funcionalidades removidas |
+| **Seguridad** | Correcciones de vulnerabilidades |
+| **Infraestructura** | Cambios de build, CI, dependencias (`build`, `ci`, `chore`) |
+
+**Ejemplo de entrada en CHANGELOG.md:**
+
+```markdown
+## [0.2.0] - 2026-04-25
+
+### Agregado
+- Formulario de registro de emprendedor con validacion de datos.
+- Envio de solicitud al administrador para aprobacion.
+
+### Corregido
+- Validacion de email que aceptaba formatos incorrectos.
+```
+
+> **Quien lo hace:** el Scrum Master actualiza el CHANGELOG y `package.json` como parte del proceso de promocion a `main`.
+
+### 5.5 Relacion entre commits y version
 
 | Tipo de commit | Incremento de version |
 |---------------|----------------------|
@@ -333,7 +366,7 @@ git push origin v0.2.0
 
 ### 6.1 Checklist antes de crear un MR
 
-- [ ] Mi rama esta actualizada con `develop` (sin conflictos).
+- [ ] Mi rama esta actualizada con `test` (sin conflictos).
 - [ ] Todos mis commits siguen la convencion de [Conventional Commits](#4-convenciones-de-commits-conventional-commits).
 - [ ] El codigo funciona localmente (`composer run dev` levanta sin errores).
 - [ ] Los tests pasan (`composer run test`).
@@ -387,7 +420,7 @@ Adjuntar screenshots de cambios visuales.
 ### 7.3 Base de datos
 
 - Todo cambio de esquema se hace mediante migraciones (`php artisan make:migration`).
-- Nunca modificar una migracion que ya fue aplicada en `develop`. Crear una nueva migracion para correcciones.
+- Nunca modificar una migracion que ya fue aplicada en `test`. Crear una nueva migracion para correcciones.
 - Si un test toca la base de datos, usar el trait `RefreshDatabase`.
 
 ### 7.4 Archivos que NO deben subirse
@@ -416,21 +449,21 @@ git commit --amend -m "feat: mensaje corregido"
 
 Si ya fue pusheado, **no uses `--force`**. Crea un nuevo commit con la correccion.
 
-### Tengo conflictos al hacer merge con develop, que hago?
+### Tengo conflictos al hacer merge con test, que hago?
 
 ```bash
-git checkout develop
-git pull origin develop
+git checkout test
+git pull origin test
 git checkout feature/mi-feature
-git merge develop
+git merge test
 # Resolver conflictos en los archivos marcados
 git add .
-git commit -m "chore: resolver conflictos con develop"
+git commit -m "chore: resolver conflictos con test"
 ```
 
-### Puedo hacer push directo a develop/test/main?
+### Puedo hacer push directo a test/main?
 
-**No.** Las tres ramas estan protegidas. Todo cambio entra exclusivamente mediante Merge Request aprobado.
+**No.** Ambas ramas estan protegidas. Todo cambio entra exclusivamente mediante Merge Request aprobado.
 
 ### Cada cuanto debo hacer commit?
 

@@ -30,9 +30,9 @@
 ## Git Workflow
 
 - See CONTRIBUTING.md for the full branching strategy, commit conventions, and versioning policy.
-- Branches follow the flow: feature/* → develop → test → main. All three target branches are protected; changes enter only via approved Merge Requests.
+- Branches follow the flow: feature/* → test → main. Both target branches are protected; changes enter only via approved Merge Requests.
 - Commit messages must use Conventional Commits (feat, fix, docs, style, refactor, test, chore, build, ci, perf, revert).
-- Versions follow SemVer (MAJOR.MINOR.PATCH) and are tagged on main by the Scrum Master.
+- Versions follow SemVer (MAJOR.MINOR.PATCH), are tracked in package.json and CHANGELOG.md, and are tagged on main by the Scrum Master.
 
 ## Documentation
 

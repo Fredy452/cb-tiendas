@@ -55,6 +55,7 @@ composer run test
 | Descripcion y alcance | [`.github/project/description.md`](.github/project/description.md) |
 | Roles de usuario | [`.github/project/roles-description.md`](.github/project/roles-description.md) |
 | Guia de contribucion | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| Registro de cambios | [CHANGELOG.md](CHANGELOG.md) |
 | Guia inicial (Notion) | [Abrir en Notion](https://apricot-temper-c0d.notion.site/Gu-a-Inicial-343187172b308025ba26f25148a88d79?source=copy_link) |
 
 ## Licencia
