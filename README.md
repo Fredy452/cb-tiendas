@@ -1,70 +1,62 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CB Tiendas — Repositorio de Emprendedores de Coronel Bogado
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicacion web educativa desarrollada como proyecto de extension universitaria (FaCyT) bajo la metodologia Scrum. Permite registrar, clasificar y visibilizar emprendimientos locales de Coronel Bogado mediante software libre.
 
-## About Laravel
+> **Contexto academico:** este repositorio es mantenido por estudiantes como parte de la materia Practicas de Ingenieria de Software. Toda contribucion debe seguir las reglas descritas en [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Capa | Tecnologia |
+|------|-----------|
+| Backend | Laravel 13 · PHP 8.3+ |
+| Frontend | Blade · Tailwind CSS 4 · Vite 8 |
+| Base de datos | MySQL 8.4 (Docker) / SQLite (local) |
+| Contenedores | Laravel Sail · Docker Compose |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Inicio rapido
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Con Docker (recomendado)
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## Comando para levantar docker 
-https://chatgpt.com/share/69e02edf-8078-83e9-9142-fae5a7bca875
-`docker run --rm \
-  -u $(id -u):$(id -g) \
-  -v $(pwd):/var/www/html \
+# 1. Instalar dependencias PHP dentro del contenedor
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$(pwd):/var/www/html" \
   -w /var/www/html \
   laravelsail/php84-composer:latest \
-  composer install`
+  composer install
 
-  ## Guia 
-  https://apricot-temper-c0d.notion.site/Gu-a-Inicial-343187172b308025ba26f25148a88d79?source=copy_link
+# 2. Levantar los servicios
+./vendor/bin/sail up -d
+
+# 3. Setup inicial (key, migraciones, assets)
+./vendor/bin/sail composer run setup
+```
+
+Puertos expuestos (ver `compose.yaml`): **App 3002** · **Vite 5173** · **MySQL 3307**.
+
+### Sin Docker
+
+```bash
+composer run setup   # instala deps, genera key, migra BD, compila assets
+composer run dev     # servidor + queue + logs + Vite en paralelo
+```
+
+### Tests
+
+```bash
+composer run test
+```
+
+## Documentacion del proyecto
+
+| Documento | Ubicacion |
+|-----------|-----------|
+| Descripcion y alcance | [`.github/project/description.md`](.github/project/description.md) |
+| Roles de usuario | [`.github/project/roles-description.md`](.github/project/roles-description.md) |
+| Guia de contribucion | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| Guia inicial (Notion) | [Abrir en Notion](https://apricot-temper-c0d.notion.site/Gu-a-Inicial-343187172b308025ba26f25148a88d79?source=copy_link) |
+
+## Licencia
+
+Software libre bajo la licencia [MIT](https://opensource.org/licenses/MIT).
