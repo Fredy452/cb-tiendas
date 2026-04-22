@@ -27,7 +27,7 @@ docker run --rm \
   composer install
 
 # 2. Levantar los servicios
-./vendor/bin/sail up -d
+docker compose up -d
 
 # 3. Setup inicial (key, migraciones, assets)
 ./vendor/bin/sail composer run setup
