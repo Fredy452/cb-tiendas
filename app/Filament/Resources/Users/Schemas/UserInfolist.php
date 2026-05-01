@@ -11,10 +11,12 @@ class UserInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
+                TextEntry::make('name')
+                    ->label('Nombre'),
                 TextEntry::make('email')
-                    ->label('Email address'),
+                    ->label('Correo electrónico'),
                 TextEntry::make('email_verified_at')
+                    ->label('Correo electrónico verificado en')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('created_at')
