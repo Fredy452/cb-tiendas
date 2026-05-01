@@ -22,3 +22,28 @@ __Rol Visitante:__
 
 (Pedro) Busca emprendimiento de acuerdo al rubro de su interés, visita el repositorio del emprendedor seleccionado, visualiza la información del emprendimiento (Logo, Ubicación, número de teléfono, redes sociales),interactúa con el emprendedor,
 valora la calidad del producto/servicio ofrecido por el emprendedor.
+
+### Definicion de Requerimientos Funcionales y No Funcionales
+__Requerimientos Funcionales:__  
+**RF1:**  Registro de usuarios con validación de datos.  
+**RF2:**  Inicio y cierre de sesión con autenticación segura.  
+**RF3:**  Gestión de perfil de emprendedor.  
+**RF4:**  Registro, edición y eliminación de emprendimientos  
+**RF5:**  Clasificación por categorías.  
+**RF6:**  Búsqueda avanzada con filtros.  
+**RF7:**  Visualización pública de emprendimientos.  
+**RF8:**  Sistema de mensajería/contacto.  
+**RF9:**  Panel de administración.  
+**RF10:**  Generar reportes.  
+**RF11:**  Módulo de auditoría  
+**RF12:**  Calificación de la aplicación web  
+
+__Requerimientos No Funcionales:__  
+**RNF1:**  Seguridad basada en OWASP Top 10.  
+**RNF2:**  Cifrado de contraseñas mediante hashing seguro (bcrypt).  
+**RNF3:**  Interfaz responsive.  
+**RNF4:**  Disponibilidad del sistema ≥ 99%.  
+**RNF5:**  Uso de tecnologías de software libre (Linux, PostgreSQL, Django/Node.js).   
+**RNF6:**  Escalabilidad mediante arquitectura modular.  
+**RNF7:**  Compatibilidad con navegadores modernos.
+  
