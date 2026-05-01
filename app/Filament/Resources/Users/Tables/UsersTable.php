@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -24,12 +25,15 @@ class UsersTable
                 TextColumn::make('email_verified_at')
                     ->label('Correo electrónico verificado en')
                     ->dateTime()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->label('Creado en')
-                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextInputColumn::make('roles.name')
+                        ->label('Roles')
+                        ->separator(', '),
+                TextColumn::make('created_at')
+                    ->label('Registrado el')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->label('Actualizado en')
                     ->dateTime()
