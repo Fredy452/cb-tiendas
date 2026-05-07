@@ -27,7 +27,7 @@ class UsersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('roles')
-                    ->label('Roles')
+                    ->label('Rol')
                     ->state(fn ($record): string => $record->roles->pluck('name')->implode(', '))
                     ->placeholder('-'),
                 TextColumn::make('created_at')
