@@ -7,7 +7,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -27,9 +26,10 @@ class UsersTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextInputColumn::make('roles.name')
-                        ->label('Roles')
-                        ->separator(', '),
+                TextColumn::make('roles')
+                    ->label('Roles')
+                    ->state(fn ($record): string => $record->roles->pluck('name')->implode(', '))
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->label('Registrado el')
                     ->dateTime()
