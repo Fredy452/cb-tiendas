@@ -22,11 +22,11 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
 
-    protected static ?string $recordTitleAttribute = 'Categorías';
+    protected static ?string $recordTitleAttribute = 'name';
 
-        protected static ?string $modelLabel = 'Categoría';
+    protected static ?string $modelLabel = 'Categoría';
     protected static ?string $pluralModelLabel = 'Categorías';
 
     public static function form(Schema $schema): Schema
