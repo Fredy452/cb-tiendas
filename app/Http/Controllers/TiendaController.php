@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Store;
 
@@ -14,6 +15,12 @@ class TiendaController extends Controller
     {
         $stores = Store::where('status', 'approved')->get();
         return view('tienda', compact('stores'));
+    }
+
+    public function categorias()
+    {
+        $categorias = Category::all();
+        return view('categorias', compact('categorias'));
     }
 
     /**
