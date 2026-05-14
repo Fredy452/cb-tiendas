@@ -8,6 +8,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class CategoryForm
 {
@@ -46,7 +48,18 @@ class CategoryForm
                         TextInput::make('display_order')
                             ->label('Orden de visualización')
                             ->numeric()
-                            ->default(0)
+                            ->default(0),
+
+                        FileUpload::make('image_path')
+                            ->label('Imagen')
+                            ->directory('category-images')
+                            ->acceptedFileTypes(['image/*'])
+                            ->disk('public')
+                            ->image()
+                            ->getUploadedFileNameForStorageUsing(
+                                fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
+                                    ->prepend('custom-prefix-'),
+                            )
                     ])
             ]);
     }
