@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/tiendas', [TiendaController::class, 'index'])->name('tiendas.index');
+Route::get('/categorias', [TiendaController::class, 'categorias'])->name('categorias');
