@@ -11,5 +11,6 @@
         @foreach($stores as $store)
             <li>{{ $store->name }} - {{ $store->description }}</li>
         @endforeach
+    </ul>
 </body>
 </html>
