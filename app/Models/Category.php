@@ -13,6 +13,9 @@ class Category extends Model
         'name',
         'slug',
         'description',
+        'is_active',
+        'display_order',
+        'image_path'
     ];
 
 }
