@@ -57,8 +57,12 @@ class CategoryForm
                             ->disk('public')
                             ->image()
                             ->getUploadedFileNameForStorageUsing(
-                                fn (TemporaryUploadedFile $file): string => (string) str($file->getClientOriginalName())
-                                    ->prepend('custom-prefix-'),
+                                fn (TemporaryUploadedFile $file, $record = null): string => sprintf(
+                                    'category-%s-%s.%s',
+                                    $record?->getKey() ?? 'new',
+                                    now()->format('Ymd-His'),
+                                    $file->getClientOriginalExtension(),
+                                ),
                             )
                     ])
             ]);
