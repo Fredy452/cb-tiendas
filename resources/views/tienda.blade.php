@@ -7,5 +7,10 @@
 </head>
 <body>
     <h1>Bienvenidos al listado de tiendas de {{ config('app.name') }}</h1>
+    <ul>
+        @foreach($stores as $store)
+            <li>{{ $store->name }} - {{ $store->description }}</li>
+        @endforeach
+    </ul>
 </body>
 </html>

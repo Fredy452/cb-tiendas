@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Filament\Resources\Stores\Tables;
+
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Table;
+
+class StoresTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Stack::make([
+                    ImageColumn::make('logo_path')
+                        ->label('Logo')
+                        ->disk('public')
+                        ->imageWidth('100%')
+                        ->imageHeight('160px')
+                        ->defaultImageUrl(asset('img/placeholders/store_placeholder.jpg'))
+                        ->extraImgAttributes([
+                            'style' => 'object-fit: cover; object-position: center; border-radius: 0.375rem;',
+                        ])
+                        ->toggleable(isToggledHiddenByDefault: true),
+
+                    TextColumn::make('name')
+                        ->label('Nombre')
+                        ->weight(FontWeight::SemiBold)
+                        ->searchable(),
+
+                    TextColumn::make('categories.name')
+                        ->label('Categorías')
+                        ->badge()
+                        ->limitList(3)
+                        ->expandableLimitedList(),
+
+                    ViewColumn::make('map_preview')
+                        ->label('Mapa')
+                        ->state(fn ($record): ?array => filled($record->latitude) && filled($record->longitude)
+                            ? [
+                                'name' => $record->name,
+                                'latitude' => (float) $record->latitude,
+                                'longitude' => (float) $record->longitude,
+                            ]
+                            : null)
+                        ->view('filament.tables.columns.store-map-preview'),
+                ])
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
+            ->filters([
+                TrashedFilter::make(),
+            ])
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
+            ]);
+    }
+}
