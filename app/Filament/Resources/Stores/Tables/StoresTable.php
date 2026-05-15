@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\Stores\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
-use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -19,51 +19,44 @@ class StoresTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('address')
-                    ->searchable(),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
-                TextColumn::make('website')
-                    ->searchable(),
-                TextColumn::make('logo_path')
-                    ->searchable(),
-                TextColumn::make('img_path')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->searchable(),
-                IconColumn::make('is_featured')
-                    ->boolean(),
-                TextColumn::make('latitude')
-                    ->searchable(),
-                TextColumn::make('longitude')
-                    ->searchable(),
-                TextColumn::make('approval_status')
-                    ->searchable(),
-                TextColumn::make('approval_date')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('approval_user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Stack::make([
+                    ImageColumn::make('logo_path')
+                        ->label('Logo')
+                        ->disk('public')
+                        ->imageWidth('100%')
+                        ->imageHeight('160px')
+                        ->defaultImageUrl(asset('img/placeholders/store_placeholder.jpg'))
+                        ->extraImgAttributes([
+                            'style' => 'object-fit: cover; object-position: center; border-radius: 0.375rem;',
+                        ])
+                        ->toggleable(isToggledHiddenByDefault: true),
+
+                    TextColumn::make('name')
+                        ->label('Nombre')
+                        ->weight(FontWeight::SemiBold)
+                        ->searchable(),
+
+                    TextColumn::make('categories.name')
+                        ->label('Categorías')
+                        ->badge()
+                        ->limitList(3)
+                        ->expandableLimitedList(),
+
+                    ViewColumn::make('map_preview')
+                        ->label('Mapa')
+                        ->state(fn ($record): ?array => filled($record->latitude) && filled($record->longitude)
+                            ? [
+                                'name' => $record->name,
+                                'latitude' => (float) $record->latitude,
+                                'longitude' => (float) $record->longitude,
+                            ]
+                            : null)
+                        ->view('filament.tables.columns.store-map-preview'),
+                ])
+            ])
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
             ])
             ->filters([
                 TrashedFilter::make(),
@@ -71,13 +64,7 @@ class StoresTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
+                DeleteAction::make(),
             ]);
     }
 }
