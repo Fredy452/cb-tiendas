@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 class Category extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     // Note 1: fillable define los atributos que se pueden asignar en masa
     // Note 2: por ejemplo, cuando se usa Category::create([...]) Laravel solo
@@ -37,6 +39,15 @@ class Category extends Model
         // Note 10: belongsToMany devuelve un builder de relacion para poder
         // Note 11: consultar, adjuntar y sincronizar tiendas asociadas
         return $this->belongsToMany(Store::class, 'category_store');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('categorias')
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
     }
 
 }

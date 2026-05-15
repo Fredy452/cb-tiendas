@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 class Store extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
 
     // Note 1: fillable controla que campos se pueden escribir por asignacion masiva
     // Note 2: esto protege el modelo frente a entradas no deseadas desde formularios
@@ -57,5 +59,14 @@ class Store extends Model
             'rejected' => 'danger',
             default => 'secondary',
         };
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('tiendas')
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
     }
 }
