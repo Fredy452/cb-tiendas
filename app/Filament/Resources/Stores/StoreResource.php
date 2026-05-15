@@ -22,9 +22,11 @@ class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
-    protected static ?string $recordTitleAttribute = 'Store';
+    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $modelLabel = 'Tienda';
+    protected static ?string $pluralModelLabel = 'Tiendas';
 
     public static function form(Schema $schema): Schema
     {
