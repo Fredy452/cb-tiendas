@@ -14,6 +14,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Models\Activity;
+use Filament\Forms\Components\DatePicker;
 
 class ActivityLogResource extends Resource
 {
@@ -25,34 +26,28 @@ class ActivityLogResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Registros de auditoría';
 
-    protected static ?string $modelLabel = 'Registro';
+    protected static ?string $modelLabel = 'Auditoría';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Auditoría';
 
     protected static ?int $navigationSort = 1;
 
-    /**
-     * Solo listado de actividades; no se crean ni editan registros de auditoría.
-     */
     public static function table(Table $table): Table
     {
         return $table
             ->query(Activity::query()->with(['causer', 'subject'])->latest())
             ->columns([
-                // Fecha y hora del evento
                 TextColumn::make('created_at')
                     ->label('Fecha')
-                    ->dateTime('d/m/Y H:i:s')
+                    ->since()
                     ->sortable()
                     ->searchable(),
 
-                // Usuario que realizó la acción
                 TextColumn::make('causer.name')
                     ->label('Usuario')
                     ->default('Sistema')
                     ->searchable(),
 
-                // Nombre del log (tiendas, categorias, usuarios, etc.)
                 TextColumn::make('log_name')
                     ->label('Módulo')
                     ->badge()
@@ -64,7 +59,6 @@ class ActivityLogResource extends Resource
                     })
                     ->searchable(),
 
-                // Evento: created, updated, deleted
                 TextColumn::make('description')
                     ->label('Evento')
                     ->badge()
@@ -80,7 +74,6 @@ class ActivityLogResource extends Resource
                     ->label('ID registro')
                     ->sortable(),
 
-                // Valores anteriores (old)
                 TextColumn::make('properties')
                     ->label('Valores anteriores')
                     ->state(fn (Activity $record): string => self::formatProperties($record, 'old'))
@@ -88,7 +81,6 @@ class ActivityLogResource extends Resource
                     ->limit(200)
                     ->tooltip(fn (Activity $record): ?string => self::formatProperties($record, 'old', full: true)),
 
-                // Valores nuevos (attributes)
                 TextColumn::make('properties_new')
                     ->label('Valores nuevos')
                     ->state(fn (Activity $record): string => self::formatProperties($record, 'attributes'))
@@ -97,7 +89,6 @@ class ActivityLogResource extends Resource
                     ->tooltip(fn (Activity $record): ?string => self::formatProperties($record, 'attributes', full: true)),
             ])
             ->filters([
-                // Filtro por módulo (log_name)
                 SelectFilter::make('log_name')
                     ->label('Módulo')
                     ->options([
@@ -106,7 +97,6 @@ class ActivityLogResource extends Resource
                         'usuarios'   => 'Usuarios',
                     ]),
 
-                // Filtro por tipo de evento
                 SelectFilter::make('description')
                     ->label('Evento')
                     ->options([
@@ -115,18 +105,16 @@ class ActivityLogResource extends Resource
                         'deleted' => 'Eliminado',
                     ]),
 
-                // Filtro por usuario causante
                 SelectFilter::make('causer_id')
                     ->label('Usuario')
                     ->options(fn (): array => User::query()->pluck('name', 'id')->toArray())
                     ->searchable(),
 
-                // Filtro por rango de fechas
                 Filter::make('created_at')
                     ->label('Rango de fechas')
-                    ->form([
-                        \Filament\Forms\Components\DatePicker::make('from')->label('Desde'),
-                        \Filament\Forms\Components\DatePicker::make('until')->label('Hasta'),
+                    ->schema([
+                        DatePicker::make('from')->label('Desde'),
+                        DatePicker::make('until')->label('Hasta'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
