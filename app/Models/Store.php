@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Support\LogOptions;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Store extends Model
 {
@@ -34,6 +37,13 @@ class Store extends Model
         'approval_user_id',
     ];
 
+    public function scopePublicVisible(Builder $query): Builder
+    {
+        return $query
+            ->where('status', 'active')
+            ->where('approval_status', 'approved');
+    }
+
     // Note 4: una tienda puede ser aprobada por un usuario concreto
     // Note 5: esta relacion belongsTo apunta a users.id usando approval_user_id
     public function approvalUser()
@@ -49,6 +59,16 @@ class Store extends Model
         // Note 9: category_store conecta store_id con category_id
         // Note 10: aqui se centraliza la definicion de esa union para todo el dominio
         return $this->belongsToMany(Category::class, 'category_store');
+    }
+
+    public function getCoverUrlAttribute(): ?string
+    {
+        return $this->resolveMediaUrl($this->img_path);
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        return $this->resolveMediaUrl($this->logo_path);
     }
 
     public function getApprovalStatusBadgeColor(): string
@@ -68,5 +88,22 @@ class Store extends Model
             ->logFillable()
             ->logOnlyDirty()
             ->dontLogEmptyChanges();
+    }
+
+    private function resolveMediaUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '/'])) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, 'storage/')) {
+            return asset($path);
+        }
+
+        return Storage::url($path);
     }
 }

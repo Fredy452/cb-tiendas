@@ -3,48 +3,170 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class TiendaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function home(): View
     {
-        $stores = Store::where('status', 'approved')->get();
-        return view('tienda', compact('stores'));
+        $featuredStores = Store::query()
+            ->publicVisible()
+            ->with('categories')
+            ->orderByDesc('is_featured')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $categories = $this->publicCategoriesWithCounts()->take(6);
+        $storesCount = Store::query()->publicVisible()->count();
+
+        return view('welcome', compact('featuredStores', 'categories', 'storesCount'));
     }
 
-    public function categorias()
+    public function index(Request $request): View
     {
-        $categorias = Category::all();
-        return view('categorias', compact('categorias'));
+        $search = trim((string) $request->input('search'));
+        $selectedCategoryIds = $this->resolveSelectedCategoryIds($request);
+        $selectedScope = in_array($request->input('scope'), ['featured', 'new'], true)
+            ? $request->input('scope')
+            : 'all';
+
+        $stores = Store::query()
+            ->publicVisible()
+            ->with('categories')
+            ->when($search !== '', function (Builder $query) use ($search) {
+                $query->where(function (Builder $searchQuery) use ($search) {
+                    $searchQuery
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('address', 'like', "%{$search}%")
+                        ->orWhereHas('categories', function (Builder $categoryQuery) use ($search) {
+                            $categoryQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($selectedCategoryIds !== [], function (Builder $query) use ($selectedCategoryIds) {
+                $query->whereHas('categories', function (Builder $categoryQuery) use ($selectedCategoryIds) {
+                    $categoryQuery->whereIn('categories.id', $selectedCategoryIds);
+                });
+            })
+            ->when($selectedScope === 'featured', function (Builder $query) {
+                $query->where('is_featured', true);
+            })
+            ->when($selectedScope === 'new', function (Builder $query) {
+                $query->where('created_at', '>=', now()->subDays(30));
+            })
+            ->orderByDesc('is_featured')
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+        $categories = $this->publicCategoriesWithCounts();
+
+        Log::info('Mostrando listado de tiendas', [
+            'search' => $search,
+            'selected_category_ids' => $selectedCategoryIds,
+            'selected_scope' => $selectedScope,
+            'result_count' => $stores->total(),
+        ]);
+
+        return view('tienda', compact('stores', 'categories', 'search', 'selectedCategoryIds', 'selectedScope'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function categorias(): View
     {
-        //
+        $categories = $this->publicCategoriesWithCounts();
+
+        return view('categorias', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function create(): View
     {
-        //
+        $categories = Category::query()
+            ->active()
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('emprendimientos.create', compact('categories'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'category_id' => [
+                'required',
+                'integer',
+                Rule::exists('categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
+            ],
+            'phone' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:1200'],
+        ]);
+
+        $store = Store::query()->create([
+            'name' => $validated['name'],
+            'slug' => $this->generateStoreSlug($validated['name']),
+            'description' => $validated['description'],
+            'phone' => $validated['phone'],
+            'status' => 'active',
+            'approval_status' => 'pending',
+        ]);
+
+        $store->categories()->attach($validated['category_id']);
+
+        return to_route('emprendimientos.create')->with(
+            'status',
+            '¡Listo! Tu emprendimiento fue enviado para revisión. Te avisaremos cuando esté aprobado.'
+        );
+    }
+
+    public function show(string $store): View
+    {
+        $store = Store::query()
+            ->publicVisible()
+            ->with('categories')
+            ->where(function (Builder $query) use ($store) {
+                $query->where('slug', $store);
+
+                if (ctype_digit($store)) {
+                    $query->orWhereKey((int) $store);
+                }
+            })
+            ->firstOrFail();
+        Log::info('Mostrando tienda al público', ['store_id' => $store->getKey(), 'store_name' => $store->name]);
+        $relatedStoresQuery = Store::query()
+            ->publicVisible()
+            ->with('categories')
+            ->whereKeyNot($store->getKey());
+
+        if ($store->categories->isNotEmpty()) {
+            $relatedStoresQuery->whereHas('categories', function (Builder $query) use ($store) {
+                $query->whereIn('categories.id', $store->categories->modelKeys());
+            });
+        }
+
+        $relatedStores = $relatedStoresQuery
+            ->orderByDesc('is_featured')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('tiendas.show', compact('store', 'relatedStores'));
+    }
+
+    public function about(): View
+    {
+        return view('sobre-nosotros');
     }
 
     /**
@@ -69,5 +191,71 @@ class TiendaController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    private function publicCategoriesWithCounts(): Collection
+    {
+        return Category::query()
+            ->active()
+            ->withCount([
+                'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
+            ])
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get();
+    }
+
+    private function resolveSelectedCategoryIds(Request $request): array
+    {
+        $filters = collect(Arr::wrap($request->input('categories', [])))
+            ->merge($request->filled('category') ? [$request->input('category')] : [])
+            ->filter(fn ($value) => filled($value))
+            ->map(fn ($value) => (string) $value)
+            ->values();
+
+        if ($filters->isEmpty()) {
+            return [];
+        }
+
+        $numericIds = $filters
+            ->filter(fn (string $value) => ctype_digit($value))
+            ->map(fn (string $value) => (int) $value)
+            ->all();
+
+        $slugs = $filters
+            ->reject(fn (string $value) => ctype_digit($value))
+            ->all();
+
+        return Category::query()
+            ->active()
+            ->where(function (Builder $query) use ($numericIds, $slugs) {
+                if ($numericIds !== []) {
+                    $query->whereIn('id', $numericIds);
+                }
+
+                if ($slugs !== []) {
+                    if ($numericIds !== []) {
+                        $query->orWhereIn('slug', $slugs);
+                    } else {
+                        $query->whereIn('slug', $slugs);
+                    }
+                }
+            })
+            ->pluck('id')
+            ->all();
+    }
+
+    private function generateStoreSlug(string $name): string
+    {
+        $baseSlug = Str::slug($name) ?: 'negocio-local';
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (Store::query()->where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
     }
 }
