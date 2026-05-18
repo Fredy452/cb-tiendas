@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -6,6 +7,147 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --cb-font-display: 'Plus Jakarta Sans', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+    --cb-surface: #fbf8ff;
+    --cb-surface-soft: #f4f2ff;
+    --cb-surface-panel: #ffffff;
+    --cb-surface-strong: #e5e6ff;
+    --cb-border: #dee0ff;
+    --cb-text: #161a32;
+    --cb-muted: #404943;
+    --cb-outline: #707973;
+    --cb-primary: #0f5238;
+    --cb-primary-strong: #2d6a4f;
+    --cb-primary-soft: #b1f0ce;
+    --cb-secondary: #005fad;
+    --cb-secondary-soft: #d4e3ff;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--cb-surface);
+        color: var(--cb-text);
+    }
+
+    ::selection {
+        background-color: rgba(15, 82, 56, 0.18);
+    }
+}
+
+@layer components {
+    .cb-shell {
+        @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-10;
+    }
+
+    .cb-section {
+        @apply py-16 sm:py-20;
+    }
+
+    .cb-card {
+        @apply overflow-hidden rounded-[1.75rem] border bg-white transition duration-300;
+        border-color: var(--cb-border);
+        box-shadow: 0 22px 48px rgba(22, 26, 50, 0.06);
+    }
+
+    .cb-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 26px 56px rgba(22, 26, 50, 0.1);
+    }
+
+    .cb-panel {
+        @apply rounded-[1.5rem] border bg-white;
+        border-color: rgba(222, 224, 255, 0.9);
+        box-shadow: 0 18px 38px rgba(22, 26, 50, 0.05);
+    }
+
+    .cb-display,
+    .cb-heading,
+    .cb-subheading {
+        font-family: var(--cb-font-display);
+        letter-spacing: -0.03em;
+    }
+
+    .cb-display {
+        @apply text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl;
+    }
+
+    .cb-heading {
+        @apply text-3xl font-bold leading-tight sm:text-4xl;
+    }
+
+    .cb-subheading {
+        @apply text-2xl font-semibold leading-tight;
+    }
+
+    .cb-kicker {
+        @apply text-sm font-semibold uppercase tracking-[0.24em];
+        color: var(--cb-outline);
+    }
+
+    .cb-button-primary,
+    .cb-button-secondary,
+    .cb-button-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition duration-200;
+    }
+
+    .cb-button-primary {
+        background-color: var(--cb-primary);
+        color: white;
+        box-shadow: 0 10px 22px rgba(15, 82, 56, 0.18);
+    }
+
+    .cb-button-primary:hover {
+        background-color: var(--cb-primary-strong);
+    }
+
+    .cb-button-secondary {
+        border: 1px solid rgba(0, 95, 173, 0.28);
+        color: var(--cb-secondary);
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .cb-button-secondary:hover {
+        background-color: rgba(212, 227, 255, 0.7);
+    }
+
+    .cb-button-ghost {
+        border: 1px solid rgba(112, 121, 115, 0.22);
+        color: var(--cb-text);
+        background-color: rgba(255, 255, 255, 0.65);
+    }
+
+    .cb-button-ghost:hover {
+        background-color: rgba(244, 242, 255, 0.92);
+    }
+
+    .cb-pill {
+        @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
+        background-color: rgba(177, 240, 206, 0.5);
+        color: var(--cb-primary);
+    }
+
+    .cb-input {
+        @apply w-full rounded-2xl border bg-white px-4 py-3 text-sm text-[var(--cb-text)] outline-none transition;
+        border-color: rgba(222, 224, 255, 0.95);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+
+    .cb-input:focus {
+        border-color: rgba(15, 82, 56, 0.48);
+        box-shadow: 0 0 0 4px rgba(149, 212, 179, 0.24);
+    }
+
+    .cb-prose {
+        @apply space-y-4 leading-8;
+        color: var(--cb-muted);
+    }
 }
