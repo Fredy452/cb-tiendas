@@ -6,6 +6,13 @@
         ->map(fn ($segment) => Illuminate\Support\Str::upper(Illuminate\Support\Str::substr($segment, 0, 1)))
         ->implode('');
 
+    $descriptionExcerpt = $store->description
+        ? Illuminate\Support\Str::limit(
+            trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')),
+            140,
+        )
+        : 'Emprendimiento local registrado dentro del directorio de Coronel Bogado.';
+
     $detailRouteKey = $store->slug ?: $store->getKey();
 @endphp
 
@@ -49,7 +56,7 @@
         <h3 class="text-[1.75rem] font-semibold leading-tight tracking-tight text-(--cb-text)">{{ $store->name }}</h3>
 
         <p class="mt-3 flex-1 text-base leading-8 text-(--cb-muted) line-clamp-3">
-            {{ $store->description ?: 'Emprendimiento local registrado dentro del directorio de Coronel Bogado.' }}
+            {{ $descriptionExcerpt }}
         </p>
 
         <div class="mt-5 flex items-center justify-between gap-4">

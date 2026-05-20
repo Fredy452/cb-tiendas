@@ -150,4 +150,58 @@
         @apply space-y-4 leading-8;
         color: var(--cb-muted);
     }
+
+    .cb-prose :where(h1, h2, h3, h4, h5, h6) {
+        font-family: var(--cb-font-display);
+        color: var(--cb-text);
+        line-height: 1.15;
+        margin-top: 1.6em;
+        margin-bottom: 0.6em;
+    }
+
+    .cb-prose :where(h2) {
+        @apply text-2xl font-bold;
+    }
+
+    .cb-prose :where(p) {
+        margin-bottom: 1em;
+    }
+
+    .cb-prose :where(strong, b) {
+        color: var(--cb-text);
+        font-weight: 700;
+    }
+
+    .cb-prose :where(a) {
+        color: var(--cb-secondary);
+        text-decoration: underline;
+        text-underline-offset: 0.18em;
+    }
+
+    .cb-prose :where(ul, ol) {
+        padding-left: 1.35rem;
+        margin: 1em 0;
+    }
+
+    .cb-prose :where(li) {
+        margin-top: 0.35em;
+    }
+
+    .cb-prose :where(blockquote) {
+        border-left: 4px solid rgba(15, 82, 56, 0.22);
+        padding-left: 1rem;
+        font-style: italic;
+        color: var(--cb-muted);
+    }
+
+    .cb-prose :where(img) {
+        max-width: 100%;
+        height: auto;
+        border-radius: 1rem;
+    }
+
+    .cb-prose :where(hr) {
+        border-color: rgba(222, 224, 255, 0.95);
+        margin: 1.5rem 0;
+    }
 }

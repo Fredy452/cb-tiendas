@@ -41,7 +41,7 @@
 
     <div class="flex flex-1 flex-col p-6">
         <p class="flex-1 text-base leading-8 text-(--cb-muted) line-clamp-3">
-            {{ $category->description ?: 'Rubros visibles dentro de la plaza digital para que la comunidad encuentre servicios y productos locales con rapidez.' }}
+            {!! $category->description ?: 'Rubros visibles dentro de la plaza digital para que la comunidad encuentre servicios y productos locales con rapidez.' !!}
         </p>
 
         <span class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-(--cb-primary)">

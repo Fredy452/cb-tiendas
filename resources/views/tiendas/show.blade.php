@@ -71,13 +71,11 @@
                 <div class="cb-panel mt-6 p-7 sm:p-8">
                     <h2 class="cb-subheading">Nuestra historia</h2>
                     <div class="cb-prose mt-5 text-lg">
-                        <p>
-                            {{ $store->description ?: 'Este emprendimiento local ya forma parte de la comunidad de CB Tiendas y pronto compartirá más detalles sobre su propuesta de valor.' }}
-                        </p>
-
                         @if ($store->description)
+                            {!! $store->description !!}
+                        @else
                             <p>
-                                Conectamos negocios locales con vecinos y visitantes de Coronel Bogado para impulsar el comercio cercano y fortalecer la economía comunitaria.
+                                Este emprendimiento local ya forma parte de la comunidad de CB Tiendas y pronto compartirá más detalles sobre su propuesta de valor.
                             </p>
                         @endif
                     </div>
