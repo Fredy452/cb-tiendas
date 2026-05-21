@@ -94,13 +94,13 @@ class StoreInfolist
                         ->label('Estado')
                         ->badge()
                         ->formatStateUsing(fn (?string $state): string => match ($state) {
-                            'active' => 'Activa',
-                            'inactive' => 'Inactiva',
+                            'approved' => 'Aprobado',
+                            'pending' => 'Pendiente',
                             default => $state ?? '-',
                         })
                         ->color(fn (?string $state): string => match ($state) {
-                            'active' => 'success',
-                            'inactive' => 'gray',
+                            'approved' => 'success',
+                            'pending' => 'gray',
                             default => 'gray',
                         }),
 
@@ -110,21 +110,21 @@ class StoreInfolist
                         ->formatStateUsing(fn (bool $state): string => $state ? 'Sí' : 'No')
                         ->color(fn (bool $state): string => $state ? 'warning' : 'gray'),
 
-                    TextEntry::make('approval_status')
-                        ->label('Aprobación')
-                        ->badge()
-                        ->formatStateUsing(fn (?string $state): string => match ($state) {
-                            'pending' => 'Pendiente',
-                            'approved' => 'Aprobada',
-                            'rejected' => 'Rechazada',
-                            default => $state ?? '-',
-                        })
-                        ->color(fn (?string $state): string => match ($state) {
-                            'pending' => 'warning',
-                            'approved' => 'success',
-                            'rejected' => 'danger',
-                            default => 'gray',
-                        }),
+                    // TextEntry::make('approval_status')
+                    //     ->label('Aprobación')
+                    //     ->badge()
+                    //     ->formatStateUsing(fn (?string $state): string => match ($state) {
+                    //         'pending' => 'Pendiente',
+                    //         'approved' => 'Aprobada',
+                    //         'rejected' => 'Rechazada',
+                    //         default => $state ?? '-',
+                    //     })
+                    //     ->color(fn (?string $state): string => match ($state) {
+                    //         'pending' => 'warning',
+                    //         'approved' => 'success',
+                    //         'rejected' => 'danger',
+                    //         default => 'gray',
+                    //     }),
 
                     TextEntry::make('approval_date')
                         ->label('Fecha de aprobación')

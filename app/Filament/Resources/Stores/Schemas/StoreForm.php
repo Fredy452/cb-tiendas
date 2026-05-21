@@ -150,11 +150,10 @@ class StoreForm
                                         'pending' => 'Pendiente',
                                         'approved' => 'Aprobada',
                                         'rejected' => 'Rechazada',
-                                        'active' => 'Activa',
                                         'inactive' => 'Inactiva',
                                     ])
                                     ->required()
-                                    ->default('active'),
+                                    ->default('pending'),
 
                                 Toggle::make('is_featured')
                                     ->label('Es destacada')

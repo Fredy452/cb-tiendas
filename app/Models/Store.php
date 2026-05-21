@@ -40,8 +40,7 @@ class Store extends Model
     public function scopePublicVisible(Builder $query): Builder
     {
         return $query
-            ->where('status', 'active')
-            ->where('approval_status', 'approved');
+            ->where('status', 'approved');
     }
 
     // Note 4: una tienda puede ser aprobada por un usuario concreto
