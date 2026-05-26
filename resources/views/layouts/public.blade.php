@@ -9,7 +9,7 @@
             $appUrl = Illuminate\Support\Str::startsWith($rawAppUrl, ['http://', 'https://']) ? $rawAppUrl : 'http://' . ltrim($rawAppUrl, '/');
             $currentPath = request()->path();
             $currentUrl = $appUrl . ($currentPath === '/' ? '' : '/' . ltrim($currentPath, '/'));
-            $defaultImage = $appUrl . '/social-preview.svg';
+            $defaultImage = $appUrl . '/img/placeholders/store_placeholder.jpg';
 
             $normalizeUrl = function (?string $url) use ($appUrl): string {
                 $url = trim((string) $url);
@@ -32,7 +32,7 @@
             $metaImageAlt = trim(preg_replace('/\s+/', ' ', strip_tags($__env->yieldContent('meta_image_alt', 'Vista previa de CB Tiendas'))));
             $metaImageWidth = trim($__env->yieldContent('meta_image_width', '1200'));
             $metaImageHeight = trim($__env->yieldContent('meta_image_height', '630'));
-            $metaImageType = trim($__env->yieldContent('meta_image_type', $metaImage === $defaultImage ? 'image/svg+xml' : ''));
+            $metaImageType = trim($__env->yieldContent('meta_image_type', $metaImage === $defaultImage ? 'image/jpeg' : ''));
             $ogType = trim($__env->yieldContent('og_type', 'website'));
             $twitterCard = trim($__env->yieldContent('twitter_card', 'summary_large_image'));
             $schemaData = [
