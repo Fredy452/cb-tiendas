@@ -1,7 +1,10 @@
 @extends('layouts.public')
 
 @section('title', $store->name . ' | CB Tiendas')
-@section('meta_description', Illuminate\Support\Str::limit($store->description ?: 'Detalle público del emprendimiento en CB Tiendas.', 150))
+@section('meta_description', Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($store->description ?: 'Detalle público del emprendimiento en CB Tiendas.'))), 150))
+@section('canonical_url', route('tiendas.show', $store->slug ?: $store->getKey(), false))
+@section('meta_image', $store->cover_url ?: $store->logo_url ?: '')
+@section('meta_image_alt', 'Vista previa de ' . $store->name . ' en CB Tiendas')
 
 @section('content')
     @php

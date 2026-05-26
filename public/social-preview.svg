@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+    <title id="title">CB Tiendas</title>
+    <desc id="desc">Directorio de emprendedores locales de Coronel Bogado</desc>
+    <defs>
+        <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#f7fff9"/>
+            <stop offset="0.55" stop-color="#eef4ff"/>
+            <stop offset="1" stop-color="#f9f7ff"/>
+        </linearGradient>
+        <linearGradient id="brand" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#0f5238"/>
+            <stop offset="1" stop-color="#2d6a4f"/>
+        </linearGradient>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#161a32" flood-opacity="0.16"/>
+        </filter>
+    </defs>
+
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <circle cx="1050" cy="90" r="210" fill="#b1f0ce" opacity="0.55"/>
+    <circle cx="130" cy="540" r="230" fill="#d4e3ff" opacity="0.72"/>
+    <circle cx="1010" cy="510" r="130" fill="#dee0ff" opacity="0.7"/>
+
+    <g filter="url(#softShadow)">
+        <rect x="88" y="82" width="1024" height="466" rx="36" fill="#ffffff" opacity="0.88"/>
+    </g>
+
+    <g transform="translate(132 132)">
+        <rect width="112" height="112" rx="28" fill="url(#brand)"/>
+        <path d="M31 47h50l6 41H25l6-41Z" fill="#ffffff" opacity="0.95"/>
+        <path d="M39 47c0-15 8-24 17-24s17 9 17 24" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+        <path d="M30 68h53" stroke="#0f5238" stroke-width="6" stroke-linecap="round" opacity="0.75"/>
+    </g>
+
+    <text x="132" y="310" fill="#0f5238" font-family="Arial, Helvetica, sans-serif" font-size="94" font-weight="800">CB Tiendas</text>
+    <text x="138" y="375" fill="#2b2f45" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">La plaza digital de Coronel Bogado</text>
+    <text x="138" y="438" fill="#596072" font-family="Arial, Helvetica, sans-serif" font-size="30">Descubri, apoya y registra emprendimientos locales.</text>
+
+    <g transform="translate(138 486)">
+        <rect width="324" height="54" rx="27" fill="#e8f8ef"/>
+        <text x="28" y="36" fill="#0f5238" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">Directorio publico local</text>
+    </g>
+</svg>
