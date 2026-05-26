@@ -12,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Models\Concerns\CausesActivity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Filament\Panel;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -31,6 +32,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the filament access panel
+     * @return string
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if(env('APP_ENV') === 'production') {
+            if ($panel->getId() === 'admin') {
+                return str_ends_with($this->email, '@cb-tiendas.com.py');
+            }
+        }
+
+        return true;
+    }
+
 
     public function getActivitylogOptions(): LogOptions
     {
