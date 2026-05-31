@@ -10,7 +10,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Group;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -52,9 +52,15 @@ class StoreForm
                                     ->preload()
                                     ->multiple(),
 
-                                RichEditor::make('description')
+                                Textarea::make('description')
                                     ->label('Descripción')
                                     ->columnSpanFull()
+                                    ->rows(6)
+                                    ->maxLength(1200)
+                                    ->regex('/^[^<>]*$/')
+                                    ->validationMessages([
+                                        'regex' => 'La descripción solo puede contener texto plano, sin etiquetas HTML.',
+                                    ])
                                     ->required(true),
 
                                 TextInput::make('phone')
@@ -142,8 +148,6 @@ class StoreForm
 
                         Section::make('Configuración')
                             ->schema([
-                            // TODO: Deberia ser un campo tipo enum con opciones 'pending', 'approved', 'rejected'
-                            // y un badge con colores segun el estado
                                 Select::make('status')
                                     ->label('Estado')
                                     ->options([

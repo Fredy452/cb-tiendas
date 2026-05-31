@@ -96,11 +96,15 @@ class StoreInfolist
                         ->formatStateUsing(fn (?string $state): string => match ($state) {
                             'approved' => 'Aprobado',
                             'pending' => 'Pendiente',
+                            'rejected' => 'Rechazado',
+                            'inactive' => 'Inactivo',
                             default => $state ?? '-',
                         })
                         ->color(fn (?string $state): string => match ($state) {
                             'approved' => 'success',
-                            'pending' => 'gray',
+                            'pending' => 'warning',
+                            'rejected' => 'danger',
+                            'inactive' => 'gray',
                             default => 'gray',
                         }),
 
@@ -109,22 +113,6 @@ class StoreInfolist
                         ->badge()
                         ->formatStateUsing(fn (bool $state): string => $state ? 'Sí' : 'No')
                         ->color(fn (bool $state): string => $state ? 'warning' : 'gray'),
-
-                    // TextEntry::make('approval_status')
-                    //     ->label('Aprobación')
-                    //     ->badge()
-                    //     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                    //         'pending' => 'Pendiente',
-                    //         'approved' => 'Aprobada',
-                    //         'rejected' => 'Rechazada',
-                    //         default => $state ?? '-',
-                    //     })
-                    //     ->color(fn (?string $state): string => match ($state) {
-                    //         'pending' => 'warning',
-                    //         'approved' => 'success',
-                    //         'rejected' => 'danger',
-                    //         default => 'gray',
-                    //     }),
 
                     TextEntry::make('approval_date')
                         ->label('Fecha de aprobación')

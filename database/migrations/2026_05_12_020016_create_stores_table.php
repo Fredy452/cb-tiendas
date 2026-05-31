@@ -26,7 +26,6 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
-            $table->string('approval_status')->default('pending');
             $table->dateTime('approval_date')->nullable();
             $table->foreignId('approval_user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->softDeletes();

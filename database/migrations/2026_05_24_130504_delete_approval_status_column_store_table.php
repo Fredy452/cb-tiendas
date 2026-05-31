@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('stores', function (Blueprint $table) {
-            $table->dropColumn('approval_status');
-        });
+        if (Schema::hasColumn('stores', 'approval_status')) {
+            Schema::table('stores', function (Blueprint $table) {
+                $table->dropColumn('approval_status');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('stores', function (Blueprint $table) {
-            $table->string('approval_status')->default('pending');
-        });
+        if (! Schema::hasColumn('stores', 'approval_status')) {
+            Schema::table('stores', function (Blueprint $table) {
+                $table->string('approval_status')->default('pending');
+            });
+        }
     }
 };
