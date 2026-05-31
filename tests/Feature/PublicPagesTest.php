@@ -44,7 +44,7 @@ class PublicPagesTest extends TestCase
             ->assertSeeText('El corazón digital de Coronel Bogado');
     }
 
-    public function test_explore_only_shows_approved_active_stores(): void
+    public function test_explore_only_shows_approved_stores(): void
     {
         [$category, $visibleStore] = $this->seedCatalog();
 
@@ -52,8 +52,7 @@ class PublicPagesTest extends TestCase
             'name' => 'Pendiente sin publicar',
             'slug' => 'pendiente-sin-publicar',
             'description' => 'No deberia verse en el directorio publico.',
-            'status' => 'active',
-            'approval_status' => 'pending',
+            'status' => 'pending',
         ]);
 
         $hiddenStore->categories()->attach($category->id);
@@ -92,13 +91,36 @@ class PublicPagesTest extends TestCase
         $this->assertDatabaseHas('stores', [
             'name' => 'Panaderia La Abuela',
             'slug' => 'panaderia-la-abuela',
-            'status' => 'active',
-            'approval_status' => 'pending',
+            'status' => 'pending',
         ]);
 
         $this->assertDatabaseHas('category_store', [
             'store_id' => $store->id,
             'category_id' => $category->id,
+        ]);
+    }
+
+    public function test_registration_rejects_html_in_description(): void
+    {
+        $category = Category::query()->create([
+            'name' => 'Gastronomía',
+            'slug' => 'gastronomia',
+            'description' => 'Sabores y productos locales.',
+            'is_active' => true,
+            'display_order' => 1,
+        ]);
+
+        $response = $this->post(route('emprendimientos.store'), [
+            'name' => 'Intento con HTML',
+            'category_id' => $category->id,
+            'phone' => '0981 000 222',
+            'description' => 'Texto normal <script>alert("xss")</script>',
+        ]);
+
+        $response->assertSessionHasErrors('description');
+
+        $this->assertDatabaseMissing('stores', [
+            'name' => 'Intento con HTML',
         ]);
     }
 
@@ -118,8 +140,7 @@ class PublicPagesTest extends TestCase
             'description' => 'Panes artesanales y especialidades horneadas todos los dias.',
             'address' => 'Centro, Coronel Bogado',
             'phone' => '0981 111 222',
-            'status' => 'active',
-            'approval_status' => 'approved',
+            'status' => 'approved',
             'is_featured' => true,
         ]);
 
