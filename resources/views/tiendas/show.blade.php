@@ -19,18 +19,18 @@
     @endphp
 
     <section class="cb-shell cb-section pb-12">
-        <div class="relative overflow-hidden rounded-[2rem] bg-(--cb-surface-strong) shadow-[0_28px_58px_rgba(22,26,50,0.08)]">
-            <div class="h-[18rem] sm:h-[24rem]">
+        <div class="relative overflow-hidden rounded-4xl bg-(--cb-surface-strong) shadow-[0_28px_58px_rgba(22,26,50,0.08)]">
+            <div class="h-72 sm:h-96">
                 @if ($store->cover_url)
                     <img src="{{ $store->cover_url }}" alt="{{ $store->name }}" class="h-full w-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[rgba(22,26,50,0.5)] via-transparent to-transparent"></div>
+                    <div class="absolute inset-0 bg-linear-to-t from-[rgba(22,26,50,0.5)] via-transparent to-transparent"></div>
                 @else
-                    <div class="h-full w-full bg-[radial-gradient(circle_at_top_left,_rgba(177,240,206,0.65),_transparent_38%),linear-gradient(135deg,_rgba(15,82,56,0.96),_rgba(45,106,79,0.85))]"></div>
+                    <div class="h-full w-full bg-[radial-gradient(circle_at_top_left,rgba(177,240,206,0.65),transparent_38%),linear-gradient(135deg,rgba(15,82,56,0.96),rgba(45,106,79,0.85))]"></div>
                 @endif
             </div>
         </div>
 
-        <div class="relative z-10 mt-[-3.5rem] grid gap-8 lg:grid-cols-[minmax(0,1.9fr)_360px] lg:items-start">
+        <div class="relative z-10 -mt-14 grid gap-8 lg:grid-cols-[minmax(0,1.9fr)_360px] lg:items-start">
             <div>
                 <div class="flex flex-col gap-6 rounded-[1.8rem] bg-white/95 p-6 shadow-[0_22px_48px_rgba(22,26,50,0.08)] backdrop-blur sm:flex-row sm:items-end">
                     <div class="shrink-0">
@@ -75,7 +75,7 @@
                     <h2 class="cb-subheading">Nuestra historia</h2>
                     <div class="cb-prose mt-5 text-lg">
                         @if ($store->description)
-                            {!! $store->description !!}
+                            <p>{!! nl2br(e($store->description)) !!}</p>
                         @else
                             <p>
                                 Este emprendimiento local ya forma parte de la comunidad de CB Tiendas y pronto compartirá más detalles sobre su propuesta de valor.
@@ -125,7 +125,7 @@
                         <span>{{ $store->address ?: 'Coronel Bogado, Itapúa' }}</span>
                     </div>
 
-                    <div class="mt-5 overflow-hidden rounded-[1.5rem] bg-[radial-gradient(circle_at_top,_rgba(212,227,255,0.9),_transparent_42%),linear-gradient(135deg,_rgba(222,224,255,0.95),_rgba(244,242,255,0.92))] p-6">
+                    <div class="mt-5 overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top,rgba(212,227,255,0.9),transparent_42%),linear-gradient(135deg,rgba(222,224,255,0.95),rgba(244,242,255,0.92))] p-6">
                         <div class="rounded-[1.25rem] border border-white/80 bg-white/55 p-5 backdrop-blur-sm">
                             <p class="text-sm leading-7 text-(--cb-muted)">
                                 Ubicación referencial del negocio dentro del directorio público.

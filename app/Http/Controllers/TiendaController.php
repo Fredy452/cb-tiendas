@@ -110,7 +110,9 @@ class TiendaController extends Controller
                 Rule::exists('categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
             ],
             'phone' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:1200'],
+            'description' => ['required', 'string', 'max:1200', 'not_regex:/[<>]/'],
+        ], [
+            'description.not_regex' => 'La descripción solo puede contener texto plano, sin etiquetas HTML.',
         ]);
 
         $store = Store::query()->create([
@@ -118,8 +120,7 @@ class TiendaController extends Controller
             'slug' => $this->generateStoreSlug($validated['name']),
             'description' => $validated['description'],
             'phone' => $validated['phone'],
-            'status' => 'active',
-            'approval_status' => 'pending',
+            'status' => 'pending',
         ]);
 
         $store->categories()->attach($validated['category_id']);

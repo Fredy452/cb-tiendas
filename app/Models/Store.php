@@ -32,7 +32,6 @@ class Store extends Model
         'is_featured',
         'latitude',
         'longitude',
-        'approval_status',
         'approval_date',
         'approval_user_id',
     ];
@@ -70,12 +69,13 @@ class Store extends Model
         return $this->resolveMediaUrl($this->logo_path);
     }
 
-    public function getApprovalStatusBadgeColor(): string
+    public function getStatusBadgeColor(): string
     {
-        return match ($this->approval_status) {
+        return match ($this->status) {
             'pending' => 'warning',
             'approved' => 'success',
             'rejected' => 'danger',
+            'inactive' => 'gray',
             default => 'secondary',
         };
     }
