@@ -70,6 +70,24 @@ class StoreInfolist
                         ->placeholder('-')
                         ->url(fn (?string $state): ?string => filled($state) ? $state : null)
                         ->openUrlInNewTab(),
+
+                    TextEntry::make('facebook_url')
+                        ->label('Facebook')
+                        ->placeholder('-')
+                        ->url(fn (?string $state): ?string => filled($state) ? $state : null)
+                        ->openUrlInNewTab(),
+
+                    TextEntry::make('instagram_url')
+                        ->label('Instagram')
+                        ->placeholder('-')
+                        ->url(fn (?string $state): ?string => filled($state) ? $state : null)
+                        ->openUrlInNewTab(),
+
+                    TextEntry::make('tiktok_url')
+                        ->label('TikTok')
+                        ->placeholder('-')
+                        ->url(fn (?string $state): ?string => filled($state) ? $state : null)
+                        ->openUrlInNewTab(),
                 ])->columnSpan([
                     'default' => 1,
                     'lg' => 2,
