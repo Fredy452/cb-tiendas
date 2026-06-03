@@ -74,6 +74,18 @@ class StoreForm
                                 TextInput::make('website')
                                     ->label('Sitio web')
                                     ->url(),
+
+                                TextInput::make('facebook_url')
+                                    ->label('Facebook')
+                                    ->url(),
+
+                                TextInput::make('instagram_url')
+                                    ->label('Instagram')
+                                    ->url(),
+
+                                TextInput::make('tiktok_url')
+                                    ->label('TikTok')
+                                    ->url(),
                             ])
                             ->columns(2),
                 Section::make('Imagenes')
