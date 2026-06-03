@@ -102,68 +102,164 @@
                     </div>
                 @endif
 
-                <form action="{{ route('emprendimientos.store') }}" method="POST" class="mt-8 space-y-6">
+                <form action="{{ route('emprendimientos.store') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-8">
                     @csrf
 
-                    <div>
-                        <label for="name" class="mb-2 block text-sm font-semibold text-(--cb-text)">Nombre del negocio</label>
-                        <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela">
-                    </div>
+                    <fieldset class="space-y-6">
+                        <legend class="sr-only">Datos principales del emprendimiento</legend>
 
-                    <div class="grid gap-6 sm:grid-cols-2">
                         <div>
-                            <label for="category_id" class="mb-2 block text-sm font-semibold text-(--cb-text)">Rubro / Categoría</label>
-                            <div class="relative" data-category-combobox>
-                                <select id="category_id" name="category_id" class="cb-input" data-category-native>
-                                    <option value="">Seleccioná una categoría</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" @selected($selectedCategoryId === (string) $category->id)>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            <label for="name" class="mb-2 block text-sm font-semibold text-(--cb-text)">Nombre del negocio</label>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela">
+                        </div>
 
-                                <div class="hidden" data-category-enhanced>
-                                    <button type="button" class="cb-input flex items-center justify-between gap-3 text-left" data-category-toggle aria-haspopup="listbox" aria-expanded="false">
-                                        <span class="truncate {{ $selectedCategory ? 'text-(--cb-text)' : 'text-(--cb-outline)' }}" data-category-current>
-                                            {{ $selectedCategory?->name ?? 'Seleccioná una categoría' }}
-                                        </span>
-                                        <span class="material-symbols-outlined text-[20px] text-(--cb-outline)">expand_more</span>
-                                    </button>
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="category_id" class="mb-2 block text-sm font-semibold text-(--cb-text)">Rubro / Categoría</label>
+                                <div class="relative" data-category-combobox>
+                                    <select id="category_id" name="category_id" class="cb-input" data-category-native>
+                                        <option value="">Seleccioná una categoría</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" @selected($selectedCategoryId === (string) $category->id)>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
 
-                                    <div class="absolute z-30 mt-2 hidden w-full rounded-2xl border border-[rgba(222,224,255,0.95)] bg-white p-2 shadow-[0_20px_34px_rgba(22,26,50,0.12)]" data-category-panel>
-                                        <label for="category-search" class="sr-only">Buscar categoría</label>
-                                        <div class="flex items-center gap-2 rounded-xl bg-(--cb-surface-soft) px-3 py-2 text-(--cb-outline)">
-                                            <span class="material-symbols-outlined text-[20px]">search</span>
-                                            <input id="category-search" type="search" class="w-full border-0 bg-transparent p-0 text-sm text-(--cb-text) outline-none placeholder:text-(--cb-outline) focus:ring-0" placeholder="Buscar categoría..." autocomplete="off" data-category-search>
+                                    <div class="hidden" data-category-enhanced>
+                                        <button type="button" class="cb-input flex items-center justify-between gap-3 text-left" data-category-toggle aria-haspopup="listbox" aria-expanded="false">
+                                            <span class="truncate {{ $selectedCategory ? 'text-(--cb-text)' : 'text-(--cb-outline)' }}" data-category-current>
+                                                {{ $selectedCategory?->name ?? 'Seleccioná una categoría' }}
+                                            </span>
+                                            <span class="material-symbols-outlined text-[20px] text-(--cb-outline)">expand_more</span>
+                                        </button>
+
+                                        <div class="absolute z-30 mt-2 hidden w-full rounded-2xl border border-[rgba(222,224,255,0.95)] bg-white p-2 shadow-[0_20px_34px_rgba(22,26,50,0.12)]" data-category-panel>
+                                            <label for="category-search" class="sr-only">Buscar categoría</label>
+                                            <div class="flex items-center gap-2 rounded-xl bg-(--cb-surface-soft) px-3 py-2 text-(--cb-outline)">
+                                                <span class="material-symbols-outlined text-[20px]">search</span>
+                                                <input id="category-search" type="search" class="w-full border-0 bg-transparent p-0 text-sm text-(--cb-text) outline-none placeholder:text-(--cb-outline) focus:ring-0" placeholder="Buscar categoría..." autocomplete="off" data-category-search>
+                                            </div>
+
+                                            <ul class="mt-2 max-h-60 space-y-1 overflow-auto pr-1" role="listbox" data-category-list>
+                                                @foreach ($categories as $category)
+                                                    <li>
+                                                        <button type="button" class="w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-(--cb-text) transition hover:bg-(--cb-surface-soft) focus:bg-(--cb-surface-soft) focus:outline-none" role="option" data-category-option data-value="{{ $category->id }}" data-label="{{ $category->name }}" aria-selected="{{ $selectedCategoryId === (string) $category->id ? 'true' : 'false' }}">
+                                                            {{ $category->name }}
+                                                        </button>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+
+                                            <p class="hidden px-3 py-4 text-sm text-(--cb-muted)" data-category-empty>No encontramos categorías con ese nombre.</p>
                                         </div>
-
-                                        <ul class="mt-2 max-h-60 space-y-1 overflow-auto pr-1" role="listbox" data-category-list>
-                                            @foreach ($categories as $category)
-                                                <li>
-                                                    <button type="button" class="w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-(--cb-text) transition hover:bg-(--cb-surface-soft) focus:bg-(--cb-surface-soft) focus:outline-none" role="option" data-category-option data-value="{{ $category->id }}" data-label="{{ $category->name }}" aria-selected="{{ $selectedCategoryId === (string) $category->id ? 'true' : 'false' }}">
-                                                        {{ $category->name }}
-                                                    </button>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-
-                                        <p class="hidden px-3 py-4 text-sm text-(--cb-muted)" data-category-empty>No encontramos categorías con ese nombre.</p>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label for="phone" class="mb-2 block text-sm font-semibold text-(--cb-text)">Teléfono de contacto (WhatsApp)</label>
+                                <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX">
                             </div>
                         </div>
 
                         <div>
-                            <label for="phone" class="mb-2 block text-sm font-semibold text-(--cb-text)">Teléfono de Contacto (WhatsApp)</label>
-                            <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX">
+                            <label for="description" class="mb-2 block text-sm font-semibold text-(--cb-text)">Breve descripción de lo que hacés</label>
+                            <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés...">{{ old('description') }}</textarea>
                         </div>
-                    </div>
+                    </fieldset>
 
-                    <div>
-                        <label for="description" class="mb-2 block text-sm font-semibold text-(--cb-text)">Breve descripción de lo que hacés</label>
-                        <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés...">{{ old('description') }}</textarea>
-                    </div>
+                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8">
+                        <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
+                            <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">contact_mail</span>
+                            Contacto y redes
+                        </legend>
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="email" class="mb-2 block text-sm font-semibold text-(--cb-text)">Correo electrónico</label>
+                                <input id="email" name="email" type="email" value="{{ old('email') }}" class="cb-input" placeholder="Ej: contacto@negocio.com">
+                            </div>
+
+                            <div>
+                                <label for="website" class="mb-2 block text-sm font-semibold text-(--cb-text)">Sitio web o catálogo</label>
+                                <input id="website" name="website" type="url" value="{{ old('website') }}" class="cb-input" placeholder="https://tu-negocio.com">
+                            </div>
+                        </div>
+
+                        <div class="grid gap-6 lg:grid-cols-3">
+                            <div>
+                                <label for="facebook_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">Facebook</label>
+                                <input id="facebook_url" name="facebook_url" type="url" value="{{ old('facebook_url') }}" class="cb-input" placeholder="https://facebook.com/tu-negocio">
+                            </div>
+
+                            <div>
+                                <label for="instagram_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">Instagram</label>
+                                <input id="instagram_url" name="instagram_url" type="url" value="{{ old('instagram_url') }}" class="cb-input" placeholder="https://instagram.com/tu-negocio">
+                            </div>
+
+                            <div>
+                                <label for="tiktok_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">TikTok</label>
+                                <input id="tiktok_url" name="tiktok_url" type="url" value="{{ old('tiktok_url') }}" class="cb-input" placeholder="https://tiktok.com/@tu-negocio">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8" data-location-picker>
+                        <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
+                            <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">location_on</span>
+                            Ubicación
+                        </legend>
+
+                        <div>
+                            <label for="address" class="mb-2 block text-sm font-semibold text-(--cb-text)">Dirección o zona de referencia</label>
+                            <input id="address" name="address" type="text" value="{{ old('address') }}" class="cb-input" placeholder="Ej: Centro, Coronel Bogado">
+                        </div>
+
+                        <div class="grid gap-6 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                            <div>
+                                <label for="latitude" class="mb-2 block text-sm font-semibold text-(--cb-text)">Latitud</label>
+                                <input id="latitude" name="latitude" type="text" value="{{ old('latitude') }}" class="cb-input" placeholder="-27.160530" data-location-latitude>
+                            </div>
+
+                            <div>
+                                <label for="longitude" class="mb-2 block text-sm font-semibold text-(--cb-text)">Longitud</label>
+                                <input id="longitude" name="longitude" type="text" value="{{ old('longitude') }}" class="cb-input" placeholder="-56.241407" data-location-longitude>
+                            </div>
+
+                            <button type="button" class="cb-button-secondary rounded-2xl px-4 py-3 text-sm" data-location-button>
+                                <span class="material-symbols-outlined text-[20px]">my_location</span>
+                                Usar mi ubicación
+                            </button>
+                        </div>
+
+                        <p class="hidden text-sm leading-6 text-(--cb-muted)" data-location-status></p>
+                    </fieldset>
+
+                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8">
+                        <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
+                            <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">photo_camera</span>
+                            Imagen del emprendimiento
+                        </legend>
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="logo" class="mb-2 block text-sm font-semibold text-(--cb-text)">Logo</label>
+                                <input id="logo" name="logo" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-primary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-primary)" data-image-input data-preview-target="logo-preview">
+                                <div id="logo-preview" class="mt-3 hidden h-24 w-24 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft)" data-image-preview>
+                                    <img src="" alt="Vista previa del logo" class="h-full w-full object-cover" data-preview-image>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="cover_image" class="mb-2 block text-sm font-semibold text-(--cb-text)">Imagen de portada</label>
+                                <input id="cover_image" name="cover_image" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-secondary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-secondary)" data-image-input data-preview-target="cover-preview">
+                                <div id="cover-preview" class="mt-3 hidden h-48 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft) sm:h-56" data-image-preview>
+                                    <img src="" alt="Vista previa de la portada" class="h-full w-full object-cover" data-preview-image>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
 
                     <button type="submit" class="cb-button-primary w-full rounded-lg py-4 text-base">
                         Registrar mi Emprendimiento

@@ -9,8 +9,20 @@
 @section('content')
     @php
         $primaryCategory = $store->categories->first();
-        $mapsQuery = trim(($store->address ?: $store->name) . ', Coronel Bogado, Paraguay');
+        $hasCoordinates = filled($store->latitude) && filled($store->longitude);
+        $mapsQuery = $hasCoordinates
+            ? $store->latitude . ',' . $store->longitude
+            : trim(($store->address ?: $store->name) . ', Coronel Bogado, Paraguay');
         $mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapsQuery);
+        $socialLinks = collect([
+            ['label' => 'Facebook', 'url' => $store->facebook_url],
+            ['label' => 'Instagram', 'url' => $store->instagram_url],
+            ['label' => 'TikTok', 'url' => $store->tiktok_url],
+        ])->filter(fn ($link) => filled($link['url']))
+            ->map(fn ($link) => [
+                'label' => $link['label'],
+                'url' => Illuminate\Support\Str::startsWith($link['url'], ['http://', 'https://']) ? $link['url'] : 'https://' . $link['url'],
+            ]);
         $detailInitials = collect(preg_split('/\s+/', trim($store->name) ?: 'N L'))
             ->filter()
             ->take(2)
@@ -102,6 +114,18 @@
                             <span class="material-symbols-outlined text-(--cb-primary)">language</span>
                             <span>{{ $store->website ?: 'Sin sitio web publicado' }}</span>
                         </li>
+                        @if ($socialLinks->isNotEmpty())
+                            <li class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-(--cb-primary)">share</span>
+                                <span class="flex flex-wrap gap-2">
+                                    @foreach ($socialLinks as $socialLink)
+                                        <a href="{{ $socialLink['url'] }}" target="_blank" rel="noreferrer" class="font-semibold text-(--cb-secondary) transition hover:underline">
+                                            {{ $socialLink['label'] }}
+                                        </a>
+                                    @endforeach
+                                </span>
+                            </li>
+                        @endif
                     </ul>
 
                     <div class="mt-6 flex flex-col gap-3 border-t border-[rgba(222,224,255,0.85)] pt-5">
@@ -111,7 +135,9 @@
 
                         @if ($store->email)
                             <a href="mailto:{{ $store->email }}" class="cb-button-secondary w-full rounded-2xl">Enviar mensaje</a>
-                        @elseif ($store->website)
+                        @endif
+
+                        @if ($store->website)
                             <a href="{{ Illuminate\Support\Str::startsWith($store->website, ['http://', 'https://']) ? $store->website : 'https://' . $store->website }}" target="_blank" rel="noreferrer" class="cb-button-secondary w-full rounded-2xl">
                                 Visitar sitio web
                             </a>
@@ -135,6 +161,12 @@
                                 Abrir en mapas
                                 <span class="material-symbols-outlined text-[18px]">north_east</span>
                             </a>
+
+                            @if ($hasCoordinates)
+                                <p class="mt-3 text-xs text-(--cb-outline)">
+                                    {{ $store->latitude }}, {{ $store->longitude }}
+                                </p>
+                            @endif
                         </div>
                     </div>
                 </div>

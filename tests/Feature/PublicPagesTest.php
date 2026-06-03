@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PublicPagesTest extends TestCase
@@ -65,6 +67,8 @@ class PublicPagesTest extends TestCase
 
     public function test_registration_creates_a_pending_store_and_attaches_the_category(): void
     {
+        Storage::fake('public');
+
         $category = Category::query()->create([
             'name' => 'Gastronomía',
             'slug' => 'gastronomia',
@@ -77,7 +81,17 @@ class PublicPagesTest extends TestCase
             'name' => 'Panaderia La Abuela',
             'category_id' => $category->id,
             'phone' => '0981 000 111',
+            'email' => 'contacto@laabuela.test',
+            'website' => 'laabuela.test/catalogo',
+            'facebook_url' => 'facebook.com/panaderialaabuela',
+            'instagram_url' => 'instagram.com/panaderialaabuela',
+            'tiktok_url' => 'tiktok.com/@panaderialaabuela',
+            'address' => 'Centro, Coronel Bogado',
+            'latitude' => '-27.160530',
+            'longitude' => '-56.241407',
             'description' => 'Panes, chipas y facturas recien horneadas.',
+            'logo' => UploadedFile::fake()->image('logo.png', 400, 400),
+            'cover_image' => UploadedFile::fake()->image('portada.jpg', 1200, 675),
         ]);
 
         $response
@@ -91,8 +105,21 @@ class PublicPagesTest extends TestCase
         $this->assertDatabaseHas('stores', [
             'name' => 'Panaderia La Abuela',
             'slug' => 'panaderia-la-abuela',
+            'email' => 'contacto@laabuela.test',
+            'website' => 'https://laabuela.test/catalogo',
+            'facebook_url' => 'https://facebook.com/panaderialaabuela',
+            'instagram_url' => 'https://instagram.com/panaderialaabuela',
+            'tiktok_url' => 'https://tiktok.com/@panaderialaabuela',
+            'address' => 'Centro, Coronel Bogado',
+            'latitude' => '-27.160530',
+            'longitude' => '-56.241407',
             'status' => 'pending',
         ]);
+
+        $this->assertNotNull($store->logo_path);
+        $this->assertNotNull($store->img_path);
+        $this->assertTrue(Storage::disk('public')->exists($store->logo_path));
+        $this->assertTrue(Storage::disk('public')->exists($store->img_path));
 
         $this->assertDatabaseHas('category_store', [
             'store_id' => $store->id,
@@ -114,6 +141,7 @@ class PublicPagesTest extends TestCase
             'name' => 'Intento con HTML',
             'category_id' => $category->id,
             'phone' => '0981 000 222',
+            'address' => 'Centro, Coronel Bogado',
             'description' => 'Texto normal <script>alert("xss")</script>',
         ]);
 
