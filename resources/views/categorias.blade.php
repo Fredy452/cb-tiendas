@@ -18,7 +18,7 @@
                 @include('partials.public.empty-state', [
                     'title' => 'Todavía no hay categorías publicadas',
                     'description' => 'En cuanto se activen nuevos rubros dentro del catálogo, aparecerán en esta sección.',
-                    'actionLabel' => 'Ver negocios',
+                    'actionLabel' => 'Ver tiendas',
                     'actionUrl' => route('tiendas.index'),
                 ])
             </div>
