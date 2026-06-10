@@ -45,7 +45,7 @@
         </p>
 
         <span class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-(--cb-primary)">
-            Ver negocios <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            Ver tiendas <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </span>
     </div>
 </a>
