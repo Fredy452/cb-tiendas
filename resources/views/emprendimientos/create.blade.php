@@ -6,7 +6,7 @@
 
 @section('content')
     @php
-        $heroImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBCa4lTc83jvrC6ZTSIWAg3cdOHFd3AgiIizbpMr0-DgLWzYs9dOHz8X1Fg5lVCLvCPdLWYe8FLl2hOuTXhZDqjxms-YmHv_OIz_kNHWFXlBXxx0eAM1C6aHfPbfp-RIgX1mf5-eiXlCrLQy19qDumy-iciQujHroC2nX2XOPrgNrOZOF8-2KpYAueh9XhMF88Vy9AbFrT4fDPIqnZ6b45XKuvCKuDP9KPvWCdy5Pkt49p51_rMbuYHvWvLdlbSlw6Wu3ebgcBtC-w';
+        $heroImageUrl = 'https://media.istockphoto.com/id/909998790/es/vector/concepto-de-compras-en-l%C3%ADnea.jpg?s=612x612&w=0&k=20&c=HYETIkYJ3yXgXbW0KtJ6tU8a4NdFBP6Ckz4szf8cRG8=';
         $selectedCategoryId = (string) old('category_id', '');
         $selectedCategory = $categories->first(fn ($category) => (string) $category->id === $selectedCategoryId);
     @endphp
