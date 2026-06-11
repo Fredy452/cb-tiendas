@@ -9,7 +9,7 @@
             <p class="cb-kicker mb-4">Rutas por rubro</p>
             <h1 class="cb-heading">Explorar por categorías</h1>
             <p class="mt-5 max-w-3xl text-lg leading-8 text-(--cb-muted)">
-                Descubrí la variedad de emprendimientos, productos y servicios que conforman nuestra comunidad. Encontrá exactamente lo que necesitás apoyando el comercio local.
+                Descubrí la variedad de emprendimientos, productos y servicios que conforman nuestra comunidad. Encontrá exactamente lo que necesitás apoyando el comercio en Coronel Bogado.
             </p>
         </div>
 
@@ -18,7 +18,7 @@
                 @include('partials.public.empty-state', [
                     'title' => 'Todavía no hay categorías publicadas',
                     'description' => 'En cuanto se activen nuevos rubros dentro del catálogo, aparecerán en esta sección.',
-                    'actionLabel' => 'Ver negocios',
+                    'actionLabel' => 'Ver tiendas',
                     'actionUrl' => route('tiendas.index'),
                 ])
             </div>
