@@ -4,7 +4,7 @@
         @php
             $configuredSiteName = (string) config('app.name', 'CB Tiendas');
             $siteName = $configuredSiteName === 'Laravel' ? 'CB Tiendas' : $configuredSiteName;
-            $defaultDescription = 'CB Tiendas, la plaza digital de Coronel Bogado para descubrir, apoyar y registrar emprendimientos locales.';
+            $defaultDescription = 'CB Tiendas, La tienda digital de Coronel Bogado para descubrir, apoyar y registrar emprendimientos locales.';
             $rawAppUrl = rtrim((string) config('app.url', ''), '/') ?: url('/');
             $appUrl = Illuminate\Support\Str::startsWith($rawAppUrl, ['http://', 'https://']) ? $rawAppUrl : 'http://' . ltrim($rawAppUrl, '/');
             $currentPath = request()->path();
