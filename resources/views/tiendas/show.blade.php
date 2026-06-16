@@ -5,6 +5,10 @@
 @section('canonical_url', route('tiendas.show', $store->slug ?: $store->getKey(), false))
 @section('meta_image', $store->cover_url ?: $store->logo_url ?: '')
 @section('meta_image_alt', 'Vista previa de ' . $store->name . ' en CB Tiendas')
+@push('head')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+@endpush
 
 @section('content')
     @php
@@ -62,11 +66,15 @@
                             <h1 class="cb-heading text-[2.6rem] leading-none">{{ $store->name }}</h1>
 
                             @if ($store->is_featured)
-                                <span class="cb-pill">
+                                <span class="cb-pill cursor-pointer">
                                     <span class="material-symbols-outlined text-[16px]">star</span>
                                     Negocio destacado
                                 </span>
                             @endif
+                            <span class="cb-pill cursor-pointer">
+                                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                Contador de visitas: {{ $store->views_count }}
+                            </span>
                         </div>
 
                         <div class="mt-4 flex flex-wrap gap-2">
@@ -93,6 +101,34 @@
                                 Este emprendimiento local ya forma parte de la comunidad de CB Tiendas y pronto compartirá más detalles sobre su propuesta de valor.
                             </p>
                         @endif
+                    </div>
+                </div>
+                <div class="cb-panel mt-6 p-7 sm:p-8">
+                    <h2 class="cb-subheading pb-5">Ubicación</h2>
+                    <div class="flex items-start gap-3 text-(--cb-muted)">
+                        <span class="material-symbols-outlined mt-0.5 text-(--cb-primary)">location_on</span>
+                        <span>{{ $store->address ?: 'Coronel Bogado, Itapúa' }}</span>
+                    </div>
+
+                    <div class="mt-5 overflow-hidden rounded-3xl">
+                        <div class="rounded-[1.25rem] border border-white/80 bg-white/55 backdrop-blur-sm">
+                            @if ($hasCoordinates)
+                                <div id="map" class="mt-4 h-48 w-full rounded-xl border border-white/50 shadow-inner z-10"></div>
+                            @endif
+
+                            <div class="flex items-center justify-between mt-4 flex-wrap gap-2">
+                                <a href="{{ $mapsUrl }}" target="_blank" rel="noreferrer" class="inline-flex items-center ml-2 gap-2 text-sm font-semibold text-(--cb-secondary) transition hover:underline">
+                                    Abrir en mapas
+                                    <span class="material-symbols-outlined text-[18px]">north_east</span>
+                                </a>
+
+                                @if ($hasCoordinates)
+                                    <p class="text-xs text-(--cb-outline)">
+                                        {{ $store->latitude }}, {{ $store->longitude }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,31 +181,7 @@
                     </div>
                 </div>
 
-                <div class="cb-panel overflow-hidden p-6">
-                    <div class="flex items-start gap-3 text-(--cb-muted)">
-                        <span class="material-symbols-outlined mt-0.5 text-(--cb-primary)">location_on</span>
-                        <span>{{ $store->address ?: 'Coronel Bogado, Itapúa' }}</span>
-                    </div>
 
-                    <div class="mt-5 overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_top,rgba(212,227,255,0.9),transparent_42%),linear-gradient(135deg,rgba(222,224,255,0.95),rgba(244,242,255,0.92))] p-6">
-                        <div class="rounded-[1.25rem] border border-white/80 bg-white/55 p-5 backdrop-blur-sm">
-                            <p class="text-sm leading-7 text-(--cb-muted)">
-                                Ubicación referencial del negocio dentro del directorio público.
-                            </p>
-
-                            <a href="{{ $mapsUrl }}" target="_blank" rel="noreferrer" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-(--cb-secondary) transition hover:underline">
-                                Abrir en mapas
-                                <span class="material-symbols-outlined text-[18px]">north_east</span>
-                            </a>
-
-                            @if ($hasCoordinates)
-                                <p class="mt-3 text-xs text-(--cb-outline)">
-                                    {{ $store->latitude }}, {{ $store->longitude }}
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -208,3 +220,30 @@
         </div>
     </section>
 @endsection
+@push('scripts')
+    @if ($hasCoordinates)
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // 1. Obtener las coordenadas del backend de Laravel de forma segura
+                const lat = {{ $store->latitude }};
+                const lng = {{ $store->longitude }};
+                const storeName = "{{ e($store->name ?? 'Tu Tienda') }}";
+
+                // 2. Inicializar el mapa centrado en la localización de la tienda (Zoom 15 es ideal)
+                const map = L.map('map').setView([lat, lng], 15);
+
+                // 3. Cargar las capas de diseño (Tiles) desde OpenStreetMap de forma gratuita
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // 4. Agregar el marcador visual en el punto exacto
+                const marker = L.marker([lat, lng]).addTo(map);
+
+                // 5. Opcional: Un globo emergente (Popup) al hacer clic en el marcador
+                marker.bindPopup(`<b>${storeName}</b><br>¡Te esperamos aquí!`);
+            });
+        </script>
+    @endif
+@endpush
