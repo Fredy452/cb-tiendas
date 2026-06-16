@@ -171,6 +171,14 @@ class TiendaController extends Controller
                 }
             })
             ->firstOrFail();
+            // Evita el spam de visitas usando una clave única en caché por IP
+            $cacheKey = 'viewed_store_' . $store->getKey() . '_' . request()->ip();
+
+            if (! cache()->has($cacheKey)) {
+                $store->increment('views_count');
+                // Guarda en caché que este usuario ya visitó la tienda durante los próximos 60 minutos
+                cache()->put($cacheKey, true, now()->addHours(1));
+            }
         Log::info('Mostrando tienda al público', ['store_id' => $store->getKey(), 'store_name' => $store->name]);
         $relatedStoresQuery = Store::query()
             ->publicVisible()

@@ -35,6 +35,7 @@ class Store extends Model
         'is_featured',
         'latitude',
         'longitude',
+        'views_count',
         'approval_date',
         'approval_user_id',
     ];
