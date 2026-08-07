@@ -67,7 +67,7 @@ class TiendaController extends Controller
             })
             ->orderByDesc('is_featured')
             ->latest()
-            ->paginate(9)
+            ->paginate(6)
             ->withQueryString();
 
         $categories = $this->publicCategoriesWithCounts();
