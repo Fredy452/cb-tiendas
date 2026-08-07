@@ -84,7 +84,15 @@ class TiendaController extends Controller
 
     public function categorias(): View
     {
-        $categories = $this->publicCategoriesWithCounts();
+        $categories = Category::query()
+            ->active()
+            ->withCount([
+                'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
+            ])
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->paginate(6)
+            ->withQueryString();
 
         return view('categorias', compact('categories'));
     }
