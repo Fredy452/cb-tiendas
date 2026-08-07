@@ -1,4 +1,5 @@
 import './bootstrap';
+import EmblaCarousel from 'embla-carousel';
 
 const normalizeSearchText = (value) => value
 	.toLowerCase()
@@ -197,10 +198,53 @@ const setupLocationPickers = () => {
 	});
 };
 
+const setupFeaturedCarousels = () => {
+	document.querySelectorAll('[data-featured-carousel]').forEach((carousel) => {
+		if (carousel.dataset.ready === 'true') {
+			return;
+		}
+
+		const viewport = carousel.querySelector('[data-featured-viewport]');
+		const section = carousel.closest('[data-featured-section]');
+		const prevButton = section?.querySelector('[data-featured-prev]');
+		const nextButton = section?.querySelector('[data-featured-next]');
+
+		if (! viewport) {
+			return;
+		}
+
+		carousel.dataset.ready = 'true';
+		const embla = EmblaCarousel(viewport, {
+			align: 'start',
+			containScroll: 'trimSnaps',
+			dragFree: false,
+			loop: true,
+			slidesToScroll: 1,
+		});
+
+		const updateButtons = () => {
+			if (! prevButton || ! nextButton) {
+				return;
+			}
+
+			prevButton.disabled = ! embla.canScrollPrev();
+			nextButton.disabled = ! embla.canScrollNext();
+		};
+
+		prevButton?.addEventListener('click', () => embla.scrollPrev());
+		nextButton?.addEventListener('click', () => embla.scrollNext());
+
+		embla.on('select', updateButtons);
+		embla.on('reInit', updateButtons);
+		updateButtons();
+	});
+};
+
 const setupPublicInteractions = () => {
 	setupCategoryComboboxes();
 	setupImagePreviews();
 	setupLocationPickers();
+	setupFeaturedCarousels();
 };
 
 if (document.readyState === 'loading') {
