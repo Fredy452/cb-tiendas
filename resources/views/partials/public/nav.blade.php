@@ -26,7 +26,7 @@
                 @foreach ($links as $link)
                     <a
                         href="{{ $link['route'] }}"
-                        class="border-b-2 pb-1 text-sm font-semibold transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
+                        class="border-b-2 pb-1 text-lg font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
                     >
                         {{ $link['label'] }}
                     </a>
@@ -52,7 +52,7 @@
                         </a>
                     @endforeach
 
-                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-2 w-full rounded-2xl">Registrar emprendimiento</a>
+                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-2 w-full">Registrar emprendimiento</a>
                 </div>
             </details>
         @endif
