@@ -272,6 +272,57 @@ const setupFeaturedCarousels = () => {
 	});
 };
 
+const setupRelatedCarousels = () => {
+	document.querySelectorAll('[data-related-carousel]').forEach((carousel) => {
+		if (carousel.dataset.ready === 'true') {
+			return;
+		}
+
+		const viewport = carousel.querySelector('[data-related-viewport]');
+
+		if (! viewport) {
+			return;
+		}
+
+		carousel.dataset.ready = 'true';
+		const embla = EmblaCarousel(viewport, {
+			align: 'start',
+			containScroll: 'trimSnaps',
+			dragFree: false,
+			loop: true,
+			slidesToScroll: 1,
+		});
+
+		let autoplayTimer = null;
+		const autoplayDelay = 4000;
+
+		const stopAutoplay = () => {
+			if (autoplayTimer) {
+				window.clearInterval(autoplayTimer);
+				autoplayTimer = null;
+			}
+		};
+
+		const startAutoplay = () => {
+			if (autoplayTimer) {
+				return;
+			}
+
+			autoplayTimer = window.setInterval(() => {
+				embla.scrollNext();
+			}, autoplayDelay);
+		};
+
+		startAutoplay();
+
+		viewport.addEventListener('mouseenter', stopAutoplay);
+		viewport.addEventListener('mouseleave', startAutoplay);
+		embla.on('pointerDown', stopAutoplay);
+		embla.on('pointerUp', startAutoplay);
+		embla.on('destroy', stopAutoplay);
+	});
+};
+
 const setupMobileCategoryPanels = () => {
 	document.querySelectorAll('[data-mobile-categories-toggle]').forEach((toggle) => {
 		if (toggle.dataset.ready === 'true') {
@@ -310,6 +361,7 @@ const setupPublicInteractions = () => {
 	setupImagePreviews();
 	setupLocationPickers();
 	setupFeaturedCarousels();
+	setupRelatedCarousels();
 	setupMobileCategoryPanels();
 };
 

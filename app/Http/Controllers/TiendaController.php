@@ -202,7 +202,7 @@ class TiendaController extends Controller
         $relatedStores = $relatedStoresQuery
             ->orderByDesc('is_featured')
             ->latest()
-            ->take(3)
+            ->take(8)
             ->get();
 
         return view('tiendas.show', compact('store', 'relatedStores'));
