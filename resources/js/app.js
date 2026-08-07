@@ -222,6 +222,38 @@ const setupFeaturedCarousels = () => {
 			slidesToScroll: 1,
 		});
 
+		let autoplayTimer = null;
+		const autoplayDelay = 4000;
+
+		const stopAutoplay = () => {
+			if (autoplayTimer) {
+				window.clearInterval(autoplayTimer);
+				autoplayTimer = null;
+			}
+		};
+
+		const startAutoplay = () => {
+			if (autoplayTimer) {
+				return;
+			}
+
+			autoplayTimer = window.setInterval(() => {
+				embla.scrollNext();
+			}, autoplayDelay);
+		};
+
+		startAutoplay();
+
+		viewport.addEventListener('mouseenter', stopAutoplay);
+		viewport.addEventListener('mouseleave', startAutoplay);
+		prevButton?.addEventListener('mouseenter', stopAutoplay);
+		prevButton?.addEventListener('mouseleave', startAutoplay);
+		nextButton?.addEventListener('mouseenter', stopAutoplay);
+		nextButton?.addEventListener('mouseleave', startAutoplay);
+		embla.on('pointerDown', stopAutoplay);
+		embla.on('pointerUp', startAutoplay);
+		embla.on('destroy', stopAutoplay);
+
 		const updateButtons = () => {
 			if (! prevButton || ! nextButton) {
 				return;
