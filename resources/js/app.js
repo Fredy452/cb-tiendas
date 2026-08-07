@@ -272,11 +272,45 @@ const setupFeaturedCarousels = () => {
 	});
 };
 
+const setupMobileCategoryPanels = () => {
+	document.querySelectorAll('[data-mobile-categories-toggle]').forEach((toggle) => {
+		if (toggle.dataset.ready === 'true') {
+			return;
+		}
+
+		const panelId = toggle.getAttribute('aria-controls');
+		const panel = panelId ? document.getElementById(panelId) : null;
+		const icon = toggle.querySelector('[data-mobile-categories-icon]');
+
+		if (! panel) {
+			return;
+		}
+
+		const setExpanded = (expanded) => {
+			toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+			panel.classList.toggle('hidden', ! expanded);
+
+			if (icon) {
+				icon.textContent = expanded ? 'expand_less' : 'expand_more';
+			}
+		};
+
+		toggle.dataset.ready = 'true';
+		setExpanded(false);
+
+		toggle.addEventListener('click', () => {
+			const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+			setExpanded(! isExpanded);
+		});
+	});
+};
+
 const setupPublicInteractions = () => {
 	setupCategoryComboboxes();
 	setupImagePreviews();
 	setupLocationPickers();
 	setupFeaturedCarousels();
+	setupMobileCategoryPanels();
 };
 
 if (document.readyState === 'loading') {
