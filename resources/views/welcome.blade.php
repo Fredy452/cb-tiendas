@@ -12,7 +12,7 @@
                 <h1 class="cb-display mx-auto max-w-4xl">
                     Descubre y apoya lo nuestro.
                 </h1>
-                <p class="mx-auto mt-6 max-w-2xl font-medium text-lg leading-8 text-(--cb-muted) sm:text-xl">
+                <p class="mx-auto mt-6 max-w-2xl font-light text-lg leading-8 sm:text-xl">
                     El directorio oficial de emprendedores de Coronel Bogado. Conectando talento local con nuestra comunidad.
                 </p>
 
