@@ -23,7 +23,7 @@ class TiendaController extends Controller
             ->with('categories')
             ->orderByDesc('is_featured')
             ->latest()
-            ->take(3)
+            ->take(6)
             ->get();
 
         $categories = $this->publicCategoriesWithCounts()->take(6);
