@@ -1,18 +1,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('../fonts/cera-pro/CeraPro-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Cera Pro', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 :root {
-    --cb-font-display: 'Plus Jakarta Sans', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+    --cb-font-display: 'Cera Pro', 'Plus Jakarta Sans', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
     --cb-surface: #fbf8ff;
     --cb-surface-soft: #f4f2ff;
     --cb-surface-panel: #ffffff;
@@ -24,7 +72,7 @@
     --cb-primary: #0f5238;
     --cb-primary-strong: #2d6a4f;
     --cb-primary-soft: #b1f0ce;
-    --cb-secondary: #005fad;
+    --cb-secondary: #005FAD;
     --cb-secondary-soft: #d4e3ff;
 }
 
@@ -33,10 +81,6 @@
         scroll-behavior: smooth;
     }
 
-    body {
-        background-color: var(--cb-surface);
-        color: var(--cb-text);
-    }
 
     ::selection {
         background-color: rgba(15, 82, 56, 0.18);
@@ -64,7 +108,7 @@
     }
 
     .cb-panel {
-        @apply rounded-[1.5rem] border bg-white;
+        @apply rounded-xl border bg-white;
         border-color: rgba(222, 224, 255, 0.9);
         box-shadow: 0 18px 38px rgba(22, 26, 50, 0.05);
     }
@@ -96,7 +140,7 @@
     .cb-button-primary,
     .cb-button-secondary,
     .cb-button-ghost {
-        @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition duration-200;
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition duration-200;
     }
 
     .cb-button-primary {
@@ -110,9 +154,9 @@
     }
 
     .cb-button-secondary {
-        border: 1px solid rgba(0, 95, 173, 0.28);
+        border: 1.7px solid #005FAD;
         color: var(--cb-secondary);
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: #F0EFFF;
     }
 
     .cb-button-secondary:hover {
@@ -120,9 +164,10 @@
     }
 
     .cb-button-ghost {
-        border: 1px solid rgba(112, 121, 115, 0.22);
+        border: 1.7px solid #0E5138;
         color: var(--cb-text);
-        background-color: rgba(255, 255, 255, 0.65);
+        background-color: #F0EFFF;
+        color: #0E5138;
     }
 
     .cb-button-ghost:hover {
@@ -203,5 +248,93 @@
     .cb-prose :where(hr) {
         border-color: rgba(222, 224, 255, 0.95);
         margin: 1.5rem 0;
+    }
+
+    .cb-featured-carousel {
+        position: relative;
+    }
+
+    .cb-featured-viewport {
+        overflow: hidden;
+    }
+
+    .cb-featured-track {
+        display: flex;
+        margin-left: -1rem;
+        padding: 0.75rem 0 1.25rem;
+    }
+
+    .cb-featured-slide {
+        flex: 0 0 100%;
+        min-width: 0;
+        padding-left: 1rem;
+    }
+
+    .cb-featured-card {
+        display: block;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 2rem;
+        border: 1px solid rgba(13, 23, 42, 0.08);
+        background-color: #ffffff;
+        transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .cb-featured-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .cb-featured-media {
+        position: relative;
+        height: 13.25rem;
+        overflow: hidden;
+        background: radial-gradient(circle at 20% 20%, rgba(149, 212, 179, 0.8), rgba(15, 82, 56, 0.9));
+    }
+
+    .cb-featured-category {
+        position: absolute;
+        left: 0.95rem;
+        top: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        background-color: #0E5138;
+        padding: 0.35rem 0.9rem;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #FFFFFF;
+    }
+
+    .cb-featured-body {
+        display: flex;
+        height: calc(100% - 13.25rem);
+        flex-direction: column;
+        padding: 1.55rem 1.45rem 1.7rem;
+    }
+
+    [data-featured-prev]:disabled,
+    [data-featured-next]:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    @media (min-width: 640px) {
+        .cb-featured-slide {
+            flex-basis: 78%;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .cb-featured-slide {
+            flex-basis: 64%;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .cb-featured-slide {
+            flex-basis: 50%;
+        }
     }
 }
