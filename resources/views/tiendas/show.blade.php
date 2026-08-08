@@ -8,6 +8,7 @@
 @push('head')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endpush
 
 @section('content')
@@ -18,15 +19,24 @@
             ? $store->latitude . ',' . $store->longitude
             : trim(($store->address ?: $store->name) . ', Coronel Bogado, Paraguay');
         $mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($mapsQuery);
+        $telPhone = $store->phone ? preg_replace('/[^\d+]/', '', $store->phone) : null;
         $socialLinks = collect([
-            ['label' => 'Facebook', 'url' => $store->facebook_url],
-            ['label' => 'Instagram', 'url' => $store->instagram_url],
-            ['label' => 'TikTok', 'url' => $store->tiktok_url],
+            ['platform' => 'whatsapp', 'label' => 'WhatsApp', 'url' => $waPhone ? 'https://wa.me/' . $waPhone . '?text=' . urlencode($waMessage) : null],
+            ['platform' => 'facebook', 'label' => 'Facebook', 'url' => $store->facebook_url],
+            ['platform' => 'instagram', 'label' => 'Instagram', 'url' => $store->instagram_url],
+            ['platform' => 'tiktok', 'label' => 'TikTok', 'url' => $store->tiktok_url],
         ])->filter(fn ($link) => filled($link['url']))
             ->map(fn ($link) => [
+                'platform' => $link['platform'],
                 'label' => $link['label'],
                 'url' => Illuminate\Support\Str::startsWith($link['url'], ['http://', 'https://']) ? $link['url'] : 'https://' . $link['url'],
             ]);
+        $socialIconClasses = [
+            'whatsapp' => 'fa-brands fa-whatsapp',
+            'facebook' => 'fa-brands fa-facebook',
+            'instagram' => 'fa-brands fa-instagram',
+            'tiktok' => 'fa-brands fa-tiktok',
+        ];
         $detailInitials = collect(preg_split('/\s+/', trim($store->name) ?: 'N L'))
             ->filter()
             ->take(2)
@@ -135,54 +145,106 @@
                 </div>
 
                 <div class="space-y-6">
-                    <div class="cb-panel p-6">
-                        <h2 class="cb-subheading">Contacto</h2>
+                    <div class="overflow-hidden rounded-[1.15rem] bg-white shadow-[0_18px_42px_rgba(22,26,50,0.08)]">
+                        <div class="bg-(--cb-primary) px-7 py-6 text-white">
+                            <h2 class="cb-subheading text-white">Contacto</h2>
+                            <p class="mt-1 text-sm font-medium text-white/90">Estamos aquí para ayudarte en lo que necesites.</p>
+                        </div>
 
-                        <ul class="mt-5 space-y-4 text-(--cb-muted)">
-                            <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-(--cb-primary)">call</span>
-                                <span>{{ $store->phone ?: 'Dato no disponible' }}</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-(--cb-primary)">mail</span>
-                                <span>{{ $store->email ?: 'Sin correo publicado' }}</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-(--cb-primary)">language</span>
-                                <span>{{ $store->website ?: 'Sin sitio web publicado' }}</span>
-                            </li>
-                            @if ($socialLinks->isNotEmpty())
-                                <li class="flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-(--cb-primary)">share</span>
-                                    <span class="flex flex-wrap gap-2">
-                                        @foreach ($socialLinks as $socialLink)
-                                            <a href="{{ $socialLink['url'] }}" target="_blank" rel="noreferrer" class="font-semibold text-(--cb-secondary) transition hover:underline">
-                                                {{ $socialLink['label'] }}
-                                            </a>
-                                        @endforeach
+                        <div class="p-5 sm:p-6">
+                            <div class="space-y-6 text-(--cb-muted)">
+                                <div class="rounded-xl">
+                                    @if ($telPhone)
+                                        <a href="tel:{{ $telPhone }}" class="group flex items-center gap-3 rounded-xl p-3 transition hover:bg-(--cb-secondary-soft)">
+                                            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-(--cb-secondary-soft) transition group-hover:bg-(--cb-primary)">
+                                                <span class="material-symbols-outlined text-[20px] transition group-hover:text-white">call</span>
+                                            </span>
+                                            <span>
+                                                <span class="block text-[0.72rem] font-semibold tracking-[0.11em] uppercase text-(--cb-outline)">Teléfono</span>
+                                                <span class="block text-lg font-bold leading-none text-(--cb-text)">{{ $store->phone }}</span>
+                                            </span>
+                                        </a>
+                                    @else
+                                        <div class="flex items-center gap-3 p-3">
+                                            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-(--cb-secondary-soft) text-(--cb-primary)">
+                                                <span class="material-symbols-outlined text-[20px]">call</span>
+                                            </span>
+                                            <span class="text-sm">Dato no disponible</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="group flex items-start gap-3 rounded-xl p-3 transition hover:bg-(--cb-secondary-soft)">
+                                    <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--cb-secondary-soft) transition group-hover:bg-(--cb-primary)">
+                                        <span class="material-symbols-outlined text-[20px] transition group-hover:text-white">mail</span>
                                     </span>
-                                </li>
-                            @endif
-                        </ul>
+                                    <div class="min-w-0">
+                                        <p class="text-[0.72rem] font-bold tracking-[0.11em] uppercase text-(--cb-outline)">Correo electrónico</p>
+                                        @if ($store->email)
+                                            <a href="mailto:{{ $store->email }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="mt-0.5 block break-all text-lg font-semibold leading-tight text-(--cb-text) hover:underline">
+                                                {{ $store->email }}
+                                            </a>
+                                        @else
+                                            <p class="mt-0.5 text-sm">Sin correo publicado</p>
+                                        @endif
+                                    </div>
+                                </div>
 
-                        <div class="mt-6 flex flex-col gap-3 border-t border-[rgba(222,224,255,0.85)] pt-5">
-                            @if ($store->phone)
-                                <a href="tel:{{ preg_replace('/\s+/', '', $store->phone) }}" class="cb-button-primary w-full rounded-2xl">Llamar ahora</a>
-                            @endif
+                                <div class="group flex items-start gap-3 rounded-xl p-3 transition hover:bg-(--cb-secondary-soft)">
+                                    <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--cb-secondary-soft) transition group-hover:bg-(--cb-primary)">
+                                        <span class="material-symbols-outlined text-[20px] transition group-hover:text-white">share</span>
+                                    </span>
+                                    <div>
+                                        <p class="text-[0.72rem] font-bold tracking-[0.11em] uppercase text-(--cb-outline)">Redes sociales</p>
+                                        @if ($socialLinks->isNotEmpty())
+                                            <div class="mt-1 flex flex-wrap gap-x-4 gap-y-2">
+                                                @foreach ($socialLinks as $socialLink)
+                                                    <a href="{{ $socialLink['url'] }}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1.5 text-base font-semibold text-(--cb-secondary) transition hover:underline">
+                                                        @if (isset($socialIconClasses[$socialLink['platform']]))
+                                                            <i class="{{ $socialIconClasses[$socialLink['platform']] }} text-[0.95rem]"></i>
+                                                        @endif
+                                                        {{ $socialLink['label'] }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="mt-0.5 text-sm">Sin redes sociales publicadas</p>
+                                        @endif
+                                    </div>
+                                </div>
 
-                            @if ($store->email)
-                                <a href="mailto:{{ $store->email }}" class="cb-button-secondary w-full rounded-2xl">Enviar mensaje</a>
-                            @endif
+                                @if ($store->website)
+                                    <div class="group flex items-start gap-3 rounded-xl p-3 -m-3 transition hover:bg-(--cb-secondary-soft)">
+                                        <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--cb-secondary-soft) transition group-hover:bg-(--cb-primary)">
+                                            <span class="material-symbols-outlined text-[20px] transition group-hover:text-white">language</span>
+                                        </span>
+                                        <div class="min-w-0">
+                                            <p class="text-[0.72rem] font-bold tracking-[0.11em] uppercase text-(--cb-outline)">Sitio web</p>
+                                            <a href="{{ Illuminate\Support\Str::startsWith($store->website, ['http://', 'https://']) ? $store->website : 'https://' . $store->website }}" target="_blank" rel="noreferrer" class="mt-0.5 block break-all text-base font-semibold text-(--cb-text) hover:underline">
+                                                {{ $store->website }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
 
-                            @if ($store->website)
-                                <a href="{{ Illuminate\Support\Str::startsWith($store->website, ['http://', 'https://']) ? $store->website : 'https://' . $store->website }}" target="_blank" rel="noreferrer" class="cb-button-secondary w-full rounded-2xl">
-                                    Visitar sitio web
-                                </a>
-                            @endif
+                            <div class="mt-6 space-y-3 border-t border-[rgba(222,224,255,0.85)] pt-5">
+                                @if ($telPhone)
+                                    <a href="tel:{{ $telPhone }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-(--cb-primary) px-5 py-3 text-base font-bold text-white shadow-[0_12px_24px_rgba(15,82,56,0.24)] transition hover:bg-[color-mix(in_oklab,var(--cb-primary)_92%,black_8%)]">
+                                        <span class="material-symbols-outlined text-[19px]">call</span>
+                                        Llamar ahora
+                                    </a>
+                                @endif
+
+                                @if ($store->email)
+                                    <a href="mailto:{{ $store->email }}?subject={{ rawurlencode($emailSubject) }}&body={{ rawurlencode($emailBody) }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[rgba(15,82,56,0.25)] bg-white px-5 py-3 text-base font-semibold text-(--cb-primary) transition hover:bg-[rgba(15,82,56,0.04)]">
+                                        <span class="material-symbols-outlined text-[19px]">mail</span>
+                                        Enviar mensaje
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>

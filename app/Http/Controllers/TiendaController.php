@@ -70,7 +70,8 @@ class TiendaController extends Controller
             ->paginate(6)
             ->withQueryString();
 
-        $categories = $this->publicCategoriesWithCounts();
+        // Mostrar solo las categorías con uno o mas negocios públicos visibles
+        $categories = $this->publicCategoriesWithCounts()->filter(fn (Category $category) => $category->public_stores_count > 0);
 
         Log::info('Mostrando listado de tiendas', [
             'search' => $search,
@@ -89,7 +90,8 @@ class TiendaController extends Controller
             ->withCount([
                 'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
             ])
-            ->orderBy('display_order')
+            ->having('public_stores_count', '>=', 1)
+            ->orderBy('public_stores_count', 'desc')
             ->orderBy('name')
             ->paginate(6)
             ->withQueryString();
@@ -138,6 +140,12 @@ class TiendaController extends Controller
         );
     }
 
+    /**
+     * Funcion para mostrar los detalles de una tienda
+     *
+     * @param string $store
+     * @return View
+     */
     public function show(string $store): View
     {
         $store = Store::query()
@@ -171,13 +179,41 @@ class TiendaController extends Controller
             });
         }
 
+        // Normalizamos phone
+        $waPhone = null;
+        if ($store->phone) {
+            $waPhone = preg_replace('/\D+/', '', $store->phone);
+            if (!str_starts_with($waPhone, '595')) {
+                $waPhone = '595' . ltrim($waPhone, '0');
+            }
+        }
+
+
+        // Mensajes para contacto en WhatsApp y correo
+        $socialMessages = [
+            'waMessage' => "¡Hola! {$store->name} descubrí este negocio desde la plataforma Coronel Bogado Tiendas, estoy interesado en sus productos/servicios. ¿Podrías darme más información? Gracias.",
+            'emailSubject' => "Consulta sobre {$store->name}",
+            'emailBody' => "Hola, descubrí tu negocio desde la plataforma Coronel Bogado Tiendas y estoy interesado en tus productos/servicios. ¿Podrías darme más información? Gracias.",
+        ];
+
+        $waMessage = $socialMessages['waMessage'];
+        $emailSubject = $socialMessages['emailSubject'];
+        $emailBody = $socialMessages['emailBody'];
+
+            $socialIcons = [
+                'facebook'  => 'fa-brands fa-facebook',
+                'instagram' => 'fa-brands fa-instagram',
+                'tiktok'    => 'fa-brands fa-tiktok',
+            ];
+
+
         $relatedStores = $relatedStoresQuery
             ->orderByDesc('is_featured')
             ->latest()
             ->take(8)
             ->get();
 
-        return view('tiendas.show', compact('store', 'relatedStores'));
+        return view('tiendas.show', compact('store', 'relatedStores', 'waPhone', 'waMessage', 'emailSubject', 'emailBody', 'socialIcons'));
     }
 
     public function about(): View
