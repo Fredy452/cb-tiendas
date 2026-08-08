@@ -187,6 +187,56 @@
         box-shadow: 0 0 0 4px rgba(149, 212, 179, 0.24);
     }
 
+    .cb-input[aria-invalid='true'] {
+        border-color: #ba1a1a;
+        box-shadow: 0 0 0 3px rgba(186, 26, 26, 0.1);
+    }
+
+    .cb-field-error {
+        @apply mt-2 text-sm font-medium;
+        color: #93000a;
+    }
+
+    .cb-swal-popup {
+        width: min(32rem, calc(100% - 2rem));
+        border-radius: 0.75rem !important;
+        background: var(--cb-surface-panel);
+        box-shadow: 0 24px 70px rgba(22, 26, 50, 0.2);
+        font-family: var(--font-sans);
+    }
+
+    .cb-swal-title {
+        font-family: var(--cb-font-display);
+        font-size: 1.75rem;
+        letter-spacing: 0;
+    }
+
+    .cb-swal-content,
+    .cb-swal-messages {
+        text-align: center !important;
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .cb-swal-messages {
+        display: grid;
+        gap: 0.5rem;
+        text-align: left;
+    }
+
+    .cb-swal-confirm {
+        @apply inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold transition;
+        min-width: 8rem;
+        background: var(--cb-primary);
+        color: #ffffff;
+    }
+
+    .cb-swal-confirm:hover {
+        background: var(--cb-primary-strong);
+    }
+
+
     .cb-prose {
         @apply space-y-4 leading-8;
         color: var(--cb-muted);

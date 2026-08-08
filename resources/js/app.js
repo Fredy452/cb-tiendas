@@ -1,5 +1,48 @@
 import './bootstrap';
 import EmblaCarousel from 'embla-carousel';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+const setupFlashAlerts = async () => {
+	const container = document.querySelector('[data-flash-alerts]');
+
+	if (! container) {
+		return;
+	}
+
+	let alerts = [];
+
+	try {
+		alerts = JSON.parse(container.dataset.flashAlerts || '[]');
+	} catch {
+		return;
+	}
+
+	for (const alert of alerts) {
+		const content = document.createElement('div');
+		content.className = 'cb-swal-messages';
+
+		(alert.messages || []).forEach((message) => {
+			const paragraph = document.createElement('p');
+			paragraph.textContent = message;
+			content.appendChild(paragraph);
+		});
+
+		await Swal.fire({
+			icon: alert.type,
+			titleText: alert.title,
+			html: content,
+			confirmButtonText: 'Entendido',
+			buttonsStyling: false,
+			customClass: {
+				popup: 'cb-swal-popup',
+				title: 'cb-swal-title',
+				htmlContainer: 'cb-swal-content',
+				confirmButton: 'cb-swal-confirm',
+			},
+		});
+	}
+};
 
 const normalizeSearchText = (value) => value
 	.toLowerCase()
@@ -357,6 +400,7 @@ const setupMobileCategoryPanels = () => {
 };
 
 const setupPublicInteractions = () => {
+	setupFlashAlerts();
 	setupCategoryComboboxes();
 	setupImagePreviews();
 	setupLocationPickers();
