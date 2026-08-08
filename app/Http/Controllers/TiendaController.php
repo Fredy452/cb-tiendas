@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRegistrationRequest;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +12,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class TiendaController extends Controller
@@ -108,37 +108,9 @@ class TiendaController extends Controller
         return view('emprendimientos.create', compact('categories'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRegistrationRequest $request): RedirectResponse
     {
-        $this->normalizeRegistrationUrls($request);
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'category_id' => [
-                'required',
-                'integer',
-                Rule::exists('categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
-            ],
-            'phone' => ['required', 'string', 'max:50'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'website' => ['nullable', 'url', 'max:255'],
-            'facebook_url' => ['nullable', 'url', 'max:255'],
-            'instagram_url' => ['nullable', 'url', 'max:255'],
-            'tiktok_url' => ['nullable', 'url', 'max:255'],
-            'address' => ['required', 'string', 'max:255', 'not_regex:/[<>]/'],
-            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
-            'description' => ['required', 'string', 'max:1200', 'not_regex:/[<>]/'],
-            'logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'cover_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-        ], [
-            'description.not_regex' => 'La descripción solo puede contener texto plano, sin etiquetas HTML.',
-            'address.not_regex' => 'La dirección solo puede contener texto plano, sin etiquetas HTML.',
-            'latitude.required_with' => 'La latitud es obligatoria cuando se carga longitud.',
-            'longitude.required_with' => 'La longitud es obligatoria cuando se carga latitud.',
-            'logo.mimes' => 'El logo debe ser una imagen JPG, PNG o WEBP.',
-            'cover_image.mimes' => 'La imagen de portada debe ser JPG, PNG o WEBP.',
-        ]);
+        $validated = $request->validated();
 
         $store = Store::query()->create([
             'name' => $validated['name'],
@@ -301,24 +273,6 @@ class TiendaController extends Controller
         }
 
         return $slug;
-    }
-
-    private function normalizeRegistrationUrls(Request $request): void
-    {
-        $urlFields = ['website', 'facebook_url', 'instagram_url', 'tiktok_url'];
-        $normalized = [];
-
-        foreach ($urlFields as $field) {
-            $value = trim((string) $request->input($field, ''));
-
-            if ($value !== '' && ! Str::startsWith($value, ['http://', 'https://'])) {
-                $value = 'https://' . ltrim($value, '/');
-            }
-
-            $normalized[$field] = $value === '' ? null : $value;
-        }
-
-        $request->merge($normalized);
     }
 
     private function storeRegistrationImage(Request $request, string $field, string $directory): ?string
