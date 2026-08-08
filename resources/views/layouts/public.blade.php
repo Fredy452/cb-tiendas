@@ -93,17 +93,48 @@
         @stack('head')
     </head>
     <body class="min-h-screen antialiased">
+        @php
+            $flashAlerts = [];
+            $flashMessages = [
+                'success' => ['type' => 'success', 'title' => 'Operación exitosa'],
+                'status' => ['type' => 'success', 'title' => 'Operación exitosa'],
+                'error' => ['type' => 'error', 'title' => 'Ocurrió un error'],
+                'warning' => ['type' => 'warning', 'title' => 'Atención'],
+                'info' => ['type' => 'info', 'title' => 'Información'],
+            ];
+
+            if ($errors->any()) {
+                $flashAlerts[] = [
+                    'type' => 'error',
+                    'title' => 'Revisá los datos cargados',
+                    'messages' => $errors->all(),
+                ];
+            }
+
+            foreach ($flashMessages as $key => $alert) {
+                if (session()->has($key)) {
+                    $flashAlerts[] = [...$alert, 'messages' => [(string) session($key)]];
+                }
+            }
+        @endphp
+
+        <div hidden data-flash-alerts="{{ json_encode($flashAlerts) }}"></div>
+
         <div class="flex min-h-screen flex-col">
             @include('partials.public.nav', ['variant' => trim($__env->yieldContent('nav_variant')) ?: 'full'])
 
-            @if (session('status'))
-                <div class="cb-shell pt-6">
-                    <div class="cb-panel flex items-start gap-3 border-[rgba(177,240,206,0.85)] bg-[rgba(177,240,206,0.35)] px-5 py-4 text-sm leading-7 text-(--cb-primary)">
-                        <span class="material-symbols-outlined mt-0.5">verified</span>
-                        <p>{{ session('status') }}</p>
+            <noscript>
+                @foreach ($flashAlerts as $alert)
+                    <div class="cb-shell pt-6">
+                        <div class="cb-panel px-5 py-4 text-sm leading-7 text-(--cb-text)">
+                            <p class="font-semibold">{{ $alert['title'] }}</p>
+                            @foreach ($alert['messages'] as $message)
+                                <p>{{ $message }}</p>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-            @endif
+                @endforeach
+            </noscript>
 
             <main class="flex-1">
                 @yield('content')
