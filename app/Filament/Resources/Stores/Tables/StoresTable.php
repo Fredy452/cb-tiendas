@@ -10,6 +10,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -58,7 +59,17 @@ class StoresTable
                 'md' => 2,
                 'xl' => 3,
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
+                SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pending' => 'Pendiente',
+                        'approved' => 'Aprobada',
+                        'rejected' => 'Rechazada',
+                        'inactive' => 'Inactiva',
+                    ]),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

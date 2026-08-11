@@ -149,12 +149,10 @@ class StoreForm
                                     ->columnSpanFull(),
 
                                 TextInput::make('latitude')
-                                    ->label('Latitud')
-                                    ->readOnly(),
+                                    ->label('Latitud'),
 
                                 TextInput::make('longitude')
-                                    ->label('Longitud')
-                                    ->readOnly(),
+                                    ->label('Longitud'),
                             ])
                             ->columns(2),
 
