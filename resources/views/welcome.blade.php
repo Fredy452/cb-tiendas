@@ -16,20 +16,54 @@
                     El directorio oficial de emprendedores de Coronel Bogado. Conectando talento local con nuestra comunidad.
                 </p>
 
-                <form action="{{ route('tiendas.index') }}" method="GET" class="cb-panel mx-auto mt-10 flex max-w-3xl flex-col gap-3 p-3 sm:flex-row sm:items-center">
+                <div class="relative mx-auto mt-10 max-w-3xl" data-search-wrapper>
+                <form action="{{ route('tiendas.index') }}" method="GET" class="cb-panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center" data-search-form>
                     <label for="home-search" class="flex flex-1 items-center gap-3 rounded-2xl bg-(--cb-surface-panel) px-4 py-2 text-(--cb-outline)">
                         <span class="material-symbols-outlined">search</span>
                         <input
                             id="home-search"
                             name="search"
                             type="search"
+                            autocomplete="off"
                             class="w-full border-none bg-transparent p-0 text-base text-(--cb-text) outline-none placeholder:text-(--cb-outline)"
                             placeholder="Buscar emprendedores, servicios o productos..."
+                            data-search-input
                         >
                     </label>
 
                     <button type="submit" class="cb-button-primary px-8">Explorar</button>
                 </form>
+
+                {{-- Panel de autocompletar --}}
+                <div class="cb-search-panel hidden" role="listbox" aria-label="Sugerencias de búsqueda"
+                     data-search-panel
+                     data-search-url="{{ route('buscar.sugerencias') }}">
+
+                    {{-- Búsquedas populares / recientes --}}
+                    <div data-search-popular class="hidden">
+                        <p class="cb-search-panel-label">BÚSQUEDAS POPULARES</p>
+                        <ul data-popular-list></ul>
+                        <p class="hidden px-4 py-3 text-sm text-(--cb-outline)" data-popular-empty>No hay búsquedas recientes todavía.</p>
+                    </div>
+
+                    {{-- Estado cargando --}}
+                    <div data-search-loading class="hidden px-4 py-3 text-sm text-(--cb-muted)">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined cb-spin text-[18px]">progress_activity</span>
+                            Buscando productos...
+                        </div>
+                    </div>
+
+                    {{-- Sin resultados --}}
+                    <div data-search-empty class="hidden px-4 py-5 text-center text-sm text-(--cb-muted)">
+                        <span class="material-symbols-outlined mb-1 block text-3xl text-(--cb-outline)">search_off</span>
+                        Sin resultados para &ldquo;<span class="font-medium text-(--cb-text)" data-search-query></span>&rdquo;
+                    </div>
+
+                    {{-- Lista de resultados --}}
+                    <ul data-search-results class="hidden"></ul>
+                </div>
+                </div>
 
                 <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
                     <a href="{{ route('tiendas.index') }}" class="cb-button-ghost text-[1.2rem]">Explorar negocios</a>

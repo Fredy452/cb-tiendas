@@ -12,6 +12,7 @@ Route::get('/categorias', [TiendaController::class, 'categorias'])->name('catego
 Route::get('/emprendimientos/registrar', [TiendaController::class, 'create'])->name('emprendimientos.create');
 Route::post('/emprendimientos/registrar', [TiendaController::class, 'store'])->name('emprendimientos.store');
 Route::get('/sobre-nosotros', [TiendaController::class, 'about'])->name('sobre-nosotros');
+Route::get('/buscar/sugerencias', [TiendaController::class, 'searchSuggestions'])->name('buscar.sugerencias');
 
 Route::get('/sitemap.xml', function () {
 	$urls = collect([

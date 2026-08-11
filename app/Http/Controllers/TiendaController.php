@@ -221,6 +221,39 @@ class TiendaController extends Controller
         return view('sobre-nosotros');
     }
 
+    public function searchSuggestions(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $q = trim((string) $request->input('q', ''));
+
+        if (mb_strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $stores = Store::query()
+            ->publicVisible()
+            ->with('categories:id,name')
+            ->where(function (Builder $query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            })
+            ->select(['id', 'name', 'slug', 'description', 'logo_path', 'img_path'])
+            ->orderByDesc('is_featured')
+            ->latest()
+            ->limit(6)
+            ->get()
+            ->map(fn (Store $store) => [
+                'name' => $store->name,
+                'url' => route('tiendas.show', $store->slug ?: $store->getKey()),
+                'description' => $store->description
+                    ? Str::limit(trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')), 80)
+                    : null,
+                'category' => $store->categories->first()?->name,
+                'thumbnail' => $store->logo_url ?? $store->cover_url,
+            ]);
+
+        return response()->json($stores);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
