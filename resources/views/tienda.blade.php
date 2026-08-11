@@ -17,12 +17,13 @@
                 </p>
             </div>
 
-            <form action="{{ route('tiendas.index') }}" method="GET" class="mt-10">
+            <div class="cb-search-container relative mx-auto mt-10 max-w-3xl" data-search-wrapper>
+            <form action="{{ route('tiendas.index') }}" method="GET" data-search-form>
                 @if ($selectedScope !== 'all')
                     <input type="hidden" name="scope" value="{{ $selectedScope }}">
                 @endif
 
-                <div class="cb-panel mx-auto flex max-w-3xl flex-col gap-3 p-3 sm:flex-row sm:items-center">
+                <div class="cb-panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center" data-search-parent>
                     <label for="stores-search" class="flex flex-1 items-center gap-3 rounded-2xl bg-(--cb-surface-panel) px-4 py-2 text-(--cb-outline)">
                         <span class="material-symbols-outlined">search</span>
                         <input
@@ -30,13 +31,47 @@
                             name="search"
                             type="search"
                             value="{{ $search }}"
+                            autocomplete="off"
                             class="w-full border-none bg-transparent p-0 text-base text-(--cb-text) outline-none placeholder:text-(--cb-outline)"
                             placeholder="Buscar emprendedores, servicios o productos..."
+                            data-search-input
                         >
                     </label>
 
                     <button type="submit" class="cb-button-primary rounded-2xl px-8">Buscar</button>
                 </div>
+
+                {{-- Panel de autocompletar --}}
+                <div class="cb-search-panel hidden" role="listbox" aria-label="Sugerencias de búsqueda"
+                     data-search-panel
+                     data-search-url="{{ route('buscar.sugerencias') }}">
+
+                    {{-- Búsquedas populares / recientes --}}
+                    <div data-search-popular class="hidden">
+                        <p class="cb-search-panel-label">BÚSQUEDAS POPULARES</p>
+                        <ul data-popular-list></ul>
+                        <p class="hidden px-4 py-3 text-sm text-(--cb-outline)" data-popular-empty>No hay búsquedas recientes todavía.</p>
+                    </div>
+
+                    {{-- Estado cargando --}}
+                    <div data-search-loading class="hidden px-4 py-3 text-sm text-(--cb-muted)">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined cb-spin text-[18px]">progress_activity</span>
+                            Buscando productos...
+                        </div>
+                    </div>
+
+                    {{-- Sin resultados --}}
+                    <div data-search-empty class="hidden px-4 py-5 text-center text-sm text-(--cb-muted)">
+                        <span class="material-symbols-outlined mb-1 block text-3xl text-(--cb-outline)">search_off</span>
+                        Sin resultados para &ldquo;<span class="font-medium text-(--cb-text)" data-search-query></span>&rdquo;
+                    </div>
+
+                    {{-- Lista de resultados --}}
+                    <ul data-search-results class="hidden"></ul>
+                </div>
+            </form>
+            </div>
 
                 <div class="mt-12 grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
                     <aside class="space-y-5 lg:sticky lg:top-28">

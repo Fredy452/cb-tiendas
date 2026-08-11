@@ -400,217 +400,219 @@ const setupMobileCategoryPanels = () => {
 };
 
 const setupSearchAutocomplete = () => {
-	const wrapper = document.querySelector('[data-search-wrapper]');
-
-	if (! wrapper) {
-		return;
-	}
-
-	const input = wrapper.querySelector('[data-search-input]');
-	const form = wrapper.querySelector('[data-search-form]');
-	const panel = wrapper.querySelector('[data-search-panel]');
-
-	if (! input || ! form || ! panel) {
-		return;
-	}
-
-	const popularSection = panel.querySelector('[data-search-popular]');
-	const popularList = panel.querySelector('[data-popular-list]');
-	const popularEmpty = panel.querySelector('[data-popular-empty]');
-	const loadingEl = panel.querySelector('[data-search-loading]');
-	const emptyEl = panel.querySelector('[data-search-empty]');
-	const queryEl = panel.querySelector('[data-search-query]');
-	const resultsList = panel.querySelector('[data-search-results]');
-	const apiUrl = panel.dataset.searchUrl || '/buscar/sugerencias';
-
-	const STORAGE_KEY = 'cb_recent_searches';
-	const MAX_RECENT = 5;
-
-	let debounceTimer = null;
-	let abortController = null;
-
-	const getRecent = () => {
-		try {
-			return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-		} catch {
-			return [];
-		}
-	};
-
-	const saveRecent = (query) => {
-		const q = query.trim();
-
-		if (! q) {
+	document.querySelectorAll('[data-search-wrapper]').forEach((wrapper) => {
+		if (wrapper.dataset.ready === 'true') {
 			return;
 		}
 
-		const recent = getRecent().filter((item) => item !== q);
-		recent.unshift(q);
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(recent.slice(0, MAX_RECENT)));
-	};
+		const input = wrapper.querySelector('[data-search-input]');
+		const form = wrapper.querySelector('[data-search-form]');
+		const panel = wrapper.querySelector('[data-search-panel]');
 
-	const escapeHtml = (str) => {
-		const div = document.createElement('div');
-		div.textContent = String(str);
-		return div.innerHTML;
-	};
-
-	const highlightMatch = (text, query) => {
-		const safe = escapeHtml(text);
-		const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-		return safe.replace(new RegExp(`(${escapedQuery})`, 'gi'), '<mark class="cb-search-highlight">$1</mark>');
-	};
-
-	const showPanel = () => panel.classList.remove('hidden');
-	const hidePanel = () => panel.classList.add('hidden');
-
-	const hideAllStates = () => {
-		popularSection.classList.add('hidden');
-		loadingEl.classList.add('hidden');
-		emptyEl.classList.add('hidden');
-		resultsList.classList.add('hidden');
-	};
-
-	const renderPopular = () => {
-		const recent = getRecent();
-
-		popularList.innerHTML = '';
-
-		if (recent.length === 0) {
-			popularEmpty.classList.remove('hidden');
-		} else {
-			popularEmpty.classList.add('hidden');
-
-			recent.forEach((query) => {
-				const li = document.createElement('li');
-				const btn = document.createElement('button');
-
-				btn.type = 'button';
-				btn.className = 'cb-search-popular-item';
-				btn.innerHTML = `<span class="material-symbols-outlined text-[18px] text-(--cb-outline)">schedule</span><span>${escapeHtml(query)}</span>`;
-
-				btn.addEventListener('click', () => {
-					input.value = query;
-					saveRecent(query);
-					form.submit();
-				});
-
-				li.appendChild(btn);
-				popularList.appendChild(li);
-			});
+		if (! input || ! form || ! panel) {
+			return;
 		}
 
-		hideAllStates();
-		popularSection.classList.remove('hidden');
-		showPanel();
-	};
+		const popularSection = panel.querySelector('[data-search-popular]');
+		const popularList = panel.querySelector('[data-popular-list]');
+		const popularEmpty = panel.querySelector('[data-popular-empty]');
+		const loadingEl = panel.querySelector('[data-search-loading]');
+		const emptyEl = panel.querySelector('[data-search-empty]');
+		const queryEl = panel.querySelector('[data-search-query]');
+		const resultsList = panel.querySelector('[data-search-results]');
+		const apiUrl = panel.dataset.searchUrl || '/buscar/sugerencias';
 
-	const renderResults = (results, query) => {
-		resultsList.innerHTML = '';
+		const STORAGE_KEY = 'cb_recent_searches';
+		const MAX_RECENT = 5;
 
-		results.forEach((store) => {
-			const li = document.createElement('li');
-			const a = document.createElement('a');
+		let debounceTimer = null;
+		let abortController = null;
 
-			a.href = store.url;
-			a.className = 'cb-search-result-item';
+		wrapper.dataset.ready = 'true';
 
-			const thumbHtml = store.thumbnail
-				? `<img src="${escapeHtml(store.thumbnail)}" alt="${escapeHtml(store.name)}" loading="lazy">`
-				: `<span class="material-symbols-outlined text-[22px] text-(--cb-outline)">storefront</span>`;
+		const getRecent = () => {
+			try {
+				return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+			} catch {
+				return [];
+			}
+		};
 
-			a.innerHTML = `
-				<div class="cb-search-result-thumb">${thumbHtml}</div>
-				<div class="cb-search-result-body">
-					<p class="cb-search-result-name">${highlightMatch(store.name, query)}</p>
-					${store.category ? `<p class="cb-search-result-meta">Cat. ${escapeHtml(store.category)}</p>` : ''}
-					${store.description ? `<p class="cb-search-result-desc">${escapeHtml(store.description)}</p>` : ''}
-				</div>`;
+		const saveRecent = (query) => {
+			const q = query.trim();
 
-			a.addEventListener('click', () => saveRecent(query));
-			li.appendChild(a);
-			resultsList.appendChild(li);
+			if (! q) {
+				return;
+			}
+
+			const recent = getRecent().filter((item) => item !== q);
+			recent.unshift(q);
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(recent.slice(0, MAX_RECENT)));
+		};
+
+		const escapeHtml = (str) => {
+			const div = document.createElement('div');
+			div.textContent = String(str);
+			return div.innerHTML;
+		};
+
+		const highlightMatch = (text, query) => {
+			const safe = escapeHtml(text);
+			const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+			return safe.replace(new RegExp(`(${escapedQuery})`, 'gi'), '<mark class="cb-search-highlight">$1</mark>');
+		};
+
+		const showPanel = () => panel.classList.remove('hidden');
+		const hidePanel = () => panel.classList.add('hidden');
+
+		const hideAllStates = () => {
+			popularSection.classList.add('hidden');
+			loadingEl.classList.add('hidden');
+			emptyEl.classList.add('hidden');
+			resultsList.classList.add('hidden');
+		};
+
+		const renderPopular = () => {
+			const recent = getRecent();
+
+			popularList.innerHTML = '';
+
+			if (recent.length === 0) {
+				popularEmpty.classList.remove('hidden');
+			} else {
+				popularEmpty.classList.add('hidden');
+
+				recent.forEach((query) => {
+					const li = document.createElement('li');
+					const btn = document.createElement('button');
+
+					btn.type = 'button';
+					btn.className = 'cb-search-popular-item';
+					btn.innerHTML = `<span class="material-symbols-outlined text-[18px] text-(--cb-outline)">schedule</span><span>${escapeHtml(query)}</span>`;
+
+					btn.addEventListener('click', () => {
+						input.value = query;
+						saveRecent(query);
+						form.submit();
+					});
+
+					li.appendChild(btn);
+					popularList.appendChild(li);
+				});
+			}
+
+			hideAllStates();
+			popularSection.classList.remove('hidden');
+			showPanel();
+		};
+
+		const renderResults = (results, query) => {
+			resultsList.innerHTML = '';
+
+			results.forEach((store) => {
+				const li = document.createElement('li');
+				const a = document.createElement('a');
+
+				a.href = store.url;
+				a.className = 'cb-search-result-item';
+
+				const thumbHtml = store.thumbnail
+					? `<img src="${escapeHtml(store.thumbnail)}" alt="${escapeHtml(store.name)}" loading="lazy">`
+					: `<span class="material-symbols-outlined text-[22px] text-(--cb-outline)">storefront</span>`;
+
+				a.innerHTML = `
+					<div class="cb-search-result-thumb">${thumbHtml}</div>
+					<div class="cb-search-result-body">
+						<p class="cb-search-result-name">${highlightMatch(store.name, query)}</p>
+						${store.category ? `<p class="cb-search-result-meta">Cat. ${escapeHtml(store.category)}</p>` : ''}
+						${store.description ? `<p class="cb-search-result-desc">${escapeHtml(store.description)}</p>` : ''}
+					</div>`;
+
+				a.addEventListener('click', () => saveRecent(query));
+				li.appendChild(a);
+				resultsList.appendChild(li);
+			});
+
+			hideAllStates();
+			resultsList.classList.remove('hidden');
+			showPanel();
+		};
+
+		const fetchSuggestions = async (query) => {
+			abortController?.abort();
+			abortController = new AbortController();
+
+			hideAllStates();
+			loadingEl.classList.remove('hidden');
+			showPanel();
+
+			try {
+				const res = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}`, {
+					signal: abortController.signal,
+					headers: { Accept: 'application/json' },
+				});
+				const results = await res.json();
+
+				if (results.length === 0) {
+					hideAllStates();
+
+					if (queryEl) {
+						queryEl.textContent = query;
+					}
+
+					emptyEl.classList.remove('hidden');
+					showPanel();
+				} else {
+					renderResults(results, query);
+				}
+			} catch (err) {
+				if (err.name !== 'AbortError') {
+					hidePanel();
+				}
+			}
+		};
+
+		input.addEventListener('focus', () => {
+			if (! input.value.trim()) {
+				renderPopular();
+			}
 		});
 
-		hideAllStates();
-		resultsList.classList.remove('hidden');
-		showPanel();
-	};
+		input.addEventListener('input', () => {
+			clearTimeout(debounceTimer);
+			const query = input.value.trim();
 
-	const fetchSuggestions = async (query) => {
-		abortController?.abort();
-		abortController = new AbortController();
-
-		hideAllStates();
-		loadingEl.classList.remove('hidden');
-		showPanel();
-
-		try {
-			const res = await fetch(`${apiUrl}?q=${encodeURIComponent(query)}`, {
-				signal: abortController.signal,
-				headers: { Accept: 'application/json' },
-			});
-			const results = await res.json();
-
-			if (results.length === 0) {
-				hideAllStates();
-
-				if (queryEl) {
-					queryEl.textContent = query;
-				}
-
-				emptyEl.classList.remove('hidden');
-				showPanel();
-			} else {
-				renderResults(results, query);
+			if (! query) {
+				renderPopular();
+				return;
 			}
-		} catch (err) {
-			if (err.name !== 'AbortError') {
+
+			if (query.length < 2) {
+				hidePanel();
+				return;
+			}
+
+			debounceTimer = setTimeout(() => fetchSuggestions(query), 280);
+		});
+
+		input.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
+				hidePanel();
+				input.blur();
+			}
+		});
+
+		form.addEventListener('submit', () => {
+			saveRecent(input.value.trim());
+			hidePanel();
+		});
+
+		document.addEventListener('click', (e) => {
+			if (! wrapper.contains(e.target)) {
 				hidePanel();
 			}
-		}
-	};
-
-	input.addEventListener('focus', () => {
-		if (! input.value.trim()) {
-			renderPopular();
-		}
-	});
-
-	input.addEventListener('input', () => {
-		clearTimeout(debounceTimer);
-		const query = input.value.trim();
-
-		if (! query) {
-			renderPopular();
-			return;
-		}
-
-		if (query.length < 2) {
-			hidePanel();
-			return;
-		}
-
-		debounceTimer = setTimeout(() => fetchSuggestions(query), 280);
-	});
-
-	input.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape') {
-			hidePanel();
-			input.blur();
-		}
-	});
-
-	form.addEventListener('submit', () => {
-		saveRecent(input.value.trim());
-		hidePanel();
-	});
-
-	document.addEventListener('click', (e) => {
-		if (! wrapper.contains(e.target)) {
-			hidePanel();
-		}
+		});
 	});
 };
 
