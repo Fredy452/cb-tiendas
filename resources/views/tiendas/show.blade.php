@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="cb-panel mt-6 p-7 sm:p-8">
-                        <h2 class="cb-subheading">Nuestra historia</h2>
+                        <h2 class="cb-subheading">Sobre nosotros</h2>
                         <div class="cb-prose mt-5 text-lg">
                             @if ($store->description)
                                 <p>{!! nl2br(e($store->description)) !!}</p>
