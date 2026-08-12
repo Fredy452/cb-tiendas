@@ -116,9 +116,10 @@
                             @enderror
                         </div>
 
-                        <div class="grid gap-6 sm:grid-cols-2">
+                        <div class="space-y-6">
                             <div>
                                 <label for="category_id" class="mb-2 block text-lg font-medium text-(--cb-text)">Rubro / Categoría</label>
+                                <p class="mb-2 text-sm text-(--cb-muted)">Si no existe su rubro, seleccione <span class="font-semibold text-(--cb-primary)">Otros</span>.</p>
                                 <div class="relative" data-category-combobox>
                                     <select id="category_id" name="category_id" class="cb-input" data-category-native aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
                                         <option value="">Seleccioná una categoría</option>
