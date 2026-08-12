@@ -95,18 +95,26 @@ class Store extends Model
 
     private function resolveMediaUrl(?string $path): ?string
     {
+        $placeholder = asset('img/placeholders/store_placeholder.jpg');
+
         if (! $path) {
-            return null;
+            return $placeholder;
         }
 
-        if (Str::startsWith($path, ['http://', 'https://', '/'])) {
+        if (Str::startsWith($path, ['http://', 'https://'])) {
             return $path;
         }
 
-        if (Str::startsWith($path, 'storage/')) {
-            return asset($path);
+        $normalizedPath = ltrim($path, '/');
+
+        if (file_exists(public_path($normalizedPath))) {
+            return asset($normalizedPath);
         }
 
-        return Storage::url($path);
+        if (Storage::disk('public')->exists($normalizedPath)) {
+            return asset('storage/'.$normalizedPath);
+        }
+
+        return $placeholder;
     }
 }
