@@ -171,9 +171,9 @@
                             <article class="cb-home-slide" data-home-slide>
                                 <a href="{{ route('tiendas.show', $detailRouteKey) }}" class="group cb-home-card">
                                     <div class="cb-home-media">
-                                        @if ($store->cover_url)
+                                        @if ($store->logo_url)
                                             <img
-                                                src="{{ $store->cover_url }}"
+                                                src="{{ $store->logo_url }}"
                                                 alt="{{ $store->name }}"
                                                 class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                             >
