@@ -26,10 +26,16 @@ class TiendaController extends Controller
             ->take(6)
             ->get();
 
+        $newStores = Store::query()
+            ->publicVisible()
+            ->latest()
+            ->take(8)
+            ->get();
+
         $categories = $this->publicCategoriesWithCounts()->take(6);
         $storesCount = Store::query()->publicVisible()->count();
 
-        return view('welcome', compact('featuredStores', 'categories', 'storesCount'));
+        return view('welcome', compact('featuredStores', 'newStores', 'categories', 'storesCount'));
     }
 
     public function index(Request $request): View
