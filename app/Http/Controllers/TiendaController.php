@@ -19,9 +19,9 @@ class TiendaController extends Controller
     public function home(): View
     {
         $featuredStores = Store::query()
+            ->where('is_featured', true)
             ->publicVisible()
-            ->with('categories')
-            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
             ->latest()
             ->take(6)
             ->get();
