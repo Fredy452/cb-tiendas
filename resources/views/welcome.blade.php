@@ -4,7 +4,7 @@
 @section('meta_description', 'La plaza digital de Coronel Bogado para descubrir, apoyar y registrar emprendimientos locales.')
 
 @section('content')
-    <section class="relative overflow-hidden">
+    <section class="relative overflow-visible">
         <div class="absolute inset-x-0 top-0 h-150 bg-[#F0EFFF]"></div>
 
         <div class="cb-shell cb-section relative py-10 md:p-28">
@@ -74,30 +74,9 @@
     </section>
 
     <section class="cb-shell cb-section" id="destacados" data-featured-section>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-                <h2 class="cb-subheading text-3xl font-medium">Negocios destacados</h2>
-                <p class="mt-2 text-xl font-light">Conoce algunos emprendimientos aprobados que ya forman parte de la comunidad.</p>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button
-                    type="button"
-                    data-featured-prev
-                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(22,26,50,0.08)] bg-white text-(--cb-text) shadow-sm transition hover:-translate-y-0.5 hover:shadow"
-                    aria-label="Anterior"
-                >
-                    <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-                </button>
-                <button
-                    type="button"
-                    data-featured-next
-                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(22,26,50,0.08)] bg-white text-(--cb-text) shadow-sm transition hover:-translate-y-0.5 hover:shadow"
-                    aria-label="Siguiente"
-                >
-                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                </button>
-            </div>
+        <div class="text-center">
+            <h2 class="cb-subheading text-3xl font-medium">Negocios destacados</h2>
+            <p class="mt-2 text-xl font-light">Conoce algunos emprendimientos aprobados que ya forman parte de la comunidad.</p>
         </div>
 
         @if ($featuredStores->isEmpty())
@@ -161,13 +140,71 @@
         @endif
     </section>
 
-    <section class="cb-section bg-[rgba(244,242,255,0.8)]">
-        <div class="cb-shell">
-            <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <h2 class="cb-subheading text-3xl font-medium">Enlaces rápidos</h2>
-                    <p class="mt-2 text-xl font-light">Un acceso directo a las secciones públicas más importantes de CB Tiendas.</p>
+    <section class=" cb-section bg-[#F0EFFF]"  id="nuevas-tiendas" data-home-carousel-section>
+        <div class="nueva-tienda">
+            <div class="text-center">
+                <h2 class="cb-subheading text-3xl font-medium">Nuevas tiendas</h2>
+                <p class="mx-auto mt-2 max-w-3xl text-xl font-light">Las ultimas tiendas registradas para que descubras nuevos emprendimientos de la comunidad.</p>
+            </div>
+
+            @if ($newStores->isEmpty())
+                <div class="cb-panel mt-8 p-8 text-center">
+                    <h3 class="text-xl font-semibold text-(--cb-text)">Todavia no hay tiendas nuevas para mostrar</h3>
+                    <p class="mt-3 text-(--cb-muted)">Cuando se registren nuevos emprendimientos, apareceran aqui automaticamente.</p>
+                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-secondary mt-6">Registrar emprendimiento</a>
                 </div>
+            @else
+                <div class="cb-home-carousel mt-8" data-home-carousel>
+                    <div class="cb-home-viewport" data-home-viewport>
+                        <div class="cb-home-track" data-home-track>
+                        @foreach ($newStores as $store)
+                            @php
+                                $descriptionExcerpt = $store->description
+                                    ? Illuminate\Support\Str::limit(
+                                        trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')),
+                                        68,
+                                    )
+                                    : 'Nuevo emprendimiento local incorporado al directorio oficial.';
+                                $detailRouteKey = $store->slug ?: $store->getKey();
+                            @endphp
+
+                            <article class="cb-home-slide" data-home-slide>
+                                <a href="{{ route('tiendas.show', $detailRouteKey) }}" class="group cb-home-card">
+                                    <div class="cb-home-media">
+                                        @if ($store->cover_url)
+                                            <img
+                                                src="{{ $store->cover_url }}"
+                                                alt="{{ $store->name }}"
+                                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                            >
+                                        @else
+                                            <div class="cb-home-media-placeholder">
+                                                <span class="material-symbols-outlined text-[2rem] text-white/90">storefront</span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="px-1 pt-4">
+                                        <h3 class="text-lg font-semibold leading-tight tracking-tight text-(--cb-text)">{{ $store->name }}</h3>
+                                        <p class="mt-2 line-clamp-1 text-sm text-(--cb-muted)">
+                                            {{ $descriptionExcerpt }}
+                                        </p>
+                                    </div>
+                                </a>
+                            </article>
+                        @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <section class="cb-section bg-[#DEE0FF]">
+        <div class="cb-shell">
+            <div class="text-center">
+                <h2 class="cb-subheading text-3xl font-medium">Enlaces rápidos</h2>
+                <p class="mt-2 text-xl font-light">Un acceso directo a las secciones públicas más importantes de CB Tiendas.</p>
             </div>
 
             <div class="grid gap-6 lg:grid-cols-3">

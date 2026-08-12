@@ -242,15 +242,22 @@ const setupLocationPickers = () => {
 };
 
 const setupFeaturedCarousels = () => {
-	document.querySelectorAll('[data-featured-carousel]').forEach((carousel) => {
+	const setupCarousel = ({
+		carouselSelector,
+		viewportSelector,
+		sectionSelector,
+		prevSelector,
+		nextSelector,
+	}) => {
+		document.querySelectorAll(carouselSelector).forEach((carousel) => {
 		if (carousel.dataset.ready === 'true') {
 			return;
 		}
 
-		const viewport = carousel.querySelector('[data-featured-viewport]');
-		const section = carousel.closest('[data-featured-section]');
-		const prevButton = section?.querySelector('[data-featured-prev]');
-		const nextButton = section?.querySelector('[data-featured-next]');
+		const viewport = carousel.querySelector(viewportSelector);
+		const section = carousel.closest(sectionSelector);
+		const prevButton = prevSelector ? section?.querySelector(prevSelector) : null;
+		const nextButton = nextSelector ? section?.querySelector(nextSelector) : null;
 
 		if (! viewport) {
 			return;
@@ -312,6 +319,23 @@ const setupFeaturedCarousels = () => {
 		embla.on('select', updateButtons);
 		embla.on('reInit', updateButtons);
 		updateButtons();
+		});
+	};
+
+	setupCarousel({
+		carouselSelector: '[data-featured-carousel]',
+		viewportSelector: '[data-featured-viewport]',
+		sectionSelector: '[data-featured-section]',
+		prevSelector: '[data-featured-prev]',
+		nextSelector: '[data-featured-next]',
+	});
+
+	setupCarousel({
+		carouselSelector: '[data-home-carousel]',
+		viewportSelector: '[data-home-viewport]',
+		sectionSelector: '[data-home-carousel-section]',
+		prevSelector: null,
+		nextSelector: null,
 	});
 };
 

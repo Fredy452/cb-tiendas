@@ -88,7 +88,9 @@
 }
 
 @layer components {
-    .cb-shell {
+    .cb-shell,
+    .nueva-tienda,
+    .enlaces {
         @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-10;
     }
 
@@ -360,6 +362,52 @@
         padding: 1.55rem 1.45rem 1.7rem;
     }
 
+    .cb-home-carousel {
+        position: relative;
+    }
+
+    .cb-home-viewport {
+        overflow: hidden;
+    }
+
+    .cb-home-track {
+        display: flex;
+        margin-left: -1rem;
+        padding: 0.75rem 0 0.25rem;
+    }
+
+    .cb-home-slide {
+        flex: 0 0 50%;
+        min-width: 0;
+        padding-left: 1rem;
+    }
+
+    .cb-home-card {
+        display: block;
+        height: 100%;
+        transition: transform 200ms ease;
+    }
+
+    .cb-home-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .cb-home-media {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 1.7rem;
+    }
+
+    .cb-home-media-placeholder {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 48%), linear-gradient(160deg, #15344b 0%, #0c6d84 100%);
+    }
+
     .cb-related-viewport {
         overflow: hidden;
     }
@@ -427,6 +475,10 @@
             flex-basis: 78%;
         }
 
+        .cb-home-slide {
+            flex-basis: 50%;
+        }
+
         .cb-related-slide {
             flex-basis: 78%;
         }
@@ -437,6 +489,10 @@
             flex-basis: 64%;
         }
 
+        .cb-home-slide {
+            flex-basis: 50%;
+        }
+
         .cb-related-slide {
             flex-basis: 50%;
         }
@@ -445,6 +501,10 @@
     @media (min-width: 1024px) {
         .cb-featured-slide {
             flex-basis: 50%;
+        }
+
+        .cb-home-slide {
+            flex-basis: 25%;
         }
 
         .cb-related-slide {
@@ -460,6 +520,8 @@
         right: 0;
         top: calc(100% + 0.5rem);
         z-index: 50;
+        width: 100%;
+        display: block;
         border-radius: 1.25rem;
         border: 1px solid rgba(222, 224, 255, 0.9);
         background: #ffffff;
@@ -467,6 +529,10 @@
         overflow: hidden;
         max-height: 22rem;
         overflow-y: auto;
+    }
+
+    [data-search-wrapper] {
+        overflow: visible;
     }
 
     .cb-search-panel-label {
