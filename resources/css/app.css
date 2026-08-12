@@ -470,6 +470,12 @@
         letter-spacing: 0.08em;
     }
 
+    @media (max-width: 767px) {
+        #destacados {
+            margin-top: 2.5rem;
+        }
+    }
+
     @media (min-width: 640px) {
         .cb-featured-slide {
             flex-basis: 78%;

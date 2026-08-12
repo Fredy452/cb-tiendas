@@ -73,7 +73,7 @@
         </div>
     </section>
 
-    <section class="cb-shell cb-section" id="destacados" data-featured-section>
+    <section class="cb-shell cb-section py-10" id="destacados" data-featured-section>
         <div class="text-center">
             <h2 class="cb-subheading text-3xl font-medium">Negocios destacados</h2>
             <p class="mt-2 text-xl font-light">Conoce algunos emprendimientos aprobados que ya forman parte de la comunidad.</p>
@@ -202,7 +202,7 @@
 
     <section class="cb-section bg-[#DEE0FF]">
         <div class="cb-shell">
-            <div class="text-center">
+            <div class="text-center mb-8">
                 <h2 class="cb-subheading text-3xl font-medium">Enlaces rápidos</h2>
                 <p class="mt-2 text-xl font-light">Un acceso directo a las secciones públicas más importantes de CB Tiendas.</p>
             </div>
