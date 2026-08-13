@@ -37,24 +37,60 @@
                 <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary">Registrar emprendimiento</a>
             </div>
 
-            <details class="relative md:hidden">
-                <summary class="flex list-none cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary)">
-                    <span class="material-symbols-outlined">menu</span>
-                </summary>
+            <button
+                type="button"
+                class="flex cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary) shadow-[0_10px_24px_rgba(22,27,45,0.08)] md:hidden"
+                aria-controls="mobile-nav-drawer"
+                aria-expanded="false"
+                data-mobile-nav-toggle
+            >
+                <span class="material-symbols-outlined">menu</span>
+            </button>
 
-                <div class="cb-panel absolute right-0 mt-3 w-72 overflow-hidden p-2">
-                    @foreach ($links as $link)
-                        <a
-                            href="{{ $link['route'] }}"
-                            class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $link['active'] ? 'bg-[rgba(177,240,206,0.45)] text-(--cb-primary)' : 'text-(--cb-text) hover:bg-[rgba(244,242,255,0.85)]' }}"
+            <div class="pointer-events-none fixed inset-0 z-50 opacity-0 transition-opacity duration-300 ease-out md:hidden" data-mobile-nav-layer>
+                <button
+                    type="button"
+                    class="absolute inset-0 bg-[#111827]/55"
+                    aria-label="Cerrar menú"
+                    data-mobile-nav-overlay
+                ></button>
+
+                <aside
+                    id="mobile-nav-drawer"
+                    class="absolute top-0 right-0 h-dvh w-[min(24rem,92vw)] translate-x-full bg-white shadow-[-12px_0_32px_rgba(15,23,42,0.18)] transition-transform duration-300 ease-out"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Menú de navegación"
+                    data-mobile-nav-drawer
+                >
+                    <div class="relative border-b border-(--cb-border) px-5 pt-5 pb-4">
+
+                        <button
+                            type="button"
+                            class="ml-auto inline-flex items-center gap-1 rounded-full border border-(--cb-border) px-3 py-1.5 text-sm font-medium text-(--cb-text)"
+                            data-mobile-nav-close
                         >
-                            {{ $link['label'] }}
-                        </a>
-                    @endforeach
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            Volver
+                        </button>
+                    </div>
 
-                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-2 w-full">Registrar emprendimiento</a>
-                </div>
-            </details>
+                    <div class="h-[calc(100dvh-88px)] overflow-y-auto px-5 py-5">
+                        <div class="space-y-2 border-b border-(--cb-border) pb-5">
+                            @foreach ($links as $link)
+                                <a
+                                    href="{{ $link['route'] }}"
+                                    class="block rounded-2xl px-4 py-3.5 text-base font-medium transition {{ $link['active'] ? 'bg-[rgba(177,240,206,0.45)] text-(--cb-primary)' : 'text-(--cb-text) hover:bg-[rgba(244,242,255,0.85)]' }}"
+                                >
+                                    {{ $link['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+
+                        <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-5 w-full">Registrar emprendimiento</a>
+                    </div>
+                </aside>
+            </div>
         @endif
     </div>
 </header>

@@ -92,7 +92,7 @@
         </script>
         @stack('head')
     </head>
-    <body class="min-h-screen antialiased">
+    <body class="min-h-screen overflow-x-clip antialiased">
         @php
             $flashAlerts = [];
             $flashMessages = [

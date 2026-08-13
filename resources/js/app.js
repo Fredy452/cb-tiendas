@@ -423,6 +423,54 @@ const setupMobileCategoryPanels = () => {
 	});
 };
 
+const setupMobileNavDrawer = () => {
+	document.querySelectorAll('[data-mobile-nav-toggle]').forEach((toggle) => {
+		if (toggle.dataset.ready === 'true') {
+			return;
+		}
+
+		const layer = document.querySelector('[data-mobile-nav-layer]');
+		const drawer = layer?.querySelector('[data-mobile-nav-drawer]');
+		const overlay = layer?.querySelector('[data-mobile-nav-overlay]');
+		const closeButton = layer?.querySelector('[data-mobile-nav-close]');
+
+		if (! layer || ! drawer || ! overlay || ! closeButton) {
+			return;
+		}
+
+		const closeDrawer = () => {
+			toggle.setAttribute('aria-expanded', 'false');
+			layer.classList.add('pointer-events-none', 'opacity-0');
+			drawer.classList.add('translate-x-full');
+			document.body.classList.remove('overflow-hidden');
+		};
+
+		const openDrawer = () => {
+			toggle.setAttribute('aria-expanded', 'true');
+			layer.classList.remove('pointer-events-none', 'opacity-0');
+			drawer.classList.remove('translate-x-full');
+			document.body.classList.add('overflow-hidden');
+		};
+
+		toggle.dataset.ready = 'true';
+		closeDrawer();
+
+		toggle.addEventListener('click', () => {
+			const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+			isOpen ? closeDrawer() : openDrawer();
+		});
+
+		overlay.addEventListener('click', closeDrawer);
+		closeButton.addEventListener('click', closeDrawer);
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+				closeDrawer();
+			}
+		});
+	});
+};
+
 const setupSearchAutocomplete = () => {
 	document.querySelectorAll('[data-search-wrapper]').forEach((wrapper) => {
 		if (wrapper.dataset.ready === 'true') {
@@ -648,6 +696,7 @@ const setupPublicInteractions = () => {
 	setupFeaturedCarousels();
 	setupRelatedCarousels();
 	setupMobileCategoryPanels();
+	setupMobileNavDrawer();
 	setupSearchAutocomplete();
 };
 
