@@ -21,6 +21,7 @@ class TiendaController extends Controller
         $featuredStores = Store::query()
             ->where('is_featured', true)
             ->publicVisible()
+            ->with('categories')
             ->orderByDesc('created_at')
             ->latest()
             ->take(6)
@@ -73,7 +74,7 @@ class TiendaController extends Controller
             })
             ->orderByDesc('is_featured')
             ->latest()
-            ->paginate(6)
+            ->paginate(9)
             ->withQueryString();
 
         // Mostrar solo las categorías con uno o mas negocios públicos visibles

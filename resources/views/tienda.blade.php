@@ -70,7 +70,6 @@
                     {{-- Lista de resultados --}}
                     <ul data-search-results class="hidden"></ul>
                 </div>
-            </form>
             </div>
 
                 <div class="mt-12 grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
@@ -100,6 +99,7 @@
                                             name="categories[]"
                                             value="{{ $category->id }}"
                                             @checked(in_array($category->id, $selectedCategoryIds, true))
+                                            onchange="this.form.submit()"
                                             class="mt-1 h-5 w-5 rounded border-(--cb-border) text-(--cb-primary) focus:ring-(--cb-primary)"
                                         >
                                         <span>
@@ -114,7 +114,6 @@
                                 @endforelse
                             </div>
 
-                            <button type="submit" class="cb-button-primary mt-6 w-full rounded-2xl">Aplicar filtros</button>
                         </div>
 
                         <div class="hidden md:flex flex-wrap gap-3 lg:flex ">
