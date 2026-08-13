@@ -339,12 +339,23 @@
         background: radial-gradient(circle at 20% 20%, rgba(149, 212, 179, 0.8), rgba(15, 82, 56, 0.9));
     }
 
-    .cb-featured-category {
+    .cb-featured-categories {
         position: absolute;
         left: 0.95rem;
         top: 0.95rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        max-width: calc(100% - 1.9rem);
+    }
+
+    .cb-featured-category {
         display: inline-flex;
         align-items: center;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         border-radius: 9999px;
         background-color: #0E5138;
         padding: 0.35rem 0.9rem;

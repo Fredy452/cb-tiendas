@@ -91,7 +91,7 @@
                     <div class="cb-featured-track" data-featured-track>
                     @foreach ($featuredStores as $store)
                         @php
-                            $primaryCategory = $store->categories->first();
+                            $featuredCategories = $store->categories->take(2);
                             $descriptionExcerpt = $store->description
                                 ? Illuminate\Support\Str::limit(
                                     trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')),
@@ -115,9 +115,13 @@
                                         <div class="absolute inset-0"></div>
                                     @endif
 
-                                    <span class="cb-featured-category">
-                                        {{ $primaryCategory?->name ?: 'General' }}
-                                    </span>
+                                    <div class="cb-featured-categories">
+                                        @forelse ($featuredCategories as $featuredCategory)
+                                            <span class="cb-featured-category">{{ $featuredCategory->name }}</span>
+                                        @empty
+                                            <span class="cb-featured-category">General</span>
+                                        @endforelse
+                                    </div>
                                 </div>
 
                                 <div class="cb-featured-body">

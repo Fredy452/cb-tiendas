@@ -1,5 +1,5 @@
 @php
-    $primaryCategory = $store->categories->first();
+    $categoryBadges = $store->categories->take(2);
     $initials = collect(preg_split('/\s+/', trim($store->name) ?: 'N L'))
         ->filter()
         ->take(2)
@@ -50,14 +50,16 @@
             {{-- Badges sobre la imagen --}}
             <div class="absolute right-5 top-5 flex flex-wrap justify-end gap-2">
                 @if ($store->is_featured)
-                    <span class="cb-pill bg-[rgba(255,255,255,0.9)] text-(--cb-primary)">
-                        <span class="material-symbols-outlined text-[16px]">star</span>
-                        Destacado
+                    <span class="group relative cb-pill bg-[rgba(255,255,255,0.9)] text-(--cb-primary)" tabindex="0" aria-label="Destacado">
+                        <span class="material-symbols-outlined text-[16px]" aria-hidden="true">star</span>
+                        <span class="pointer-events-none absolute -bottom-9 left-1/2 z-20 -translate-x-1/2 rounded-md bg-(--cb-text) px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 shadow-md transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100">
+                            Destacado
+                        </span>
                     </span>
                 @endif
-                @if ($primaryCategory)
-                    <span class="cb-pill bg-[rgba(255,255,255,0.82)] text-(--cb-muted)">{{ $primaryCategory->name }}</span>
-                @endif
+                @foreach ($categoryBadges as $categoryBadge)
+                    <span class="cb-pill bg-[rgba(255,255,255,0.82)] text-(--cb-muted)">{{ $categoryBadge->name }}</span>
+                @endforeach
             </div>
 
             {{-- Logo: posicionado sobre el wrapper, sobresaliendo hacia abajo desde la imagen --}}
