@@ -501,15 +501,17 @@ const setupMobileNavDrawer = () => {
 
 		const closeDrawer = () => {
 			toggle.setAttribute('aria-expanded', 'false');
-			layer.classList.add('pointer-events-none', 'opacity-0');
-			drawer.classList.add('translate-x-full');
+			layer.classList.add('pointer-events-none');
+			layer.style.opacity = '0';
+			drawer.style.translate = '100%';
 			document.body.classList.remove('overflow-hidden');
 		};
 
 		const openDrawer = () => {
 			toggle.setAttribute('aria-expanded', 'true');
-			layer.classList.remove('pointer-events-none', 'opacity-0');
-			drawer.classList.remove('translate-x-full');
+			layer.classList.remove('pointer-events-none');
+			layer.style.opacity = '1';
+			drawer.style.translate = '0';
 			document.body.classList.add('overflow-hidden');
 		};
 
