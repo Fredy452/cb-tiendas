@@ -455,8 +455,8 @@ const setupMobileCategoryPanels = () => {
 
 		const setExpanded = (expanded) => {
 			toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-			layer.classList.toggle('hidden', ! expanded);
 			layer.classList.toggle('pointer-events-none', ! expanded);
+			layer.classList.toggle('opacity-0', ! expanded);
 			panel.classList.toggle('translate-x-full', ! expanded);
 			document.body.classList.toggle('overflow-hidden', expanded);
 

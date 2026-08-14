@@ -47,7 +47,7 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
 
-            <div class="pointer-events-none fixed inset-0 z-50 opacity-0 transition-opacity duration-300 ease-out md:hidden" data-mobile-nav-layer>
+            <div class="pointer-events-none fixed inset-0 z-50 opacity-0 transition-opacity duration-300 ease-out md:hidden" style="overflow: hidden;" data-mobile-nav-layer>
                 <button
                     type="button"
                     class="absolute inset-0 bg-[#111827]/55"
