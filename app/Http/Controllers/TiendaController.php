@@ -30,7 +30,7 @@ class TiendaController extends Controller
         $newStores = Store::query()
             ->publicVisible()
             ->latest()
-            ->take(8)
+            ->take(16)
             ->get();
 
         $categories = $this->publicCategoriesWithCounts()->take(6);

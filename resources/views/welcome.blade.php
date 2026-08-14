@@ -158,7 +158,54 @@
                     <a href="{{ route('emprendimientos.create') }}" class="cb-button-secondary mt-6">Registrar emprendimiento</a>
                 </div>
             @else
-                <div class="cb-home-carousel mt-8" data-home-carousel>
+                <div class="cb-home-mobile-carousel mt-8 md:hidden" data-home-carousel>
+                    <div class="cb-home-mobile-viewport" data-home-viewport>
+                        <div class="cb-home-mobile-track" data-home-track>
+                        @foreach ($newStores->chunk(4) as $storeChunk)
+                            <article class="cb-home-mobile-slide" data-home-slide>
+                                <div class="grid grid-cols-2 gap-4">
+                                @foreach ($storeChunk as $store)
+                                    @php
+                                        $descriptionExcerpt = $store->description
+                                            ? Illuminate\Support\Str::limit(
+                                                trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')),
+                                                68,
+                                            )
+                                            : 'Nuevo emprendimiento local incorporado al directorio oficial.';
+                                        $detailRouteKey = $store->slug ?: $store->getKey();
+                                    @endphp
+
+                                    <a href="{{ route('tiendas.show', $detailRouteKey) }}" class="group cb-home-card">
+                                        <div class="cb-home-media">
+                                            @if ($store->logo_url)
+                                                <img
+                                                    src="{{ $store->logo_url }}"
+                                                    alt="{{ $store->name }}"
+                                                    class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                                >
+                                            @else
+                                                <div class="cb-home-media-placeholder">
+                                                    <span class="material-symbols-outlined text-[2rem] text-white/90">storefront</span>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div class="px-1 pt-4">
+                                            <h3 class="text-lg font-semibold leading-tight tracking-tight text-(--cb-text)">{{ $store->name }}</h3>
+                                            <p class="mt-2 line-clamp-1 text-sm text-(--cb-muted)">
+                                                {{ $descriptionExcerpt }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                                </div>
+                            </article>
+                        @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cb-home-carousel mt-8 hidden md:block" data-home-carousel>
                     <div class="cb-home-viewport" data-home-viewport>
                         <div class="cb-home-track" data-home-track>
                         @foreach ($newStores as $store)
