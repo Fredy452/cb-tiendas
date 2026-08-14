@@ -85,7 +85,59 @@
                             <span class="material-symbols-outlined" data-mobile-categories-icon>expand_more</span>
                         </button>
 
-                        <div class="cb-panel hidden p-6 lg:block" id="mobile-categories-panel" data-mobile-categories-panel>
+                        <div class="fixed inset-0 z-40 hidden lg:hidden" data-mobile-categories-layer>
+                            <button
+                                type="button"
+                                class="absolute inset-0 bg-[#111827]/55"
+                                aria-label="Cerrar filtros"
+                                data-mobile-categories-overlay
+                            ></button>
+
+                            <div
+                                id="mobile-categories-panel"
+                                class="absolute inset-y-0 right-0 w-[min(92vw,28rem)] translate-x-full overflow-y-auto bg-white px-5 py-5 shadow-[-12px_0_32px_rgba(15,23,42,0.18)] transition-transform duration-300 ease-out"
+                                data-mobile-categories-panel
+                                role="dialog"
+                                aria-modal="true"
+                                aria-label="Filtros por categoría"
+                            >
+                                <div class="mb-5 flex items-center justify-between gap-3 border-b border-(--cb-border) pb-4">
+                                    <h2 class="text-2xl font-bold text-(--cb-text)">Categorías</h2>
+                                    <button
+                                        type="button"
+                                        class="inline-flex items-center justify-center rounded-full border border-(--cb-border) p-2 text-(--cb-text)"
+                                        aria-label="Cerrar filtros"
+                                        data-mobile-categories-close
+                                    >
+                                        <span class="material-symbols-outlined">close</span>
+                                    </button>
+                                </div>
+
+                                <div class="space-y-3">
+                                    @forelse ($categories as $category)
+                                        <label class="flex items-start gap-3 rounded-2xl px-2 py-2.5 {{ in_array($category->id, $selectedCategoryIds, true) ? 'bg-[rgba(177,240,206,0.28)]' : '' }}">
+                                            <input
+                                                type="checkbox"
+                                                name="categories[]"
+                                                value="{{ $category->id }}"
+                                                @checked(in_array($category->id, $selectedCategoryIds, true))
+                                                data-category-checkbox
+                                                class="mt-1 h-5 w-5 rounded border-(--cb-border) text-(--cb-primary) focus:ring-(--cb-primary)"
+                                            >
+                                            <span class="block text-lg font-medium text-(--cb-text)">{{ $category->name }}</span>
+                                        </label>
+                                    @empty
+                                        <p class="text-sm leading-7 text-(--cb-muted)">Aún no hay categorías activas para filtrar.</p>
+                                    @endforelse
+                                </div>
+
+                                <div class="mt-6 border-t border-(--cb-border) pt-4">
+                                    <a href="{{ route('tiendas.index') }}" class="inline-flex text-base font-medium text-(--cb-secondary) hover:underline">Limpiar filtros</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cb-panel hidden p-6 lg:block" data-mobile-categories-desktop>
                             <div class="mb-5 flex items-center justify-between gap-4">
                                 <h2 class="text-xl font-medium">Categorías</h2>
                                 <a href="{{ route('tiendas.index') }}" class="text-sm font-medium text-(--cb-secondary) hover:underline">Limpiar</a>
@@ -99,7 +151,7 @@
                                             name="categories[]"
                                             value="{{ $category->id }}"
                                             @checked(in_array($category->id, $selectedCategoryIds, true))
-                                            onchange="this.form.submit()"
+                                            data-category-checkbox
                                             class="mt-1 h-5 w-5 rounded border-(--cb-border) text-(--cb-primary) focus:ring-(--cb-primary)"
                                         >
                                         <span>

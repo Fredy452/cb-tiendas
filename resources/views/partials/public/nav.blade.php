@@ -87,7 +87,7 @@
                             @endforeach
                         </div>
 
-                        <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-5 w-full">Registrar emprendimiento</a>
+                        <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-5 hidden w-full lg:block">Registrar emprendimiento</a>
                     </div>
                 </aside>
             </div>

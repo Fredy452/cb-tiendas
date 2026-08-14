@@ -390,6 +390,52 @@ const setupRelatedCarousels = () => {
 	});
 };
 
+const setupCategoryFilters = () => {
+	const grouped = new Map();
+
+	document.querySelectorAll('input[data-category-checkbox]').forEach((checkbox) => {
+		const value = String(checkbox.value);
+
+		if (! grouped.has(value)) {
+			grouped.set(value, []);
+		}
+
+		grouped.get(value).push(checkbox);
+	});
+
+	grouped.forEach((checkboxes) => {
+		checkboxes.forEach((checkbox) => {
+			if (checkbox.dataset.ready === 'true') {
+				return;
+			}
+
+			checkbox.dataset.ready = 'true';
+			checkbox.addEventListener('change', () => {
+				const checkedState = checkbox.checked;
+
+				checkboxes.forEach((item) => {
+					item.checked = checkedState;
+				});
+
+				const selectedValues = [...document.querySelectorAll('input[data-category-checkbox]')]
+					.filter((input) => input.checked)
+					.map((input) => input.value)
+					.filter((value, index, array) => array.indexOf(value) === index);
+
+				const url = new URL(window.location.href);
+				url.searchParams.delete('page');
+				url.searchParams.delete('categories[]');
+
+				selectedValues.forEach((value) => {
+					url.searchParams.append('categories[]', value);
+				});
+
+				window.location.href = url.toString();
+			});
+		});
+	});
+};
+
 const setupMobileCategoryPanels = () => {
 	document.querySelectorAll('[data-mobile-categories-toggle]').forEach((toggle) => {
 		if (toggle.dataset.ready === 'true') {
@@ -398,15 +444,21 @@ const setupMobileCategoryPanels = () => {
 
 		const panelId = toggle.getAttribute('aria-controls');
 		const panel = panelId ? document.getElementById(panelId) : null;
+		const layer = panel?.closest('[data-mobile-categories-layer]');
+		const overlay = layer?.querySelector('[data-mobile-categories-overlay]');
+		const closeButton = panel?.querySelector('[data-mobile-categories-close]');
 		const icon = toggle.querySelector('[data-mobile-categories-icon]');
 
-		if (! panel) {
+		if (! panel || ! layer) {
 			return;
 		}
 
 		const setExpanded = (expanded) => {
 			toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-			panel.classList.toggle('hidden', ! expanded);
+			layer.classList.toggle('hidden', ! expanded);
+			layer.classList.toggle('pointer-events-none', ! expanded);
+			panel.classList.toggle('translate-x-full', ! expanded);
+			document.body.classList.toggle('overflow-hidden', expanded);
 
 			if (icon) {
 				icon.textContent = expanded ? 'expand_less' : 'expand_more';
@@ -419,6 +471,15 @@ const setupMobileCategoryPanels = () => {
 		toggle.addEventListener('click', () => {
 			const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
 			setExpanded(! isExpanded);
+		});
+
+		overlay?.addEventListener('click', () => setExpanded(false));
+		closeButton?.addEventListener('click', () => setExpanded(false));
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+				setExpanded(false);
+			}
 		});
 	});
 };
@@ -695,6 +756,7 @@ const setupPublicInteractions = () => {
 	setupLocationPickers();
 	setupFeaturedCarousels();
 	setupRelatedCarousels();
+	setupCategoryFilters();
 	setupMobileCategoryPanels();
 	setupMobileNavDrawer();
 	setupSearchAutocomplete();
