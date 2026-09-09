@@ -152,6 +152,61 @@ class PublicPagesTest extends TestCase
         ]);
     }
 
+    public function test_guest_can_rate_an_approved_store(): void
+    {
+        [, $store] = $this->seedCatalog();
+
+        $this->post(route('tiendas.ratings.store', $store->slug), [
+            'rating' => 5,
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('store_ratings', [
+            'store_id' => $store->id,
+            'rating' => 5,
+        ]);
+
+        $this->get(route('tiendas.show', $store->slug))
+            ->assertOk()
+            ->assertSeeText('Calificaciones')
+            ->assertSeeText('5.0')
+            ->assertSeeText('100% recomienda');
+    }
+
+    public function test_guest_can_rate_a_store_only_once_from_the_same_ip(): void
+    {
+        [, $store] = $this->seedCatalog();
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+            ->post(route('tiendas.ratings.store', $store->slug), ['rating' => 5])
+            ->assertRedirect();
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+            ->post(route('tiendas.ratings.store', $store->slug), ['rating' => 1])
+            ->assertRedirect()
+            ->assertSessionHas('rating_status', 'Ya registramos tu calificación para este negocio.');
+
+        $this->assertDatabaseCount('store_ratings', 1);
+        $this->assertDatabaseHas('store_ratings', [
+            'store_id' => $store->id,
+            'rating' => 5,
+        ]);
+    }
+
+    public function test_store_rating_route_is_rate_limited_by_ip(): void
+    {
+        [, $store] = $this->seedCatalog();
+
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.20'])
+                ->post(route('tiendas.ratings.store', $store->slug), ['rating' => 4])
+                ->assertRedirect();
+        }
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.20'])
+            ->post(route('tiendas.ratings.store', $store->slug), ['rating' => 4])
+            ->assertTooManyRequests();
+    }
+
     private function seedCatalog(): array
     {
         $category = Category::query()->create([

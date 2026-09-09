@@ -251,6 +251,83 @@
     </section>
 
     <section class="bg-[#F0EFFF]">
+        <div class="cb-shell pb-8">
+            <div class="rounded-3xl bg-white p-6 shadow-[0_18px_42px_rgba(22,26,50,0.06)] sm:p-8">
+                <div class="flex flex-col gap-5 border-b border-[rgba(222,224,255,0.95)] pb-6 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <h2 class="cb-subheading">Calificaciones</h2>
+                            <span class="rounded-full bg-[#dff7ee] px-3 py-1 text-xs font-bold text-(--cb-primary)">
+                                {{ $ratingSummary['total'] }} verificadas
+                            </span>
+                        </div>
+                        <p class="mt-2 text-base text-(--cb-muted)">Valoraciones de la comunidad y vecinos de Coronel Bogado</p>
+                    </div>
+
+                    <form action="{{ route('tiendas.ratings.store', $store->slug ?: $store->getKey()) }}" method="POST" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        @csrf
+                        <fieldset class="flex items-center gap-1" aria-label="Elegí una calificación">
+                            @for ($rating = 1; $rating <= 5; $rating++)
+                                <label class="group relative cursor-pointer">
+                                    <input type="radio" name="rating" value="{{ $rating }}" class="peer sr-only" @checked((int) old('rating') === $rating) @disabled($hasRatedStore)>
+                                    <span class="material-symbols-outlined rounded-full px-1 text-3xl text-[#f59e0b] transition peer-checked:bg-[#fff4cf] peer-focus-visible:ring-2 peer-focus-visible:ring-(--cb-primary) {{ $hasRatedStore ? 'opacity-45' : 'group-hover:scale-110' }}">
+                                        star
+                                    </span>
+                                </label>
+                            @endfor
+                        </fieldset>
+
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-(--cb-primary) px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(15,82,56,0.2)] transition hover:bg-[color-mix(in_oklab,var(--cb-primary)_92%,black_8%)] disabled:cursor-not-allowed disabled:opacity-60" @disabled($hasRatedStore)>
+                            <span class="material-symbols-outlined text-[19px]">reviews</span>
+                            {{ $hasRatedStore ? 'Calificación enviada' : 'Calificar' }}
+                        </button>
+                    </form>
+                </div>
+
+                @if (session('rating_status'))
+                    <div class="mt-5 rounded-2xl border border-[rgba(15,82,56,0.16)] bg-[#dff7ee] px-4 py-3 text-sm font-semibold text-(--cb-primary)">
+                        {{ session('rating_status') }}
+                    </div>
+                @endif
+
+                @error('rating')
+                    <p class="mt-4 text-sm font-semibold text-[#93000a]">{{ $message }}</p>
+                @enderror
+
+                <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(220px,0.62fr)_minmax(0,1fr)] lg:items-center">
+                    <div class="rounded-2xl bg-[#F0EFFF] px-6 py-8 text-center">
+                        <p class="text-6xl font-bold leading-none tracking-normal text-(--cb-text)">{{ number_format($ratingSummary['average'], 1) }}</p>
+                        <div class="mt-3 flex justify-center gap-0.5 text-[#f59e0b]" aria-label="Promedio de {{ number_format($ratingSummary['average'], 1) }} estrellas">
+                            @for ($star = 1; $star <= 5; $star++)
+                                <span class="material-symbols-outlined text-2xl">{{ $star <= round($ratingSummary['average']) ? 'star' : 'star_outline' }}</span>
+                            @endfor
+                        </div>
+                        <p class="mt-2 text-sm font-semibold text-(--cb-muted)">Basado en {{ $ratingSummary['total'] }} calificaciones</p>
+                        <span class="mt-3 inline-flex rounded-full bg-[#a8f0c6] px-4 py-1 text-xs font-bold text-(--cb-primary)">
+                            {{ $ratingSummary['recommended_percentage'] }}% recomienda
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        @foreach ($ratingSummary['distribution'] as $rating => $ratingData)
+                            <div class="grid grid-cols-[38px_minmax(0,1fr)_42px] items-center gap-3 text-sm font-semibold text-(--cb-muted)">
+                                <div class="flex items-center justify-end gap-1">
+                                    <span>{{ $rating }}</span>
+                                    <span class="material-symbols-outlined text-base text-[#f59e0b]">star</span>
+                                </div>
+                                <div class="h-3 overflow-hidden rounded-full bg-[#DEE0FF]">
+                                    <div class="h-full rounded-full bg-[#f59e0b]" style="width: {{ $ratingData['percentage'] }}%"></div>
+                                </div>
+                                <span>{{ $ratingData['percentage'] }}%</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#F0EFFF]">
         <div class="cb-shell cb-section pt-8">
             <div class="border-t border-[rgba(222,224,255,0.9)] pt-12">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

@@ -188,6 +188,90 @@ const setupImagePreviews = () => {
 	});
 };
 
+const setupRegistrationFileSizeValidation = () => {
+	document.querySelectorAll('[data-store-registration-form]').forEach((form) => {
+		if (form.dataset.ready === 'true') {
+			return;
+		}
+
+		const fileInputs = Array.from(form.querySelectorAll('input[type="file"][data-max-size-kb]'));
+
+		if (fileInputs.length === 0) {
+			return;
+		}
+
+		const escapeHtml = (value) => {
+			const div = document.createElement('div');
+			div.textContent = String(value);
+			return div.innerHTML;
+		};
+
+		const showErrors = async (messages) => {
+			const content = document.createElement('div');
+			content.className = 'cb-swal-messages';
+
+			messages.forEach((message) => {
+				const paragraph = document.createElement('p');
+				paragraph.innerHTML = escapeHtml(message);
+				content.appendChild(paragraph);
+			});
+
+			await Swal.fire({
+				icon: 'error',
+				titleText: 'Revisá los archivos cargados',
+				html: content,
+				confirmButtonText: 'Entendido',
+				buttonsStyling: false,
+				customClass: {
+					popup: 'cb-swal-popup',
+					title: 'cb-swal-title',
+					htmlContainer: 'cb-swal-content',
+					confirmButton: 'cb-swal-confirm',
+				},
+			});
+		};
+
+		const validateFiles = () => {
+			const messages = [];
+
+			fileInputs.forEach((input) => {
+				const [file] = input.files || [];
+
+				if (! file) {
+					return;
+				}
+
+				const maxSizeKb = Number(input.dataset.maxSizeKb || 0);
+
+				if (! maxSizeKb || file.size <= maxSizeKb * 1024) {
+					return;
+				}
+
+				const label = input.labels?.[0]?.textContent?.trim() || input.name;
+				messages.push(`El archivo ${label.toLowerCase()} no debe superar los ${maxSizeKb} KB.`);
+			});
+
+			return messages;
+		};
+
+		form.dataset.ready = 'true';
+
+		form.addEventListener('submit', async (event) => {
+			const messages = validateFiles();
+
+			if (messages.length === 0) {
+				return;
+			}
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			await showErrors(messages);
+			fileInputs.find((input) => input.files?.length > 0)?.focus();
+		});
+	});
+};
+
 const setupLocationPickers = () => {
 	document.querySelectorAll('[data-location-picker]').forEach((picker) => {
 		if (picker.dataset.ready === 'true') {
@@ -755,6 +839,7 @@ const setupPublicInteractions = () => {
 	setupFlashAlerts();
 	setupCategoryComboboxes();
 	setupImagePreviews();
+	setupRegistrationFileSizeValidation();
 	setupLocationPickers();
 	setupFeaturedCarousels();
 	setupRelatedCarousels();

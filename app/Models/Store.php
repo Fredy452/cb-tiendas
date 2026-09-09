@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -61,6 +62,37 @@ class Store extends Model
         // Note 9: category_store conecta store_id con category_id
         // Note 10: aqui se centraliza la definicion de esa union para todo el dominio
         return $this->belongsToMany(Category::class, 'category_store');
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(\App\Models\StoreRating::class);
+    }
+
+    public function ratingSummary(): array
+    {
+        $counts = $this->ratings()
+            ->selectRaw('rating, count(*) as total')
+            ->groupBy('rating')
+            ->pluck('total', 'rating');
+
+        $total = (int) $counts->sum();
+        $average = $total > 0
+            ? round($counts->sum(fn ($count, $rating) => $count * $rating) / $total, 1)
+            : 0.0;
+        $recommended = (int) (($counts->get(4, 0) ?? 0) + ($counts->get(5, 0) ?? 0));
+
+        return [
+            'average' => $average,
+            'total' => $total,
+            'recommended_percentage' => $total > 0 ? (int) round(($recommended / $total) * 100) : 0,
+            'distribution' => collect(range(5, 1))->mapWithKeys(fn (int $rating) => [
+                $rating => [
+                    'count' => (int) ($counts->get($rating, 0) ?? 0),
+                    'percentage' => $total > 0 ? (int) round(((int) ($counts->get($rating, 0) ?? 0) / $total) * 100) : 0,
+                ],
+            ])->all(),
+        ];
     }
 
     public function getCoverUrlAttribute(): ?string

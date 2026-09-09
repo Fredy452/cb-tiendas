@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRatingRequest;
 use App\Http\Requests\StoreRegistrationRequest;
 use App\Models\Category;
 use App\Models\Store;
@@ -220,7 +221,47 @@ class TiendaController extends Controller
             ->take(8)
             ->get();
 
-        return view('tiendas.show', compact('store', 'relatedStores', 'waPhone', 'waMessage', 'emailSubject', 'emailBody', 'socialIcons'));
+        $ratingSummary = $store->ratingSummary();
+        $hasRatedStore = $store->ratings()
+            ->where('visitor_hash', $this->ratingVisitorHash(request()))
+            ->exists();
+
+        return view('tiendas.show', compact('store', 'relatedStores', 'waPhone', 'waMessage', 'emailSubject', 'emailBody', 'socialIcons', 'ratingSummary', 'hasRatedStore'));
+    }
+
+    public function rate(StoreRatingRequest $request, string $store): RedirectResponse
+    {
+        $store = Store::query()
+            ->publicVisible()
+            ->where(function (Builder $query) use ($store) {
+                $query->where('slug', $store);
+
+                if (ctype_digit($store)) {
+                    $query->orWhereKey((int) $store);
+                }
+            })
+            ->firstOrFail();
+
+        $visitorHash = $this->ratingVisitorHash($request);
+
+        if ($store->ratings()->where('visitor_hash', $visitorHash)->exists()) {
+            return back()->with('rating_status', 'Ya registramos tu calificación para este negocio.');
+        }
+
+        $store->ratings()->create([
+            'rating' => (int) $request->validated('rating'),
+            'visitor_hash' => $visitorHash,
+        ]);
+
+        return back()->with('rating_status', 'Gracias por calificar este emprendimiento.');
+    }
+
+    private function ratingVisitorHash(Request $request): string
+    {
+        return hash('sha256', implode('|', [
+            (string) $request->ip(),
+            (string) config('app.key'),
+        ]));
     }
 
     public function about(): View
