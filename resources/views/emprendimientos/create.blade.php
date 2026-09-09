@@ -11,11 +11,11 @@
         $selectedCategory = $categories->first(fn ($category) => (string) $category->id === $selectedCategoryId);
     @endphp
 
-    <section class="overflow-hidden py-14 sm:py-16" style="background: radial-gradient(circle at 100% 0%, rgba(15, 82, 56, 0.1), transparent 46%), var(--cb-surface-soft);">
+    <section class="overflow-hidden py-14 sm:py-16 bg-[#DEE0FF]">
         <div class="cb-shell grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
             <div class="max-w-2xl">
                 <h1 class="cb-display text-(--cb-text)">Impulsá tu negocio con CB Tiendas. Unite hoy mismo.</h1>
-                <p class="mt-5 max-w-xl text-lg leading-8 text-(--cb-muted)">
+                <p class="mt-5 max-w-xl text-xl font-light">
                     Conectá tu emprendimiento con la comunidad de Coronel Bogado. Una plataforma diseñada para destacar lo mejor de nuestra gente.
                 </p>
             </div>
@@ -33,7 +33,7 @@
         </div>
     </section>
 
-    <section class="cb-section">
+    <section class="cb-section bg-[#F0EFFF]">
         <div class="cb-shell grid gap-12 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.12fr)] lg:items-start">
             <div class="space-y-10">
                 <div>
@@ -42,11 +42,11 @@
                     <div class="mt-8 space-y-7">
                         <div class="flex items-start gap-4">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--cb-primary-strong) text-(--cb-primary-soft)">
-                                <span class="material-symbols-outlined">price_check</span>
+                                <span class="material-symbols-outlined">money_off</span>
                             </div>
                             <div>
                                 <h3 class="text-2xl font-semibold tracking-tight text-(--cb-text)">Es 100% Gratis</h3>
-                                <p class="mt-1 max-w-md leading-7 text-(--cb-muted)">Sin comisiones ni costos ocultos. Una iniciativa para fortalecer nuestra economía local.</p>
+                                <p class="mt-1 max-w-md leading-7 text-lg font-light">Sin comisiones ni costos ocultos. Una iniciativa para fortalecer nuestra economía local.</p>
                             </div>
                         </div>
 
@@ -56,7 +56,7 @@
                             </div>
                             <div>
                                 <h3 class="text-2xl font-semibold tracking-tight text-(--cb-text)">Mayor Visibilidad</h3>
-                                <p class="mt-1 max-w-md leading-7 text-(--cb-muted)">Tu negocio estará disponible para todos los habitantes y visitantes de la ciudad en un solo lugar.</p>
+                                <p class="mt-1 max-w-md leading-7 text-lg font-light">Tu negocio estará disponible para todos los habitantes y visitantes de la ciudad en un solo lugar.</p>
                             </div>
                         </div>
 
@@ -66,7 +66,7 @@
                             </div>
                             <div>
                                 <h3 class="text-2xl font-semibold tracking-tight text-(--cb-text)">Más Ventas</h3>
-                                <p class="mt-1 max-w-md leading-7 text-(--cb-muted)">Facilitá que los clientes te encuentren y contacten directamente para adquirir tus productos o servicios.</p>
+                                <p class="mt-1 max-w-md leading-7 text-lg font-light">Facilitá que los clientes te encuentren y contacten directamente para adquirir tus productos o servicios.</p>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                 <h2 class="cb-subheading">Completá tus datos</h2>
 
                 @if ($errors->any())
-                    <div class="mt-6 rounded-3xl border border-[rgba(186,26,26,0.18)] bg-[rgba(255,218,214,0.6)] px-5 py-4 text-sm leading-7 text-[#93000a]">
+                    <div class="mt-6 rounded-xl border border-[rgba(186,26,26,0.18)] bg-[rgba(255,218,214,0.6)] px-5 py-4 text-sm leading-7 text-[#93000a]">
                         <p class="font-semibold">Revisá los datos cargados:</p>
                         <ul class="mt-2 list-disc pl-5">
                             @foreach ($errors->all() as $error)
@@ -105,19 +105,23 @@
                 <form action="{{ route('emprendimientos.store') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-8">
                     @csrf
 
-                    <fieldset class="space-y-6">
+                    <fieldset class="space-y-3">
                         <legend class="sr-only">Datos principales del emprendimiento</legend>
 
                         <div>
-                            <label for="name" class="mb-2 block text-sm font-semibold text-(--cb-text)">Nombre del negocio</label>
-                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela">
+                            <label for="name" class="mb-2 block text-lg font-medium text-(--cb-text)">Nombre del negocio</label>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela" maxlength="255" aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}" @error('name') aria-describedby="name-error" @enderror>
+                            @error('name')
+                                <p id="name-error" class="cb-field-error">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <div class="grid gap-6 sm:grid-cols-2">
+                        <div class="space-y-6">
                             <div>
-                                <label for="category_id" class="mb-2 block text-sm font-semibold text-(--cb-text)">Rubro / Categoría</label>
+                                <label for="category_id" class="mb-2 block text-lg font-medium text-(--cb-text)">Rubro / Categoría</label>
+                                <p class="mb-2 text-sm text-(--cb-muted)">Si no existe su rubro, seleccione <span class="font-semibold text-(--cb-primary)">Otros</span>.</p>
                                 <div class="relative" data-category-combobox>
-                                    <select id="category_id" name="category_id" class="cb-input" data-category-native>
+                                    <select id="category_id" name="category_id" class="cb-input" data-category-native aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
                                         <option value="">Seleccioná una categoría</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}" @selected($selectedCategoryId === (string) $category->id)>
@@ -127,7 +131,7 @@
                                     </select>
 
                                     <div class="hidden" data-category-enhanced>
-                                        <button type="button" class="cb-input flex items-center justify-between gap-3 text-left" data-category-toggle aria-haspopup="listbox" aria-expanded="false">
+                                        <button type="button" class="cb-input flex items-center justify-between gap-3 text-left" data-category-toggle aria-haspopup="listbox" aria-expanded="false" aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
                                             <span class="truncate {{ $selectedCategory ? 'text-(--cb-text)' : 'text-(--cb-outline)' }}" data-category-current>
                                                 {{ $selectedCategory?->name ?? 'Seleccioná una categoría' }}
                                             </span>
@@ -155,21 +159,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                @error('category_id')
+                                    <p id="category-id-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
-                                <label for="phone" class="mb-2 block text-sm font-semibold text-(--cb-text)">Teléfono de contacto (WhatsApp)</label>
-                                <input id="phone" name="phone" type="text" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX">
+                                <label for="phone" class="mb-2 block text-lg font-medium text-(--cb-text)">Teléfono de contacto (WhatsApp)</label>
+                                <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX" maxlength="25" aria-invalid="{{ $errors->has('phone') ? 'true' : 'false' }}" @error('phone') aria-describedby="phone-error" @enderror>
+                                @error('phone')
+                                    <p id="phone-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
                         <div>
-                            <label for="description" class="mb-2 block text-sm font-semibold text-(--cb-text)">Breve descripción de lo que hacés</label>
-                            <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés...">{{ old('description') }}</textarea>
+                            <label for="description" class="mb-2 block text-lg font-medium text-(--cb-text)">Breve descripción de lo que hacés</label>
+                            <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés..." maxlength="1200" aria-invalid="{{ $errors->has('description') ? 'true' : 'false' }}" @error('description') aria-describedby="description-error" @enderror>{{ old('description') }}</textarea>
+                            @error('description')
+                                <p id="description-error" class="cb-field-error">{{ $message }}</p>
+                            @enderror
                         </div>
                     </fieldset>
 
-                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8">
+                    <fieldset class="space-y-3 border-t border-[rgba(222,224,255,0.9)] pt-8">
                         <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
                             <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">contact_mail</span>
                             Contacto y redes
@@ -177,54 +190,78 @@
 
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div>
-                                <label for="email" class="mb-2 block text-sm font-semibold text-(--cb-text)">Correo electrónico</label>
-                                <input id="email" name="email" type="email" value="{{ old('email') }}" class="cb-input" placeholder="Ej: contacto@negocio.com">
+                                <label for="email" class="mb-2 block text-lg font-medium text-(--cb-text)">Correo electrónico</label>
+                                <input id="email" name="email" type="email" value="{{ old('email') }}" class="cb-input" placeholder="Ej: contacto@negocio.com" maxlength="255" aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}" @error('email') aria-describedby="email-error" @enderror>
+                                @error('email')
+                                    <p id="email-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
-                                <label for="website" class="mb-2 block text-sm font-semibold text-(--cb-text)">Sitio web o catálogo</label>
-                                <input id="website" name="website" type="url" value="{{ old('website') }}" class="cb-input" placeholder="https://tu-negocio.com">
+                                <label for="website" class="mb-2 block text-lg font-medium text-(--cb-text)">Sitio web o catálogo</label>
+                                <input id="website" name="website" type="text" value="{{ old('website') }}" class="cb-input" placeholder="https://tu-negocio.com" maxlength="255" inputmode="url" aria-invalid="{{ $errors->has('website') ? 'true' : 'false' }}" @error('website') aria-describedby="website-error" @enderror>
+                                @error('website')
+                                    <p id="website-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="grid gap-6 lg:grid-cols-3">
                             <div>
-                                <label for="facebook_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">Facebook</label>
-                                <input id="facebook_url" name="facebook_url" type="url" value="{{ old('facebook_url') }}" class="cb-input" placeholder="https://facebook.com/tu-negocio">
+                                <label for="facebook_url" class="mb-2 block text-lg font-medium text-(--cb-text)">Facebook</label>
+                                <input id="facebook_url" name="facebook_url" type="text" value="{{ old('facebook_url') }}" class="cb-input" placeholder="https://facebook.com/tu-negocio" maxlength="255" inputmode="url" aria-invalid="{{ $errors->has('facebook_url') ? 'true' : 'false' }}" @error('facebook_url') aria-describedby="facebook-url-error" @enderror>
+                                @error('facebook_url')
+                                    <p id="facebook-url-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
-                                <label for="instagram_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">Instagram</label>
-                                <input id="instagram_url" name="instagram_url" type="url" value="{{ old('instagram_url') }}" class="cb-input" placeholder="https://instagram.com/tu-negocio">
+                                <label for="instagram_url" class="mb-2 block text-lg font-medium text-(--cb-text)">Instagram</label>
+                                <input id="instagram_url" name="instagram_url" type="text" value="{{ old('instagram_url') }}" class="cb-input" placeholder="https://instagram.com/tu-negocio" maxlength="255" inputmode="url" aria-invalid="{{ $errors->has('instagram_url') ? 'true' : 'false' }}" @error('instagram_url') aria-describedby="instagram-url-error" @enderror>
+                                @error('instagram_url')
+                                    <p id="instagram-url-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
-                                <label for="tiktok_url" class="mb-2 block text-sm font-semibold text-(--cb-text)">TikTok</label>
-                                <input id="tiktok_url" name="tiktok_url" type="url" value="{{ old('tiktok_url') }}" class="cb-input" placeholder="https://tiktok.com/@tu-negocio">
+                                <label for="tiktok_url" class="mb-2 block text-lg font-medium text-(--cb-text)">TikTok</label>
+                                <input id="tiktok_url" name="tiktok_url" type="text" value="{{ old('tiktok_url') }}" class="cb-input" placeholder="https://tiktok.com/@tu-negocio" maxlength="255" inputmode="url" aria-invalid="{{ $errors->has('tiktok_url') ? 'true' : 'false' }}" @error('tiktok_url') aria-describedby="tiktok-url-error" @enderror>
+                                @error('tiktok_url')
+                                    <p id="tiktok-url-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </fieldset>
 
-                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8" data-location-picker>
+                    <fieldset class="space-y-3 border-t border-[rgba(222,224,255,0.9)] pt-8" data-location-picker>
                         <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
                             <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">location_on</span>
                             Ubicación
                         </legend>
 
                         <div>
-                            <label for="address" class="mb-2 block text-sm font-semibold text-(--cb-text)">Dirección o zona de referencia</label>
-                            <input id="address" name="address" type="text" value="{{ old('address') }}" class="cb-input" placeholder="Ej: Centro, Coronel Bogado">
+                            <label for="address" class="mb-2 block text-lg font-medium text-(--cb-text)">Dirección o zona de referencia</label>
+                            <input id="address" name="address" type="text" value="{{ old('address') }}" class="cb-input" placeholder="Ej: Centro, Coronel Bogado" maxlength="255" aria-invalid="{{ $errors->has('address') ? 'true' : 'false' }}" @error('address') aria-describedby="address-error" @enderror>
+                            @error('address')
+                                <p id="address-error" class="cb-field-error">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="grid gap-6 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
                             <div>
-                                <label for="latitude" class="mb-2 block text-sm font-semibold text-(--cb-text)">Latitud</label>
-                                <input id="latitude" name="latitude" type="text" value="{{ old('latitude') }}" class="cb-input" placeholder="-27.160530" data-location-latitude>
+                                <label for="latitude" class="mb-2 block text-lg font-medium text-(--cb-text)">Latitud</label>
+                                <input id="latitude" name="latitude" type="text" value="{{ old('latitude') }}" class="cb-input" placeholder="-27.160530" inputmode="decimal" data-location-latitude aria-invalid="{{ $errors->has('latitude') ? 'true' : 'false' }}" @error('latitude') aria-describedby="latitude-error" @enderror>
+                                @error('latitude')
+                                    <p id="latitude-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div>
-                                <label for="longitude" class="mb-2 block text-sm font-semibold text-(--cb-text)">Longitud</label>
-                                <input id="longitude" name="longitude" type="text" value="{{ old('longitude') }}" class="cb-input" placeholder="-56.241407" data-location-longitude>
+                                <label for="longitude" class="mb-2 block text-lg font-medium text-(--cb-text)">Longitud</label>
+                                <input id="longitude" name="longitude" type="text" value="{{ old('longitude') }}" class="cb-input" placeholder="-56.241407" inputmode="decimal" data-location-longitude aria-invalid="{{ $errors->has('longitude') ? 'true' : 'false' }}" @error('longitude') aria-describedby="longitude-error" @enderror>
+                                @error('longitude')
+                                    <p id="longitude-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <button type="button" class="cb-button-secondary rounded-2xl px-4 py-3 text-sm" data-location-button>
@@ -236,7 +273,7 @@
                         <p class="hidden text-sm leading-6 text-(--cb-muted)" data-location-status></p>
                     </fieldset>
 
-                    <fieldset class="space-y-6 border-t border-[rgba(222,224,255,0.9)] pt-8">
+                    <fieldset class="space-y-3 border-t border-[rgba(222,224,255,0.9)] pt-8">
                         <legend class="flex items-center gap-2 text-base font-semibold text-(--cb-text)">
                             <span class="material-symbols-outlined text-[20px] text-(--cb-primary)">photo_camera</span>
                             Imagen del emprendimiento
@@ -244,16 +281,22 @@
 
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div>
-                                <label for="logo" class="mb-2 block text-sm font-semibold text-(--cb-text)">Logo</label>
-                                <input id="logo" name="logo" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-primary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-primary)" data-image-input data-preview-target="logo-preview">
+                                <label for="logo" class="mb-2 block text-lg font-medium text-(--cb-text)">Logo</label>
+                                <input id="logo" name="logo" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-primary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-primary)" data-image-input data-preview-target="logo-preview" aria-invalid="{{ $errors->has('logo') ? 'true' : 'false' }}" @error('logo') aria-describedby="logo-error" @enderror>
+                                @error('logo')
+                                    <p id="logo-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                                 <div id="logo-preview" class="mt-3 hidden h-24 w-24 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft)" data-image-preview>
                                     <img src="" alt="Vista previa del logo" class="h-full w-full object-cover" data-preview-image>
                                 </div>
                             </div>
 
                             <div>
-                                <label for="cover_image" class="mb-2 block text-sm font-semibold text-(--cb-text)">Imagen de portada</label>
-                                <input id="cover_image" name="cover_image" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-secondary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-secondary)" data-image-input data-preview-target="cover-preview">
+                                <label for="cover_image" class="mb-2 block text-lg font-medium text-(--cb-text)">Imagen de portada</label>
+                                <input id="cover_image" name="cover_image" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-secondary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-secondary)" data-image-input data-preview-target="cover-preview" aria-invalid="{{ $errors->has('cover_image') ? 'true' : 'false' }}" @error('cover_image') aria-describedby="cover-image-error" @enderror>
+                                @error('cover_image')
+                                    <p id="cover-image-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
                                 <div id="cover-preview" class="mt-3 hidden h-48 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft) sm:h-56" data-image-preview>
                                     <img src="" alt="Vista previa de la portada" class="h-full w-full object-cover" data-preview-image>
                                 </div>
@@ -266,7 +309,7 @@
                         <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                     </button>
 
-                    <p class="text-center text-xs leading-6 text-(--cb-muted)">
+                    <p class="text-center text-sm leading-6 text-(--cb-muted)">
                         Al registrarte, aceptás nuestros Términos y Condiciones.
                     </p>
                 </form>

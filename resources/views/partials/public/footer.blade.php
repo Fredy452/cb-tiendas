@@ -7,7 +7,7 @@
             </a>
 
             <p class="mt-4 max-w-md text-base leading-8 text-(--cb-muted)">
-                La tienda digital de Coronel Bogado. Conectando a nuestra comunidad con los mejores emprendimientos locales.
+                La plaza digital de Coronel Bogado. Conectando a nuestra comunidad con los mejores emprendimientos locales.
             </p>
 
             <p class="mt-6 text-sm text-(--cb-outline)">

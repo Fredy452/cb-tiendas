@@ -32,20 +32,16 @@
             <h3 class="mt-3 text-3xl font-semibold tracking-tight">{{ $category->name }}</h3>
         </div>
 
-        @if (! $category->cover_url)
-            <div class="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/18 text-white backdrop-blur-sm">
-                <span class="material-symbols-outlined">{{ $palette['icon'] }}</span>
-            </div>
-        @endif
+
     </div>
 
     <div class="flex flex-1 flex-col p-6">
-        <p class="flex-1 text-base leading-8 text-(--cb-muted) line-clamp-3">
+        <p class="flex-1 text-lg leading-8 font-light">
             {!! $category->description ?: 'Rubros visibles dentro de la plaza digital para que la comunidad encuentre servicios y productos locales con rapidez.' !!}
         </p>
 
-        <span class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-(--cb-primary)">
-            Ver tiendas <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-        </span>
+        <button class="cb-button-ghost bg-white/10 mt-4">
+            Ver Negocios <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
     </div>
 </a>

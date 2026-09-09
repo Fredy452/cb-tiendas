@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRegistrationRequest;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +12,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class TiendaController extends Controller
@@ -19,17 +19,24 @@ class TiendaController extends Controller
     public function home(): View
     {
         $featuredStores = Store::query()
+            ->where('is_featured', true)
             ->publicVisible()
             ->with('categories')
-            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
             ->latest()
-            ->take(3)
+            ->take(6)
+            ->get();
+
+        $newStores = Store::query()
+            ->publicVisible()
+            ->latest()
+            ->take(16)
             ->get();
 
         $categories = $this->publicCategoriesWithCounts()->take(6);
         $storesCount = Store::query()->publicVisible()->count();
 
-        return view('welcome', compact('featuredStores', 'categories', 'storesCount'));
+        return view('welcome', compact('featuredStores', 'newStores', 'categories', 'storesCount'));
     }
 
     public function index(Request $request): View
@@ -70,7 +77,8 @@ class TiendaController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        $categories = $this->publicCategoriesWithCounts();
+        // Mostrar solo las categorías con uno o mas negocios públicos visibles
+        $categories = $this->publicCategoriesWithCounts()->filter(fn (Category $category) => $category->public_stores_count > 0);
 
         Log::info('Mostrando listado de tiendas', [
             'search' => $search,
@@ -84,7 +92,16 @@ class TiendaController extends Controller
 
     public function categorias(): View
     {
-        $categories = $this->publicCategoriesWithCounts();
+        $categories = Category::query()
+            ->active()
+            ->withCount([
+                'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
+            ])
+            ->having('public_stores_count', '>=', 1)
+            ->orderBy('public_stores_count', 'desc')
+            ->orderBy('name')
+            ->paginate(6)
+            ->withQueryString();
 
         return view('categorias', compact('categories'));
     }
@@ -100,37 +117,9 @@ class TiendaController extends Controller
         return view('emprendimientos.create', compact('categories'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreRegistrationRequest $request): RedirectResponse
     {
-        $this->normalizeRegistrationUrls($request);
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'category_id' => [
-                'required',
-                'integer',
-                Rule::exists('categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
-            ],
-            'phone' => ['required', 'string', 'max:50'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'website' => ['nullable', 'url', 'max:255'],
-            'facebook_url' => ['nullable', 'url', 'max:255'],
-            'instagram_url' => ['nullable', 'url', 'max:255'],
-            'tiktok_url' => ['nullable', 'url', 'max:255'],
-            'address' => ['required', 'string', 'max:255', 'not_regex:/[<>]/'],
-            'latitude' => ['nullable', 'required_with:longitude', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'required_with:latitude', 'numeric', 'between:-180,180'],
-            'description' => ['required', 'string', 'max:1200', 'not_regex:/[<>]/'],
-            'logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'cover_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-        ], [
-            'description.not_regex' => 'La descripción solo puede contener texto plano, sin etiquetas HTML.',
-            'address.not_regex' => 'La dirección solo puede contener texto plano, sin etiquetas HTML.',
-            'latitude.required_with' => 'La latitud es obligatoria cuando se carga longitud.',
-            'longitude.required_with' => 'La longitud es obligatoria cuando se carga latitud.',
-            'logo.mimes' => 'El logo debe ser una imagen JPG, PNG o WEBP.',
-            'cover_image.mimes' => 'La imagen de portada debe ser JPG, PNG o WEBP.',
-        ]);
+        $validated = $request->validated();
 
         $store = Store::query()->create([
             'name' => $validated['name'],
@@ -158,6 +147,12 @@ class TiendaController extends Controller
         );
     }
 
+    /**
+     * Funcion para mostrar los detalles de una tienda
+     *
+     * @param string $store
+     * @return View
+     */
     public function show(string $store): View
     {
         $store = Store::query()
@@ -171,6 +166,14 @@ class TiendaController extends Controller
                 }
             })
             ->firstOrFail();
+            // Evita el spam de visitas usando una clave única en caché por IP
+            $cacheKey = 'viewed_store_' . $store->getKey() . '_' . request()->ip();
+
+            if (! cache()->has($cacheKey)) {
+                $store->increment('views_count');
+                // Guarda en caché que este usuario ya visitó la tienda durante los próximos 60 minutos
+                cache()->put($cacheKey, true, now()->addHours(1));
+            }
         Log::info('Mostrando tienda al público', ['store_id' => $store->getKey(), 'store_name' => $store->name]);
         $relatedStoresQuery = Store::query()
             ->publicVisible()
@@ -183,18 +186,79 @@ class TiendaController extends Controller
             });
         }
 
+        // Normalizamos phone
+        $waPhone = null;
+        if ($store->phone) {
+            $waPhone = preg_replace('/\D+/', '', $store->phone);
+            if (!str_starts_with($waPhone, '595')) {
+                $waPhone = '595' . ltrim($waPhone, '0');
+            }
+        }
+
+
+        // Mensajes para contacto en WhatsApp y correo
+        $socialMessages = [
+            'waMessage' => "¡Hola! {$store->name} descubrí este negocio desde la plataforma Coronel Bogado Tiendas, estoy interesado en sus productos/servicios. ¿Podrías darme más información? Gracias.",
+            'emailSubject' => "Consulta sobre {$store->name}",
+            'emailBody' => "Hola, descubrí tu negocio desde la plataforma Coronel Bogado Tiendas y estoy interesado en tus productos/servicios. ¿Podrías darme más información? Gracias.",
+        ];
+
+        $waMessage = $socialMessages['waMessage'];
+        $emailSubject = $socialMessages['emailSubject'];
+        $emailBody = $socialMessages['emailBody'];
+
+            $socialIcons = [
+                'facebook'  => 'fa-brands fa-facebook',
+                'instagram' => 'fa-brands fa-instagram',
+                'tiktok'    => 'fa-brands fa-tiktok',
+            ];
+
+
         $relatedStores = $relatedStoresQuery
             ->orderByDesc('is_featured')
             ->latest()
-            ->take(3)
+            ->take(8)
             ->get();
 
-        return view('tiendas.show', compact('store', 'relatedStores'));
+        return view('tiendas.show', compact('store', 'relatedStores', 'waPhone', 'waMessage', 'emailSubject', 'emailBody', 'socialIcons'));
     }
 
     public function about(): View
     {
         return view('sobre-nosotros');
+    }
+
+    public function searchSuggestions(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $q = trim((string) $request->input('q', ''));
+
+        if (mb_strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $stores = Store::query()
+            ->publicVisible()
+            ->with('categories:id,name')
+            ->where(function (Builder $query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            })
+            ->select(['id', 'name', 'slug', 'description', 'logo_path', 'img_path'])
+            ->orderByDesc('is_featured')
+            ->latest()
+            ->limit(6)
+            ->get()
+            ->map(fn (Store $store) => [
+                'name' => $store->name,
+                'url' => route('tiendas.show', $store->slug ?: $store->getKey()),
+                'description' => $store->description
+                    ? Str::limit(trim(html_entity_decode(strip_tags($store->description), ENT_QUOTES, 'UTF-8')), 80)
+                    : null,
+                'category' => $store->categories->first()?->name,
+                'thumbnail' => $store->logo_url ?? $store->cover_url,
+            ]);
+
+        return response()->json($stores);
     }
 
     /**
@@ -285,24 +349,6 @@ class TiendaController extends Controller
         }
 
         return $slug;
-    }
-
-    private function normalizeRegistrationUrls(Request $request): void
-    {
-        $urlFields = ['website', 'facebook_url', 'instagram_url', 'tiktok_url'];
-        $normalized = [];
-
-        foreach ($urlFields as $field) {
-            $value = trim((string) $request->input($field, ''));
-
-            if ($value !== '' && ! Str::startsWith($value, ['http://', 'https://'])) {
-                $value = 'https://' . ltrim($value, '/');
-            }
-
-            $normalized[$field] = $value === '' ? null : $value;
-        }
-
-        $request->merge($normalized);
     }
 
     private function storeRegistrationImage(Request $request, string $field, string $directory): ?string

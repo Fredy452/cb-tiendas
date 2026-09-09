@@ -26,7 +26,7 @@
                 @foreach ($links as $link)
                     <a
                         href="{{ $link['route'] }}"
-                        class="border-b-2 pb-1 text-sm font-semibold transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
+                        class="border-b-2 pb-1 text-lg font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
                     >
                         {{ $link['label'] }}
                     </a>
@@ -37,24 +37,126 @@
                 <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary">Registrar emprendimiento</a>
             </div>
 
-            <details class="relative md:hidden">
-                <summary class="flex list-none cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary)">
-                    <span class="material-symbols-outlined">menu</span>
-                </summary>
+            <button
+                type="button"
+                class="flex cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary) shadow-[0_10px_24px_rgba(22,27,45,0.08)] md:hidden"
+                aria-controls="mobile-nav-drawer"
+                aria-expanded="false"
+                data-mobile-nav-toggle
+            >
+                <span class="material-symbols-outlined">menu</span>
+            </button>
 
-                <div class="cb-panel absolute right-0 mt-3 w-72 overflow-hidden p-2">
-                    @foreach ($links as $link)
-                        <a
-                            href="{{ $link['route'] }}"
-                            class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $link['active'] ? 'bg-[rgba(177,240,206,0.45)] text-(--cb-primary)' : 'text-(--cb-text) hover:bg-[rgba(244,242,255,0.85)]' }}"
+            <div class="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300 ease-out md:hidden" style="width: 100vw; height: 100dvh; overflow: hidden; opacity: 0;" data-mobile-nav-layer>
+                <button
+                    type="button"
+                    class="absolute inset-0 bg-[#111827]/55"
+                    aria-label="Cerrar menú"
+                    data-mobile-nav-overlay
+                ></button>
+
+                <aside
+                    id="mobile-nav-drawer"
+                    class="absolute top-0 right-0 h-dvh w-[min(24rem,92vw)] bg-white shadow-[-12px_0_32px_rgba(15,23,42,0.18)] transition-transform duration-300 ease-out"
+                    style="top: 0; right: 0; bottom: 0; width: min(92vw, 24rem); max-width: 100vw; overflow-x: hidden; background: #ffffff; box-shadow: -12px 0 32px rgba(15, 23, 42, 0.18); translate: 100%;"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Menú de navegación"
+                    data-mobile-nav-drawer
+                >
+                    <div class="relative border-b border-(--cb-border) px-5 pt-5 pb-4">
+
+                        <button
+                            type="button"
+                            class="ml-auto inline-flex items-center gap-1 rounded-full border border-(--cb-border) px-3 py-1.5 text-sm font-medium text-(--cb-text)"
+                            data-mobile-nav-close
                         >
-                            {{ $link['label'] }}
-                        </a>
-                    @endforeach
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            Volver
+                        </button>
+                    </div>
 
-                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-2 w-full rounded-2xl">Registrar emprendimiento</a>
-                </div>
-            </details>
+                    <div class="h-[calc(100dvh-88px)] overflow-y-auto px-5 py-5" style="height: calc(100dvh - 88px); overflow-y: auto;">
+                        <div class="space-y-2 border-b border-(--cb-border) pb-5">
+                            @foreach ($links as $link)
+                                <a
+                                    href="{{ $link['route'] }}"
+                                    class="block rounded-2xl px-4 py-3.5 text-base font-medium transition {{ $link['active'] ? 'bg-[rgba(177,240,206,0.45)] text-(--cb-primary)' : 'text-(--cb-text) hover:bg-[rgba(244,242,255,0.85)]' }}"
+                                >
+                                    {{ $link['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+
+                        <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-5 hidden w-full lg:block">Registrar emprendimiento</a>
+                    </div>
+                </aside>
+            </div>
         @endif
     </div>
 </header>
+
+@unless ($variant === 'minimal')
+    @push('scripts')
+        <script>
+            (() => {
+                const setupMobileNavOverride = () => {
+                    document.querySelectorAll('[data-mobile-nav-toggle]').forEach((toggle) => {
+                        if (toggle.dataset.inlineNavReady === 'true') {
+                            return;
+                        }
+
+                        const layer = document.querySelector('[data-mobile-nav-layer]');
+                        const drawer = layer?.querySelector('[data-mobile-nav-drawer]');
+                        const overlay = layer?.querySelector('[data-mobile-nav-overlay]');
+                        const closeButton = layer?.querySelector('[data-mobile-nav-close]');
+
+                        if (!layer || !drawer || !overlay || !closeButton) {
+                            return;
+                        }
+
+                        const setExpanded = (expanded) => {
+                            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                            layer.classList.toggle('pointer-events-none', !expanded);
+                            layer.style.opacity = expanded ? '1' : '0';
+                            drawer.style.translate = expanded ? '0' : '100%';
+                            document.body.classList.toggle('overflow-hidden', expanded);
+                        };
+
+                        const handleToggle = (event) => {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                            setExpanded(!expanded);
+                        };
+
+                        const handleClose = (event) => {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            setExpanded(false);
+                        };
+
+                        toggle.dataset.inlineNavReady = 'true';
+                        setExpanded(false);
+
+                        toggle.addEventListener('click', handleToggle, true);
+                        overlay.addEventListener('click', handleClose, true);
+                        closeButton.addEventListener('click', handleClose, true);
+
+                        document.addEventListener('keydown', (event) => {
+                            if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+                                setExpanded(false);
+                            }
+                        });
+                    });
+                };
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', setupMobileNavOverride, { once: true });
+                } else {
+                    setupMobileNavOverride();
+                }
+            })();
+        </script>
+    @endpush
+@endunless
