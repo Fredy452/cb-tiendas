@@ -8,6 +8,7 @@ use App\Models\Store;
 Route::get('/', [TiendaController::class, 'home'])->name('home');
 Route::get('/tiendas', [TiendaController::class, 'index'])->name('tiendas.index');
 Route::get('/tiendas/{store}', [TiendaController::class, 'show'])->name('tiendas.show');
+Route::post('/tiendas/{store}/calificaciones', [TiendaController::class, 'rate'])->name('tiendas.ratings.store')->middleware('throttle:store-ratings');
 Route::get('/categorias', [TiendaController::class, 'categorias'])->name('categorias');
 Route::get('/emprendimientos/registrar', [TiendaController::class, 'create'])->name('emprendimientos.create');
 Route::post('/emprendimientos/registrar', [TiendaController::class, 'store'])->name('emprendimientos.store');

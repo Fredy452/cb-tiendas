@@ -102,7 +102,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('emprendimientos.store') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-8">
+                <form action="{{ route('emprendimientos.store') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-8" data-store-registration-form>
                     @csrf
 
                     <fieldset class="space-y-3">
@@ -282,10 +282,11 @@
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div>
                                 <label for="logo" class="mb-2 block text-lg font-medium text-(--cb-text)">Logo</label>
-                                <input id="logo" name="logo" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-primary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-primary)" data-image-input data-preview-target="logo-preview" aria-invalid="{{ $errors->has('logo') ? 'true' : 'false' }}" @error('logo') aria-describedby="logo-error" @enderror>
+                                <input id="logo" name="logo" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-primary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-primary)" data-image-input data-preview-target="logo-preview" data-max-size-kb="1048" aria-invalid="{{ $errors->has('logo') ? 'true' : 'false' }}" @error('logo') aria-describedby="logo-error" @enderror>
                                 @error('logo')
                                     <p id="logo-error" class="cb-field-error">{{ $message }}</p>
                                 @enderror
+                                <p class="mt-2 text-xs leading-6 text-[red]">Máximo 1048 KB. Formatos: JPG, PNG o WEBP.</p>
                                 <div id="logo-preview" class="mt-3 hidden h-24 w-24 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft)" data-image-preview>
                                     <img src="" alt="Vista previa del logo" class="h-full w-full object-cover" data-preview-image>
                                 </div>
@@ -293,10 +294,11 @@
 
                             <div>
                                 <label for="cover_image" class="mb-2 block text-lg font-medium text-(--cb-text)">Imagen de portada</label>
-                                <input id="cover_image" name="cover_image" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-secondary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-secondary)" data-image-input data-preview-target="cover-preview" aria-invalid="{{ $errors->has('cover_image') ? 'true' : 'false' }}" @error('cover_image') aria-describedby="cover-image-error" @enderror>
+                                <input id="cover_image" name="cover_image" type="file" accept="image/jpeg,image/png,image/webp" class="cb-input file:mr-4 file:rounded-full file:border-0 file:bg-(--cb-secondary-soft) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--cb-secondary)" data-image-input data-preview-target="cover-preview" data-max-size-kb="2096" aria-invalid="{{ $errors->has('cover_image') ? 'true' : 'false' }}" @error('cover_image') aria-describedby="cover-image-error" @enderror>
                                 @error('cover_image')
                                     <p id="cover-image-error" class="cb-field-error">{{ $message }}</p>
                                 @enderror
+                                <p class="mt-2 text-xs leading-6 text-[red]">Máximo 2096 KB. Formatos: JPG, PNG o WEBP.</p>
                                 <div id="cover-preview" class="mt-3 hidden h-48 overflow-hidden rounded-2xl border border-[rgba(222,224,255,0.95)] bg-(--cb-surface-soft) sm:h-56" data-image-preview>
                                     <img src="" alt="Vista previa de la portada" class="h-full w-full object-cover" data-preview-image>
                                 </div>

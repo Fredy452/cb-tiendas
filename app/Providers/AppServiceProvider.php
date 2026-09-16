@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 
@@ -27,5 +30,9 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::defaultView('partials.pagination.default');
         Paginator::defaultSimpleView('partials.pagination.simple');
+
+        RateLimiter::for('store-ratings', function (Request $request) {
+            return Limit::perMinute(3)->by($request->ip());
+        });
     }
 }
