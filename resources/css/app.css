@@ -671,4 +671,12 @@
         display: inline-block;
         animation: cb-spin 0.8s linear infinite;
     }
+
+    .cb-rating-field label:hover > .cb-rating-star,
+    .cb-rating-field label:has(~ label:hover) > .cb-rating-star,
+    .cb-rating-field label:has(input:checked) > .cb-rating-star,
+    .cb-rating-field label:has(~ label input:checked) > .cb-rating-star {
+        color: #f59e0b !important;
+        font-variation-settings: 'FILL' 1 !important;
+    }
 }

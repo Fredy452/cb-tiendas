@@ -266,11 +266,11 @@
 
                     <form action="{{ route('tiendas.ratings.store', $store->slug ?: $store->getKey()) }}" method="POST" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                         @csrf
-                        <fieldset class="flex items-center gap-1" aria-label="Elegí una calificación">
+                        <fieldset class="cb-rating-field flex items-center gap-1" aria-label="Elegí una calificación">
                             @for ($rating = 1; $rating <= 5; $rating++)
                                 <label class="group relative cursor-pointer">
                                     <input type="radio" name="rating" value="{{ $rating }}" class="peer sr-only" @checked((int) old('rating') === $rating) @disabled($hasRatedStore)>
-                                    <span class="material-symbols-outlined rounded-full px-1 text-3xl text-[#f59e0b] transition peer-checked:bg-[#fff4cf] peer-focus-visible:ring-2 peer-focus-visible:ring-(--cb-primary) {{ $hasRatedStore ? 'opacity-45' : 'group-hover:scale-110' }}">
+                                    <span class="cb-rating-star material-symbols-outlined rounded-full px-1 text-3xl text-(--cb-outline) transition group-hover:text-[#f59e0b] group-hover:[font-variation-settings:'FILL'_1] peer-checked:bg-[#fff4cf] peer-checked:text-[#f59e0b] peer-checked:[font-variation-settings:'FILL'_1] peer-focus-visible:ring-2 peer-focus-visible:ring-(--cb-primary) {{ $hasRatedStore ? 'opacity-45' : 'group-hover:scale-110' }}">
                                         star
                                     </span>
                                 </label>
