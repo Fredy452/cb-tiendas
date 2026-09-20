@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Mail\StoreCreated;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -67,6 +69,7 @@ class PublicPagesTest extends TestCase
 
     public function test_registration_creates_a_pending_store_and_attaches_the_category(): void
     {
+        Mail::fake();
         Storage::fake('public');
 
         $category = Category::query()->create([
@@ -125,6 +128,11 @@ class PublicPagesTest extends TestCase
             'store_id' => $store->id,
             'category_id' => $category->id,
         ]);
+
+        Mail::assertSent(StoreCreated::class, function (StoreCreated $mail) use ($store): bool {
+            return $mail->hasTo($store->email)
+                && $mail->store->is($store);
+        });
     }
 
     public function test_registration_rejects_html_in_description(): void
