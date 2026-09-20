@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRatingRequest;
 use App\Http\Requests\StoreRegistrationRequest;
-use App\Mail\StoreCreated;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -143,34 +141,6 @@ class TiendaController extends Controller
         ]);
 
         $store->categories()->attach($validated['category_id']);
-
-        if (filled($store->email)) {
-            try {
-                Log::info('Enviando correo de tienda registrada', [
-                    'store_id' => $store->getKey(),
-                    'store_name' => $store->name,
-                    'recipient' => $store->email,
-                ]);
-
-                Mail::to($store->email)->send(new StoreCreated($store));
-
-                Log::info('Correo de tienda registrada enviado', [
-                    'store_id' => $store->getKey(),
-                    'recipient' => $store->email,
-                ]);
-            } catch (\Throwable $exception) {
-                Log::error('No se pudo enviar el correo de tienda registrada', [
-                    'store_id' => $store->getKey(),
-                    'recipient' => $store->email,
-                    'error' => $exception->getMessage(),
-                ]);
-            }
-        } else {
-            Log::warning('Tienda registrada sin correo de contacto; envío omitido', [
-                'store_id' => $store->getKey(),
-                'store_name' => $store->name,
-            ]);
-        }
 
         return to_route('emprendimientos.create')->with(
             'status',
