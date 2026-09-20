@@ -11,25 +11,25 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class StorePolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Store');
+        return $authUser->hasRole('emprendedor') || $authUser->can('ViewAny:Store');
     }
 
     public function view(AuthUser $authUser, Store $store): bool
     {
-        return $authUser->can('View:Store');
+        return $this->owns($authUser, $store) || $authUser->can('View:Store');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Store');
+        return $authUser->hasRole('emprendedor') || $authUser->can('Create:Store');
     }
 
     public function update(AuthUser $authUser, Store $store): bool
     {
-        return $authUser->can('Update:Store');
+        return $this->owns($authUser, $store) || $authUser->can('Update:Store');
     }
 
     public function delete(AuthUser $authUser, Store $store): bool
@@ -70,6 +70,12 @@ class StorePolicy
     public function reorder(AuthUser $authUser): bool
     {
         return $authUser->can('Reorder:Store');
+    }
+
+    private function owns(AuthUser $authUser, Store $store): bool
+    {
+        return $authUser->hasRole('emprendedor')
+            && $store->user_id === $authUser->getAuthIdentifier();
     }
 
 }

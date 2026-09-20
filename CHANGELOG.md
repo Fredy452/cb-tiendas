@@ -7,6 +7,14 @@ y el proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+### Agregado
+- Registro e inicio de sesión público para emprendedores con verificación de correo, recuperación de contraseña y perfil en Filament.
+- Propiedad de tiendas por usuario y gestión aislada de tiendas para el rol `emprendedor`.
+
+### Seguridad
+- Restricción por propietario en consultas y policies de tiendas; los emprendedores no pueden aprobar, destacar ni eliminar registros.
+- Las modificaciones realizadas por emprendedores vuelven la tienda al estado pendiente y la ocultan hasta una nueva aprobación administrativa.
+
 ## [1.0.0] - 2026-05-15
 
 ### Agregado

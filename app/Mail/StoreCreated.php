@@ -17,6 +17,7 @@ class StoreCreated extends Mailable
         public Store $store,
         public string $status = 'pending',
         public ?string $publicUrl = null,
+        public bool $changesSubmitted = false,
     )
     {
         $this->status = in_array($status, ['pending', 'approved', 'rejected', 'inactive'], true)
@@ -42,12 +43,17 @@ class StoreCreated extends Mailable
             with: [
                 'status' => $this->status,
                 'publicUrl' => $this->publicUrl,
+                'changesSubmitted' => $this->changesSubmitted,
             ],
         );
     }
 
     private function statusSubjectLine(): string
     {
+        if ($this->changesSubmitted) {
+            return "Cambios en revisión: {$this->store->name}";
+        }
+
         return match ($this->status) {
             'approved' => "Tienda aprobada: {$this->store->name}",
             'rejected' => "Tienda rechazada: {$this->store->name}",

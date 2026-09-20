@@ -123,6 +123,7 @@ class TiendaController extends Controller
         $validated = $request->validated();
 
         $store = Store::query()->create([
+            'user_id' => $request->user()?->getKey(),
             'name' => $validated['name'],
             'slug' => $this->generateStoreSlug($validated['name']),
             'description' => $validated['description'],

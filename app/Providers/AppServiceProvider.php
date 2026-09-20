@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Store;
+use App\Notifications\VerifyEntrepreneurEmail;
 use App\Observers\StoreObserver;
+use Filament\Auth\Notifications\VerifyEmail as FilamentVerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(FilamentVerifyEmail::class, VerifyEntrepreneurEmail::class);
     }
 
     /**

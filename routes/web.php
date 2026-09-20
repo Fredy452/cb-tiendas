@@ -1,11 +1,34 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EntrepreneurAuthController;
 use App\Http\Controllers\TiendaController;
 use App\Models\Category;
 use App\Models\Store;
 
 Route::get('/', [TiendaController::class, 'home'])->name('home');
+
+Route::middleware('guest')->group(function () {
+	Route::get('/iniciar-sesion', [EntrepreneurAuthController::class, 'showLogin'])->name('login');
+	Route::post('/iniciar-sesion', [EntrepreneurAuthController::class, 'login'])->name('login.store');
+	Route::get('/registro-emprendedor', [EntrepreneurAuthController::class, 'showRegister'])->name('register');
+	Route::post('/registro-emprendedor', [EntrepreneurAuthController::class, 'register'])
+		->middleware('throttle:5,1')
+		->name('register.store');
+});
+
+Route::middleware('auth')->group(function () {
+	Route::get('/verificar-correo', [EntrepreneurAuthController::class, 'verificationNotice'])
+		->name('verification.notice');
+	Route::get('/verificar-correo/{id}/{hash}', [EntrepreneurAuthController::class, 'verify'])
+		->middleware('signed')
+		->name('verification.verify');
+	Route::post('/verificar-correo/reenviar', [EntrepreneurAuthController::class, 'resendVerification'])
+		->middleware('throttle:6,1')
+		->name('verification.send');
+	Route::post('/cerrar-sesion', [EntrepreneurAuthController::class, 'logout'])->name('logout');
+});
+
 Route::get('/tiendas', [TiendaController::class, 'index'])->name('tiendas.index');
 Route::get('/tiendas/{store}', [TiendaController::class, 'show'])->name('tiendas.show');
 Route::post('/tiendas/{store}/calificaciones', [TiendaController::class, 'rate'])->name('tiendas.ratings.store')->middleware('throttle:store-ratings');

@@ -25,7 +25,7 @@
             <h2 class="text-xl uppercase font-bold">Comunidad</h2>
             <div class="mt-4 space-y-3 text-lg font-normal">
                 <a href="{{ route('sobre-nosotros') }}" class="block transition hover:text-(--cb-primary)">Sobre nosotros</a>
-                <a href="{{ route('emprendimientos.create') }}" class="block transition hover:text-(--cb-primary)">Registrar emprendimiento</a>
+                <a href="{{ route('register') }}" class="block transition hover:text-(--cb-primary)">Registrar emprendimiento</a>
                 <a href="mailto:soporte@cbtiendas.com.py" class="block transition hover:text-(--cb-primary)">Contacto institucional</a>
             </div>
         </div>

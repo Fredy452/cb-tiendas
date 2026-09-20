@@ -132,7 +132,7 @@
                 </p>
 
                 <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary">Registrar mi emprendimiento</a>
+                    <a href="{{ route('register') }}" class="cb-button-primary">Registrar mi emprendimiento</a>
                     <a href="{{ route('tiendas.index') }}" class="cb-button-ghost">Explorar directorio</a>
                 </div>
             </div>

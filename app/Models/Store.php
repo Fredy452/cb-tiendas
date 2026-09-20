@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,7 @@ class Store extends Model
     // Note 2: esto protege el modelo frente a entradas no deseadas desde formularios
     // Note 3: y deja explicito que atributos forman parte del ciclo normal de alta/edicion
     protected $fillable = [
+        'user_id',
         'name',
         'slug',
         'description',
@@ -45,6 +47,11 @@ class Store extends Model
     {
         return $query
             ->where('status', 'approved');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     // Note 4: una tienda puede ser aprobada por un usuario concreto

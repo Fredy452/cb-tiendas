@@ -1,5 +1,13 @@
 @php
-    $statusContent = match ($status) {
+    $statusContent = $changesSubmitted ? [
+        'eyebrow' => 'Cambios recibidos',
+        'title' => 'Tu tienda está en revisión',
+        'message' => 'Guardamos los cambios enviados. Para proteger la información del catálogo, la tienda no se mostrará públicamente hasta que un administrador los revise y apruebe.',
+        'label' => 'En revisión',
+        'color' => '#005fad',
+        'softColor' => '#d4e3ff',
+        'action' => 'Te notificaremos por este medio cuando la revisión haya finalizado.',
+    ] : match ($status) {
         'approved' => [
             'eyebrow' => 'Tu tienda ya está visible',
             'title' => 'Tienda aprobada',

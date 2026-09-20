@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -28,8 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->registration()
-            ->login()
+            ->login(Login::class)
+            ->emailVerification()
+            ->passwordReset()
+            ->profile()
             ->colors([
                 'primary' => Color::Amber,
             ])

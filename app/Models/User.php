@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEntrepreneurEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -17,7 +19,7 @@ use Filament\Panel;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasFactory, Notifiable, HasRoles, LogsActivity, CausesActivity;
 
@@ -34,19 +36,27 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEntrepreneurEmail);
+    }
+
     /**
      * Get the filament access panel
      * @return string
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        if (app()->environment('production')) {
-            if ($panel->getId() === 'admin') {
-                return str_ends_with($this->email, '@cb-tiendas.com.py');
-            }
+        if ($panel->getId() !== 'admin') {
+            return false;
         }
 
-        return true;
+        return $this->roles()->exists() || str_ends_with($this->email, '@cb-tiendas.com.py');
     }
 
 

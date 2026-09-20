@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Stores\Schemas;
 
 use App\Models\Store;
+use App\Models\User;
 use Fahiem\FilamentPinpoint\Pinpoint;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Group;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\Facades\Auth;
 
 class StoreForm
 {
@@ -157,7 +159,21 @@ class StoreForm
                             ->columns(2),
 
                         Section::make('Configuración')
+                            ->visible(function (): bool {
+                                $user = Auth::user();
+
+                                return ! ($user instanceof User && $user->hasRole('emprendedor'));
+                            })
                             ->schema([
+                                Select::make('user_id')
+                                    ->label('Propietario')
+                                    ->relationship('user', 'name')
+                                    ->getOptionLabelFromRecordUsing(
+                                        fn (User $record): string => "{$record->name} ({$record->email})"
+                                    )
+                                    ->searchable(['name', 'email'])
+                                    ->preload(),
+
                                 Select::make('status')
                                     ->label('Estado')
                                     ->options([

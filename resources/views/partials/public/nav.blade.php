@@ -33,8 +33,13 @@
                 @endforeach
             </nav>
 
-            <div class="hidden md:block">
-                <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary">Registrar emprendimiento</a>
+            <div class="hidden items-center gap-3 md:flex">
+                @auth
+                    <a href="{{ route('filament.admin.resources.stores.index') }}" class="cb-button-primary">Mis tiendas</a>
+                @else
+                    <a href="{{ route('login') }}" class="cb-button-ghost">Ingresar</a>
+                    <a href="{{ route('register') }}" class="cb-button-primary">Crear cuenta</a>
+                @endauth
             </div>
 
             <button
@@ -88,7 +93,18 @@
                             @endforeach
                         </div>
 
-                        <a href="{{ route('emprendimientos.create') }}" class="cb-button-primary mt-5 hidden w-full lg:block">Registrar emprendimiento</a>
+                        <div class="mt-5 grid gap-3">
+                            @auth
+                                <a href="{{ route('filament.admin.resources.stores.index') }}" class="cb-button-primary w-full">Mis tiendas</a>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="cb-button-ghost min-h-12 w-full">Cerrar sesión</button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="cb-button-ghost min-h-12 w-full">Ingresar</a>
+                                <a href="{{ route('register') }}" class="cb-button-primary min-h-12 w-full">Crear cuenta</a>
+                            @endauth
+                        </div>
                     </div>
                 </aside>
             </div>

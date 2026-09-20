@@ -7,9 +7,17 @@ use App\Models\Store;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends StatsOverviewWidget
 {
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+
+        return ! ($user instanceof User && $user->hasRole('emprendedor'));
+    }
+
     protected function getStats(): array
     {
         return [

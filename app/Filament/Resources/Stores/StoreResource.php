@@ -10,6 +10,7 @@ use App\Filament\Resources\Stores\Schemas\StoreForm;
 use App\Filament\Resources\Stores\Schemas\StoreInfolist;
 use App\Filament\Resources\Stores\Tables\StoresTable;
 use App\Models\Store;
+use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -17,6 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class StoreResource extends Resource
 {
@@ -58,6 +60,16 @@ class StoreResource extends Resource
             'view' => ViewStore::route('/{record}'),
             'edit' => EditStore::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        return $user instanceof User && $user->hasRole('emprendedor')
+            ? $query->whereBelongsTo($user)
+            : $query;
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

@@ -155,7 +155,7 @@
                 <div class="cb-panel mt-8 p-8 text-center">
                     <h3 class="text-xl font-semibold text-(--cb-text)">Todavia no hay tiendas nuevas para mostrar</h3>
                     <p class="mt-3 text-(--cb-muted)">Cuando se registren nuevos emprendimientos, apareceran aqui automaticamente.</p>
-                    <a href="{{ route('emprendimientos.create') }}" class="cb-button-secondary mt-6">Registrar emprendimiento</a>
+                    <a href="{{ route('register') }}" class="cb-button-secondary mt-6">Registrar emprendimiento</a>
                 </div>
             @else
                 <div class="cb-home-mobile-carousel mt-8 md:hidden" data-home-carousel>
