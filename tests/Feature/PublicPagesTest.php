@@ -144,7 +144,6 @@ class PublicPagesTest extends TestCase
             'is_active' => true,
             'display_order' => 1,
         ]);
-
         $response = $this->post(route('emprendimientos.store'), [
             'name' => 'Intento con HTML',
             'category_id' => $category->id,
@@ -158,6 +157,31 @@ class PublicPagesTest extends TestCase
         $this->assertDatabaseMissing('stores', [
             'name' => 'Intento con HTML',
         ]);
+    }
+
+    public function test_store_status_change_sends_a_status_email(): void
+    {
+        Mail::fake();
+
+        $store = Store::query()->create([
+            'name' => 'Tienda de prueba',
+            'slug' => 'tienda-de-prueba',
+            'description' => 'Descripción de prueba.',
+            'email' => 'tienda@example.test',
+            'status' => 'pending',
+        ]);
+
+        Mail::assertSent(StoreCreated::class, function (StoreCreated $mail) use ($store): bool {
+            return $mail->hasTo($store->email) && $mail->status === 'pending';
+        });
+
+        $store->update(['status' => 'approved']);
+
+        Mail::assertSent(StoreCreated::class, function (StoreCreated $mail) use ($store): bool {
+            return $mail->hasTo($store->email)
+                && $mail->status === 'approved'
+                && $mail->publicUrl === route('tiendas.show', $store->slug);
+        });
     }
 
     public function test_guest_can_rate_an_approved_store(): void

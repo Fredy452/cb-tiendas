@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Store;
+use App\Observers\StoreObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -24,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Store::observe(StoreObserver::class);
+
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }

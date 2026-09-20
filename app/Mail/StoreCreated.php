@@ -13,31 +13,47 @@ class StoreCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(public Store $store)
+    public function __construct(
+        public Store $store,
+        public string $status = 'pending',
+        public ?string $publicUrl = null,
+    )
     {
+        $this->status = in_array($status, ['pending', 'approved', 'rejected', 'inactive'], true)
+            ? $status
+            : 'pending';
+
+        $this->publicUrl = $this->status === 'approved'
+            ? route('tiendas.show', $store->slug ?: $store->getKey())
+            : null;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Tienda registrada: {$this->store->name}",
+            subject: $this->statusSubjectLine(),
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
-            view: 'mail.storeCreated',
+            view: 'mail.storeStatusChanged',
+            with: [
+                'status' => $this->status,
+                'publicUrl' => $this->publicUrl,
+            ],
         );
+    }
+
+    private function statusSubjectLine(): string
+    {
+        return match ($this->status) {
+            'approved' => "Tienda aprobada: {$this->store->name}",
+            'rejected' => "Tienda rechazada: {$this->store->name}",
+            'inactive' => "Tienda inactivada: {$this->store->name}",
+            default => "Tienda registrada: {$this->store->name}",
+        };
     }
 
     /**
