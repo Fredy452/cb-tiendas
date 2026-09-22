@@ -51,7 +51,12 @@
 
                     <div>
                         <label for="password" class="mb-2 block font-medium text-(--cb-text)">Contraseña</label>
-                        <input id="password" name="password" type="password" class="cb-input" autocomplete="new-password" minlength="8" required aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}">
+                        <div class="relative">
+                            <input id="password" name="password" type="password" class="cb-input tracking-widest" autocomplete="new-password" minlength="8" required aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}">
+                            <button type="button" class="password-toggle absolute inset-y-0 right-3 flex items-center text-(--cb-muted) transition hover:text-(--cb-text)" data-target="password" aria-label="Mostrar contraseña" aria-pressed="false">
+                                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">visibility</span>
+                            </button>
+                        </div>
                         @error('password')
                             <p class="cb-field-error">{{ $message }}</p>
                         @enderror
@@ -59,7 +64,12 @@
 
                     <div>
                         <label for="password_confirmation" class="mb-2 block font-medium text-(--cb-text)">Confirmar contraseña</label>
-                        <input id="password_confirmation" name="password_confirmation" type="password" class="cb-input" autocomplete="new-password" minlength="8" required>
+                        <div class="relative">
+                            <input id="password_confirmation" name="password_confirmation" type="password" class="cb-input tracking-widest" autocomplete="new-password" minlength="8" required>
+                            <button type="button" class="password-toggle absolute inset-y-0 right-3 flex items-center text-(--cb-muted) transition hover:text-(--cb-text)" data-target="password_confirmation" aria-label="Mostrar contraseña" aria-pressed="false">
+                                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">visibility</span>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="cb-button-primary min-h-12 w-full">
@@ -76,3 +86,29 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.password-toggle').forEach(function (button) {
+                const input = document.getElementById(button.dataset.target);
+
+                if (!input) {
+                    return;
+                }
+
+                const icon = button.querySelector('.material-symbols-outlined');
+
+                button.addEventListener('click', function () {
+                    const isHidden = input.type === 'password';
+                    input.type = isHidden ? 'text' : 'password';
+                    input.classList.toggle('font-mono', !isHidden);
+                    input.classList.toggle('tracking-[0.14em]', !isHidden);
+                    button.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+                    button.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+                    icon.textContent = isHidden ? 'visibility_off' : 'visibility';
+                });
+            });
+        });
+    </script>
+@endpush
