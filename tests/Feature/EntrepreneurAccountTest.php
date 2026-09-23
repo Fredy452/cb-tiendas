@@ -12,6 +12,7 @@ use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\URL;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
@@ -69,6 +70,21 @@ class EntrepreneurAccountTest extends TestCase
             return $mail->subject === 'Activá tu cuenta de CB Tiendas'
                 && str_contains($mail->render(), 'Verificar mi cuenta');
         });
+    }
+
+    public function test_registration_does_not_depend_on_a_queue_worker_to_send_verification_email(): void
+    {
+        Queue::fake();
+
+        $response = $this->post(route('register.store'), [
+            'name' => 'María Emprendedora',
+            'email' => 'email-verificacion@example.test',
+            'password' => 'password-seguro',
+            'password_confirmation' => 'password-seguro',
+        ]);
+
+        $response->assertRedirect(route('verification.notice'));
+        Queue::assertNothingPushed();
     }
 
     public function test_unverified_entrepreneur_cannot_enter_the_panel(): void
