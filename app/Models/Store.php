@@ -17,6 +17,8 @@ class Store extends Model
 {
     use SoftDeletes, LogsActivity;
 
+    private array $resolvedMediaUrls = [];
+
     // Note 1: fillable controla que campos se pueden escribir por asignacion masiva
     // Note 2: esto protege el modelo frente a entradas no deseadas desde formularios
     // Note 3: y deja explicito que atributos forman parte del ciclo normal de alta/edicion
@@ -134,26 +136,32 @@ class Store extends Model
 
     private function resolveMediaUrl(?string $path): ?string
     {
+        $cacheKey = (string) $path;
+
+        if (array_key_exists($cacheKey, $this->resolvedMediaUrls)) {
+            return $this->resolvedMediaUrls[$cacheKey];
+        }
+
         $placeholder = asset('img/placeholders/store_placeholder.jpg');
 
         if (! $path) {
-            return $placeholder;
+            return $this->resolvedMediaUrls[$cacheKey] = $placeholder;
         }
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
+            return $this->resolvedMediaUrls[$cacheKey] = $path;
         }
 
         $normalizedPath = ltrim($path, '/');
 
         if (file_exists(public_path($normalizedPath))) {
-            return asset($normalizedPath);
+            return $this->resolvedMediaUrls[$cacheKey] = asset($normalizedPath);
         }
 
         if (Storage::disk('public')->exists($normalizedPath)) {
-            return asset('storage/'.$normalizedPath);
+            return $this->resolvedMediaUrls[$cacheKey] = asset('storage/'.$normalizedPath);
         }
 
-        return $placeholder;
+        return $this->resolvedMediaUrls[$cacheKey] = $placeholder;
     }
 }
