@@ -74,7 +74,7 @@
 
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-3">
-                                <h1 class="cb-heading text-[2.6rem] leading-none">{{ $store->name }}</h1>
+                                <h1 class="cb-heading max-w-full text-[2.6rem] leading-none [overflow-wrap:anywhere]">{{ $store->name }}</h1>
 
                                 @if ($store->is_featured)
                                     <span class="cb-pill cursor-pointer">
