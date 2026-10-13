@@ -21,7 +21,7 @@
                         @if ($page == $paginator->currentPage())
                             <span class="cb-pagination-page is-active" aria-current="page">{{ $page }}</span>
                         @else
-                            <a class="cb-pagination-page" href="{{ $url }}" aria-label="Ir a la página {{ $page }}">{{ $page }}</a>
+                            <a class="cb-pagination-page hidden sm:inline-flex" href="{{ $url }}" aria-label="Ir a la página {{ $page }}">{{ $page }}</a>
                         @endif
                     @endforeach
                 @endif
