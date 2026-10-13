@@ -11,6 +11,12 @@ Route::get('/', [TiendaController::class, 'home'])->name('home');
 Route::middleware('guest')->group(function () {
 	Route::get('/iniciar-sesion', [EntrepreneurAuthController::class, 'showLogin'])->name('login');
 	Route::post('/iniciar-sesion', [EntrepreneurAuthController::class, 'login'])->name('login.store');
+	Route::get('/recuperar-contrasena', [EntrepreneurAuthController::class, 'showPasswordResetRequest'])->name('password.request');
+	Route::post('/recuperar-contrasena', [EntrepreneurAuthController::class, 'sendPasswordResetLink'])
+		->middleware('throttle:6,1')
+		->name('password.email');
+	Route::get('/restablecer-contrasena/{token}', [EntrepreneurAuthController::class, 'showPasswordResetForm'])->name('password.reset');
+	Route::post('/restablecer-contrasena', [EntrepreneurAuthController::class, 'resetPassword'])->name('password.update');
 	Route::get('/registro-emprendedor', [EntrepreneurAuthController::class, 'showRegister'])->name('register');
 	Route::post('/registro-emprendedor', [EntrepreneurAuthController::class, 'register'])
 		->middleware('throttle:5,1')

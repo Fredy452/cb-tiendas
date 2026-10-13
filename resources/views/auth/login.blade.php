@@ -40,7 +40,7 @@
                     <div>
                         <div class="mb-2 flex items-center justify-between gap-3">
                             <label for="password" class="font-medium text-(--cb-text)">Contraseña</label>
-                            <a href="{{ route('filament.admin.auth.password-reset.request') }}" class="text-sm font-semibold text-(--cb-primary) hover:underline">¿La olvidaste?</a>
+                            <a href="{{ route('password.request') }}" class="min-h-11 inline-flex items-center text-sm font-semibold text-(--cb-primary) hover:underline">¿La olvidaste?</a>
                         </div>
                         <div class="relative">
                             <input id="password" name="password" type="password" class="cb-input tracking-widest" autocomplete="current-password" required aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}">

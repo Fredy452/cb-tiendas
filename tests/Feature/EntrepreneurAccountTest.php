@@ -7,9 +7,11 @@ use App\Mail\StoreCreated;
 use App\Models\Category;
 use App\Models\Store;
 use App\Models\User;
+use App\Notifications\ResetEntrepreneurPassword;
 use App\Notifications\VerifyEntrepreneurEmail;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
@@ -32,6 +34,13 @@ class EntrepreneurAccountTest extends TestCase
             ->assertOk()
             ->assertSeeText('Crear cuenta');
 
+        $this->get(route('password.request'))
+            ->assertOk()
+            ->assertSeeText('¿Olvidaste tu contraseña?');
+
+        $this->get(route('login'))
+            ->assertSee(route('password.request'));
+
         $this->get(route('filament.admin.auth.login'))
             ->assertRedirect(route('login'));
 
@@ -39,6 +48,37 @@ class EntrepreneurAccountTest extends TestCase
             VerifyEntrepreneurEmail::class,
             app(\Filament\Auth\Notifications\VerifyEmail::class),
         );
+    }
+
+    public function test_entrepreneur_can_request_and_complete_a_password_reset(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create(['email' => 'emprendedora@example.test']);
+
+        $this->post(route('password.email'), ['email' => $user->email])
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $token = null;
+        Notification::assertSentTo($user, ResetEntrepreneurPassword::class, function (ResetEntrepreneurPassword $notification) use ($user, &$token): bool {
+            $token = $notification->token;
+
+            return str_contains($notification->toMail($user)->render(), 'Elegir nueva contraseña');
+        });
+
+        $this->get(route('password.reset', ['token' => $token, 'email' => $user->email]))
+            ->assertOk()
+            ->assertSeeText('Crear nueva contraseña');
+
+        $this->post(route('password.update'), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'password-nueva',
+            'password_confirmation' => 'password-nueva',
+        ])->assertRedirect(route('login'))
+            ->assertSessionHas('status');
+
+        $this->assertTrue(Hash::check('password-nueva', $user->fresh()->password));
     }
 
     public function test_registration_creates_an_entrepreneur_and_claims_stores_with_the_same_email(): void

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\VerifyEntrepreneurEmail;
+use App\Notifications\ResetEntrepreneurPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -44,6 +45,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifyEntrepreneurEmail);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetEntrepreneurPassword($token));
     }
 
     /**
