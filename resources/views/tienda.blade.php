@@ -6,6 +6,7 @@
 @section('content')
     @php
         $baseScopeQuery = request()->except('page', 'scope');
+        $searchContext = request()->except('page', 'categories', 'category');
     @endphp
 
     <section class=" bg-[#F0EFFF]">
@@ -17,68 +18,15 @@
                 </p>
             </div>
 
-            <div class="cb-search-container relative mx-auto mt-10 max-w-3xl" data-search-wrapper>
-            <form action="{{ route('tiendas.index') }}" method="GET" data-search-form>
-                @if ($selectedScope !== 'all')
-                    <input type="hidden" name="scope" value="{{ $selectedScope }}">
-                @endif
-                @if ($selectedOfferType)
-                    <input type="hidden" name="offer_type" value="{{ $selectedOfferType }}">
-                @endif
-
-                <div class="cb-panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center" data-search-parent>
-                    <label for="stores-search" class="flex flex-1 items-center gap-3 rounded-2xl bg-(--cb-surface-panel) px-4 py-2 text-(--cb-outline)">
-                        <span class="material-symbols-outlined">search</span>
-                        <input
-                            id="stores-search"
-                            name="search"
-                            type="search"
-                            value="{{ $search }}"
-                            autocomplete="off"
-                            role="combobox"
-                            aria-autocomplete="list"
-                            aria-controls="stores-search-suggestions"
-                            aria-expanded="false"
-                            class="w-full border-none bg-transparent p-0 text-base text-(--cb-text) outline-none placeholder:text-(--cb-outline)"
-                            placeholder="Buscar emprendedores, servicios o productos..."
-                            data-search-input
-                        >
-                    </label>
-
-                    <button type="submit" class="cb-button-primary rounded-2xl px-8">Buscar</button>
-                </div>
-
-                {{-- Panel de autocompletar --}}
-                <div id="stores-search-suggestions" class="cb-search-panel hidden" aria-label="Sugerencias de búsqueda"
-                     data-search-panel
-                     data-search-url="{{ route('buscar.sugerencias') }}">
-
-                    {{-- Búsquedas populares / recientes --}}
-                    <div data-search-popular class="hidden">
-                        <p class="cb-search-panel-label">BÚSQUEDAS POPULARES</p>
-                        <ul data-popular-list></ul>
-                        <p class="hidden px-4 py-3 text-sm text-(--cb-outline)" data-popular-empty>No hay búsquedas recientes todavía.</p>
-                    </div>
-
-                    {{-- Estado cargando --}}
-                    <div data-search-loading class="hidden px-4 py-3 text-sm text-(--cb-muted)">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined cb-spin text-[18px]">progress_activity</span>
-                            Buscando productos...
-                        </div>
-                    </div>
-
-                    {{-- Sin resultados --}}
-                    <div data-search-empty class="hidden px-4 py-5 text-center text-sm text-(--cb-muted)">
-                        <span class="material-symbols-outlined mb-1 block text-3xl text-(--cb-outline)">search_off</span>
-                        Sin resultados para &ldquo;<span class="font-medium text-(--cb-text)" data-search-query></span>&rdquo;
-                    </div>
-
-                    {{-- Lista de resultados --}}
-                    <ul role="listbox" data-search-results class="hidden"></ul>
-                </div>
-            </form>
-        </div>
+            @include('partials.public.search-drawer', [
+                'searchId' => 'stores-search',
+                'searchValue' => $search,
+                'selectedOfferType' => $selectedOfferType,
+                'categories' => $categories,
+                'selectedCategoryIds' => $selectedCategoryIds,
+                'selectedScope' => $selectedScope,
+                'searchContext' => $searchContext,
+            ])
 
         <div class="mt-12 grid min-w-0 gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start">
             <aside class="min-w-0 space-y-5 lg:sticky lg:top-28">

@@ -542,6 +542,7 @@ const setupSearchAutocomplete = () => {
 		const input = wrapper.querySelector('[data-search-input]');
 		const form = wrapper.querySelector('[data-search-form]');
 		const panel = wrapper.querySelector('[data-search-panel]');
+		const offerTypeInputs = wrapper.querySelectorAll('[data-search-offer-type]');
 
 		if (! input || ! form || ! panel) {
 			return;
@@ -800,6 +801,10 @@ const setupSearchAutocomplete = () => {
 		form.addEventListener('submit', () => {
 			saveRecent(input.value.trim());
 			hidePanel();
+		});
+
+		offerTypeInputs.forEach((offerTypeInput) => {
+			offerTypeInput.addEventListener('change', () => form.requestSubmit());
 		});
 
 		document.addEventListener('click', (e) => {

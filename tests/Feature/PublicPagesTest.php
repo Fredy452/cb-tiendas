@@ -25,12 +25,15 @@ class PublicPagesTest extends TestCase
             ->assertSeeText('¿Qué buscás hoy?')
             ->assertSeeText('Productos')
             ->assertSeeText('Servicios')
+            ->assertSee('data-search-offer-type', false)
             ->assertSeeText($store->name);
 
         $this->get(route('tiendas.index'))
             ->assertOk()
             ->assertSeeText($store->name)
             ->assertSeeText('Productos y servicios')
+            ->assertSeeText('¿Qué buscás hoy?')
+            ->assertSee('data-search-offer-type', false)
             ->assertSeeText('Explorar negocios');
 
         $this->get(route('categorias'))
@@ -96,6 +99,23 @@ class PublicPagesTest extends TestCase
             ->assertSeeText($bothStore->name)
             ->assertSeeText($productsStore->name)
             ->assertDontSeeText($servicesStore->name);
+    }
+
+    public function test_explore_search_drawer_preserves_selected_filters(): void
+    {
+        [$category] = $this->seedCatalog();
+
+        $this->get(route('tiendas.index', [
+            'search' => 'Panadería',
+            'offer_type' => 'products',
+            'category' => $category->slug,
+            'scope' => 'new',
+        ]))
+            ->assertOk()
+            ->assertSee('value="Panadería"', false)
+            ->assertSee('name="offer_type" value="products" class="peer sr-only" checked', false)
+            ->assertSee('name="scope" value="new"', false)
+            ->assertSee('name="categories[]" value="'.$category->getKey().'"', false);
     }
 
     public function test_registration_creates_a_pending_store_and_attaches_the_category(): void

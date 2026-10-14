@@ -176,6 +176,12 @@
         background-color: rgba(244, 242, 255, 0.92);
     }
 
+    .cb-pill-desc {
+        @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
+        background-color: var(--cb-surface-strong);
+        color: var(--cb-outline);
+    }
+
     .cb-pill {
         @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
         background-color: rgba(177, 240, 206, 0.5);
