@@ -22,6 +22,9 @@ class PublicPagesTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSeeText('CB Tiendas')
+            ->assertSeeText('¿Qué buscás hoy?')
+            ->assertSeeText('Productos')
+            ->assertSeeText('Servicios')
             ->assertSeeText($store->name);
 
         $this->get(route('tiendas.index'))
