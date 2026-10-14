@@ -55,7 +55,7 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
 
-            <div class="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300 ease-out lg:hidden" style="width: 100vw; height: 100dvh; overflow: hidden; opacity: 0;" data-mobile-nav-layer>
+            <div class="hidden fixed inset-0 z-50 lg:hidden" style="width: 100vw; height: 100dvh; overflow: hidden;" data-mobile-nav-layer>
                 <button
                     type="button"
                     class="absolute inset-0 bg-[#111827]/55"
@@ -65,8 +65,8 @@
 
                 <aside
                     id="mobile-nav-drawer"
-                    class="absolute top-0 right-0 h-dvh w-[min(24rem,92vw)] bg-white shadow-[-12px_0_32px_rgba(15,23,42,0.18)] transition-transform duration-300 ease-out"
-                    style="top: 0; right: 0; bottom: 0; width: min(92vw, 24rem); max-width: 100vw; overflow-x: hidden; background: #ffffff; box-shadow: -12px 0 32px rgba(15, 23, 42, 0.18); translate: 100%;"
+                    class="absolute top-0 right-0 h-dvh w-[min(24rem,92vw)] bg-white shadow-[-12px_0_32px_rgba(15,23,42,0.18)]"
+                    style="top: 0; right: 0; bottom: 0; width: min(92vw, 24rem); max-width: 100vw; overflow-x: hidden; background: #ffffff; box-shadow: -12px 0 32px rgba(15, 23, 42, 0.18);"
                     role="dialog"
                     aria-modal="true"
                     aria-label="Menú de navegación"

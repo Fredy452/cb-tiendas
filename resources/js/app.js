@@ -472,9 +472,7 @@ const setupMobileNavDrawer = () => {
 
 		const closeDrawer = (restoreFocus = true) => {
 			toggle.setAttribute('aria-expanded', 'false');
-			layer.classList.add('pointer-events-none');
-			layer.style.opacity = '0';
-			drawer.style.translate = '100%';
+			layer.classList.add('hidden');
 			document.body.classList.remove('overflow-hidden');
 
 			if (restoreFocus) {
@@ -484,9 +482,7 @@ const setupMobileNavDrawer = () => {
 
 		const openDrawer = () => {
 			toggle.setAttribute('aria-expanded', 'true');
-			layer.classList.remove('pointer-events-none');
-			layer.style.opacity = '1';
-			drawer.style.translate = '0';
+			layer.classList.remove('hidden');
 			document.body.classList.add('overflow-hidden');
 			closeButton.focus();
 		};
