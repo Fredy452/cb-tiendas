@@ -470,37 +470,38 @@ const setupMobileNavDrawer = () => {
 			return;
 		}
 
-		const closeDrawer = (restoreFocus = true) => {
-			toggle.setAttribute('aria-expanded', 'false');
-			layer.classList.add('hidden');
-			document.body.classList.remove('overflow-hidden');
+		const setExpanded = (expanded, restoreFocus = true) => {
+			toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+			layer.classList.toggle('pointer-events-none', ! expanded);
+			layer.classList.toggle('opacity-0', ! expanded);
+			drawer.classList.toggle('translate-x-full', ! expanded);
+			document.body.classList.toggle('overflow-hidden', expanded);
 
-			if (restoreFocus) {
+			if (expanded) {
+				window.setTimeout(() => {
+					if (toggle.getAttribute('aria-expanded') === 'true') {
+						closeButton.focus();
+					}
+				}, 300);
+			} else if (restoreFocus) {
 				toggle.focus();
 			}
 		};
 
-		const openDrawer = () => {
-			toggle.setAttribute('aria-expanded', 'true');
-			layer.classList.remove('hidden');
-			document.body.classList.add('overflow-hidden');
-			closeButton.focus();
-		};
-
 		toggle.dataset.ready = 'true';
-		closeDrawer(false);
+		setExpanded(false, false);
 
 		toggle.addEventListener('click', () => {
 			const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-			isOpen ? closeDrawer() : openDrawer();
+			setExpanded(! isOpen);
 		});
 
-		overlay.addEventListener('click', closeDrawer);
-		closeButton.addEventListener('click', closeDrawer);
+		overlay.addEventListener('click', () => setExpanded(false));
+		closeButton.addEventListener('click', () => setExpanded(false));
 
 		document.addEventListener('keydown', (event) => {
 			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-				closeDrawer();
+				setExpanded(false);
 			}
 
 			if (event.key !== 'Tab' || toggle.getAttribute('aria-expanded') !== 'true') {
