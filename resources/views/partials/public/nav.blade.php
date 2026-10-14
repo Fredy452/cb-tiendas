@@ -12,7 +12,7 @@
     ];
 @endphp
 
-<header class="sticky top-0 z-40 border-b border-white/70 bg-white/90 backdrop-blur">
+<header class="sticky top-0 z-40 border-b border-white/70 bg-white/90 backdrop-blur-xl">
     <div class="cb-shell flex items-center justify-between gap-4 py-4">
         <a href="{{ route('home') }}" class="flex items-center gap-3 text-(--cb-primary) transition hover:opacity-85">
             <span class="material-symbols-outlined text-[28px]">storefront</span>

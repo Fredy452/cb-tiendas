@@ -131,7 +131,7 @@
     }
 
     .cb-heading {
-        @apply text-5xl font-bold leading-tight sm:text-4xl;
+        @apply text-3xl font-bold leading-tight sm:text-4xl;
     }
 
     .cb-subheading {
@@ -179,7 +179,7 @@
     .cb-pill-desc {
         @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
         background-color: var(--cb-surface-strong);
-        color: var(--cb-outline);
+        color: var(--cb-text);
     }
 
     .cb-pill {

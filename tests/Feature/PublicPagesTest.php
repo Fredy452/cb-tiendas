@@ -98,7 +98,21 @@ class PublicPagesTest extends TestCase
             ->assertOk()
             ->assertSeeText($bothStore->name)
             ->assertSeeText($productsStore->name)
+            ->assertSeeText('Explorá negocios que venden productos')
+            ->assertSeeText('Encontrá productos locales')
             ->assertDontSeeText($servicesStore->name);
+
+        $this->get(route('tiendas.index', ['offer_type' => 'services']))
+            ->assertOk()
+            ->assertSeeText($bothStore->name)
+            ->assertSeeText($servicesStore->name)
+            ->assertSeeText('Explorá negocios que ofrecen servicios')
+            ->assertSeeText('Encontrá servicios locales')
+            ->assertDontSeeText($productsStore->name);
+
+        $this->get(route('tiendas.index', ['offer_type' => 'both']))
+            ->assertOk()
+            ->assertSeeText('Explorar negocios');
     }
 
     public function test_explore_search_drawer_preserves_selected_filters(): void

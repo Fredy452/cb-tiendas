@@ -1,7 +1,24 @@
 @extends('layouts.public')
 
-@section('title', 'Explorar negocios | CB Tiendas')
-@section('meta_description', 'Directorio público de negocios aprobados en Coronel Bogado con búsqueda y filtros por categoría.')
+@php
+    $exploreContent = match ($selectedOfferType) {
+        'products' => [
+            'title' => 'Explorá negocios que venden productos',
+            'description' => 'Encontrá productos locales y filtrá el directorio por rubro, nombre o descripción.',
+        ],
+        'services' => [
+            'title' => 'Explorá negocios que ofrecen servicios',
+            'description' => 'Encontrá servicios locales y filtrá el directorio por rubro, nombre o descripción.',
+        ],
+        default => [
+            'title' => 'Explorar negocios',
+            'description' => 'Encontrá lo que buscás en tu ciudad y filtrá el directorio por rubro, nombre o descripción.',
+        ],
+    };
+@endphp
+
+@section('title', $exploreContent['title'] . ' | CB Tiendas')
+@section('meta_description', $exploreContent['description'])
 
 @section('content')
     @php
@@ -12,9 +29,9 @@
     <section class=" bg-[#F0EFFF]">
         <div class="cb-shell cb-section">
             <div class="mx-auto max-w-4xl text-center">
-                <h1 class="cb-heading text-(--cb-primary)">Explorar negocios</h1>
+                <h1 class="cb-heading text-(--cb-primary)">{{ $exploreContent['title'] }}</h1>
                 <p class="mx-auto mt-4 max-w-2xl text-lg leading-8 font-light">
-                    Encontrá lo que buscás en tu ciudad y filtrá el directorio por rubro, nombre o descripción.
+                    {{ $exploreContent['description'] }}
                 </p>
             </div>
 
