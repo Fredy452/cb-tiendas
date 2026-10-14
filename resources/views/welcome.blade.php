@@ -144,6 +144,15 @@
                     @endforeach
                     </div>
                 </div>
+                <div class="mt-5 flex items-center justify-center gap-3">
+                    <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver negocios destacados anteriores" data-carousel-prev>
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button type="button" class="cb-button-ghost px-4! py-2!" aria-pressed="false" data-carousel-toggle>Pausar</button>
+                    <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver más negocios destacados" data-carousel-next>
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
             </div>
         @endif
     </section>
@@ -207,6 +216,15 @@
                         @endforeach
                         </div>
                     </div>
+                    <div class="mt-5 flex items-center justify-center gap-3">
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver tiendas anteriores" data-carousel-prev>
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-pressed="false" data-carousel-toggle>Pausar</button>
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver más tiendas" data-carousel-next>
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="cb-home-carousel mt-8 hidden md:block" data-home-carousel>
@@ -249,6 +267,15 @@
                             </article>
                         @endforeach
                         </div>
+                    </div>
+                    <div class="mt-5 flex items-center justify-center gap-3">
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver tiendas anteriores" data-carousel-prev>
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-pressed="false" data-carousel-toggle>Pausar</button>
+                        <button type="button" class="cb-button-ghost px-4! py-2!" aria-label="Ver más tiendas" data-carousel-next>
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
                     </div>
                 </div>
             @endif

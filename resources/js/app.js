@@ -223,9 +223,6 @@ const setupFeaturedCarousels = () => {
 	const setupCarousel = ({
 		carouselSelector,
 		viewportSelector,
-		sectionSelector,
-		prevSelector,
-		nextSelector,
 	}) => {
 		document.querySelectorAll(carouselSelector).forEach((carousel) => {
 		if (carousel.dataset.ready === 'true') {
@@ -233,9 +230,9 @@ const setupFeaturedCarousels = () => {
 		}
 
 		const viewport = carousel.querySelector(viewportSelector);
-		const section = carousel.closest(sectionSelector);
-		const prevButton = prevSelector ? section?.querySelector(prevSelector) : null;
-		const nextButton = nextSelector ? section?.querySelector(nextSelector) : null;
+		const prevButton = carousel.querySelector('[data-carousel-prev]');
+		const nextButton = carousel.querySelector('[data-carousel-next]');
+		const toggleButton = carousel.querySelector('[data-carousel-toggle]');
 
 		if (! viewport) {
 			return;
@@ -249,6 +246,62 @@ const setupFeaturedCarousels = () => {
 			loop: true,
 			slidesToScroll: 1,
 		});
+
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		let autoplayTimer = null;
+		let isPaused = reducedMotion.matches;
+
+		const stopAutoplay = () => {
+			if (autoplayTimer) {
+				window.clearInterval(autoplayTimer);
+				autoplayTimer = null;
+			}
+		};
+
+		const startAutoplay = () => {
+			if (isPaused || autoplayTimer) {
+				return;
+			}
+
+			autoplayTimer = window.setInterval(() => embla.scrollNext(), 4000);
+		};
+
+		const updateToggle = () => {
+			if (! toggleButton) {
+				return;
+			}
+
+			toggleButton.disabled = reducedMotion.matches;
+			toggleButton.textContent = isPaused ? 'Reanudar' : 'Pausar';
+			toggleButton.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
+			toggleButton.setAttribute('aria-label', isPaused ? 'Reanudar avance automático' : 'Pausar avance automático');
+		};
+
+		updateToggle();
+		startAutoplay();
+
+		carousel.addEventListener('mouseenter', stopAutoplay);
+		carousel.addEventListener('mouseleave', startAutoplay);
+		carousel.addEventListener('focusin', stopAutoplay);
+		carousel.addEventListener('focusout', (event) => {
+			if (! carousel.contains(event.relatedTarget)) {
+				startAutoplay();
+			}
+		});
+		toggleButton?.addEventListener('click', () => {
+			isPaused = ! isPaused;
+			updateToggle();
+			isPaused ? stopAutoplay() : startAutoplay();
+		});
+		reducedMotion.addEventListener('change', (event) => {
+			if (event.matches) {
+				isPaused = true;
+				stopAutoplay();
+			}
+
+			updateToggle();
+		});
+		embla.on('destroy', stopAutoplay);
 
 		const updateButtons = () => {
 			if (! prevButton || ! nextButton) {
@@ -271,17 +324,11 @@ const setupFeaturedCarousels = () => {
 	setupCarousel({
 		carouselSelector: '[data-featured-carousel]',
 		viewportSelector: '[data-featured-viewport]',
-		sectionSelector: '[data-featured-section]',
-		prevSelector: '[data-featured-prev]',
-		nextSelector: '[data-featured-next]',
 	});
 
 	setupCarousel({
 		carouselSelector: '[data-home-carousel]',
 		viewportSelector: '[data-home-viewport]',
-		sectionSelector: '[data-home-carousel-section]',
-		prevSelector: null,
-		nextSelector: null,
 	});
 };
 
