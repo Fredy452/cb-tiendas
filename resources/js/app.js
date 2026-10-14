@@ -44,112 +44,6 @@ const setupFlashAlerts = async () => {
 	}
 };
 
-const normalizeSearchText = (value) => value
-	.toLowerCase()
-	.normalize('NFD')
-	.replace(/[\u0300-\u036f]/g, '');
-
-const setupCategoryComboboxes = () => {
-	document.querySelectorAll('[data-category-combobox]').forEach((combobox) => {
-		if (combobox.dataset.ready === 'true') {
-			return;
-		}
-
-		const select = combobox.querySelector('[data-category-native]');
-		const enhanced = combobox.querySelector('[data-category-enhanced]');
-		const toggle = combobox.querySelector('[data-category-toggle]');
-		const panel = combobox.querySelector('[data-category-panel]');
-		const search = combobox.querySelector('[data-category-search]');
-		const current = combobox.querySelector('[data-category-current]');
-		const empty = combobox.querySelector('[data-category-empty]');
-		const options = Array.from(combobox.querySelectorAll('[data-category-option]'));
-
-		if (! select || ! enhanced || ! toggle || ! panel || ! search || ! current || options.length === 0) {
-			return;
-		}
-
-		const close = () => {
-			panel.classList.add('hidden');
-			toggle.setAttribute('aria-expanded', 'false');
-		};
-
-		const filterOptions = () => {
-			const query = normalizeSearchText(search.value.trim());
-			let visibleOptions = 0;
-
-			options.forEach((option) => {
-				const label = normalizeSearchText(option.dataset.label || option.textContent || '');
-				const isVisible = label.includes(query);
-
-				option.closest('li')?.classList.toggle('hidden', ! isVisible);
-				visibleOptions += isVisible ? 1 : 0;
-			});
-
-			empty?.classList.toggle('hidden', visibleOptions > 0);
-		};
-
-		const open = () => {
-			panel.classList.remove('hidden');
-			toggle.setAttribute('aria-expanded', 'true');
-			search.value = '';
-			filterOptions();
-			search.focus();
-		};
-
-		const setSelectedOption = (option) => {
-			select.value = option.dataset.value || '';
-			current.textContent = option.dataset.label || option.textContent.trim();
-			current.classList.remove('text-(--cb-outline)');
-			current.classList.add('text-(--cb-text)');
-
-			options.forEach((item) => {
-				item.setAttribute('aria-selected', item === option ? 'true' : 'false');
-			});
-
-			select.dispatchEvent(new Event('change', { bubbles: true }));
-			close();
-			toggle.focus();
-		};
-
-		combobox.dataset.ready = 'true';
-		select.classList.add('hidden');
-		enhanced.classList.remove('hidden');
-
-		toggle.addEventListener('click', () => {
-			const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-			isOpen ? close() : open();
-		});
-
-		search.addEventListener('input', filterOptions);
-
-		search.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') {
-				close();
-				toggle.focus();
-			}
-
-			if (event.key === 'Enter') {
-				const firstVisibleOption = options.find((option) => ! option.closest('li')?.classList.contains('hidden'));
-
-				if (firstVisibleOption) {
-					event.preventDefault();
-					setSelectedOption(firstVisibleOption);
-				}
-			}
-		});
-
-		options.forEach((option) => {
-			option.addEventListener('click', () => setSelectedOption(option));
-		});
-
-		document.addEventListener('click', (event) => {
-			if (! combobox.contains(event.target)) {
-				close();
-			}
-		});
-	});
-};
-
 const setupImagePreviews = () => {
 	document.querySelectorAll('[data-image-input]').forEach((input) => {
 		if (input.dataset.ready === 'true') {
@@ -356,38 +250,6 @@ const setupFeaturedCarousels = () => {
 			slidesToScroll: 1,
 		});
 
-		let autoplayTimer = null;
-		const autoplayDelay = 4000;
-
-		const stopAutoplay = () => {
-			if (autoplayTimer) {
-				window.clearInterval(autoplayTimer);
-				autoplayTimer = null;
-			}
-		};
-
-		const startAutoplay = () => {
-			if (autoplayTimer) {
-				return;
-			}
-
-			autoplayTimer = window.setInterval(() => {
-				embla.scrollNext();
-			}, autoplayDelay);
-		};
-
-		startAutoplay();
-
-		viewport.addEventListener('mouseenter', stopAutoplay);
-		viewport.addEventListener('mouseleave', startAutoplay);
-		prevButton?.addEventListener('mouseenter', stopAutoplay);
-		prevButton?.addEventListener('mouseleave', startAutoplay);
-		nextButton?.addEventListener('mouseenter', stopAutoplay);
-		nextButton?.addEventListener('mouseleave', startAutoplay);
-		embla.on('pointerDown', stopAutoplay);
-		embla.on('pointerUp', startAutoplay);
-		embla.on('destroy', stopAutoplay);
-
 		const updateButtons = () => {
 			if (! prevButton || ! nextButton) {
 				return;
@@ -444,33 +306,6 @@ const setupRelatedCarousels = () => {
 			slidesToScroll: 1,
 		});
 
-		let autoplayTimer = null;
-		const autoplayDelay = 4000;
-
-		const stopAutoplay = () => {
-			if (autoplayTimer) {
-				window.clearInterval(autoplayTimer);
-				autoplayTimer = null;
-			}
-		};
-
-		const startAutoplay = () => {
-			if (autoplayTimer) {
-				return;
-			}
-
-			autoplayTimer = window.setInterval(() => {
-				embla.scrollNext();
-			}, autoplayDelay);
-		};
-
-		startAutoplay();
-
-		viewport.addEventListener('mouseenter', stopAutoplay);
-		viewport.addEventListener('mouseleave', startAutoplay);
-		embla.on('pointerDown', stopAutoplay);
-		embla.on('pointerUp', startAutoplay);
-		embla.on('destroy', stopAutoplay);
 	});
 };
 
@@ -583,12 +418,16 @@ const setupMobileNavDrawer = () => {
 			return;
 		}
 
-		const closeDrawer = () => {
+		const closeDrawer = (restoreFocus = true) => {
 			toggle.setAttribute('aria-expanded', 'false');
 			layer.classList.add('pointer-events-none');
 			layer.style.opacity = '0';
 			drawer.style.translate = '100%';
 			document.body.classList.remove('overflow-hidden');
+
+			if (restoreFocus) {
+				toggle.focus();
+			}
 		};
 
 		const openDrawer = () => {
@@ -597,10 +436,11 @@ const setupMobileNavDrawer = () => {
 			layer.style.opacity = '1';
 			drawer.style.translate = '0';
 			document.body.classList.add('overflow-hidden');
+			closeButton.focus();
 		};
 
 		toggle.dataset.ready = 'true';
-		closeDrawer();
+		closeDrawer(false);
 
 		toggle.addEventListener('click', () => {
 			const isOpen = toggle.getAttribute('aria-expanded') === 'true';
@@ -613,6 +453,29 @@ const setupMobileNavDrawer = () => {
 		document.addEventListener('keydown', (event) => {
 			if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
 				closeDrawer();
+			}
+
+			if (event.key !== 'Tab' || toggle.getAttribute('aria-expanded') !== 'true') {
+				return;
+			}
+
+			const focusableElements = Array.from(drawer.querySelectorAll(
+				'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+			)).filter((element) => element.getClientRects().length > 0);
+			const firstElement = focusableElements[0];
+			const lastElement = focusableElements.at(-1);
+
+			if (! firstElement || ! lastElement) {
+				event.preventDefault();
+				return;
+			}
+
+			if (event.shiftKey && document.activeElement === firstElement) {
+				event.preventDefault();
+				lastElement.focus();
+			} else if (! event.shiftKey && document.activeElement === lastElement) {
+				event.preventDefault();
+				firstElement.focus();
 			}
 		});
 	});
@@ -646,6 +509,7 @@ const setupSearchAutocomplete = () => {
 
 		let debounceTimer = null;
 		let abortController = null;
+		let activeIndex = -1;
 
 		wrapper.dataset.ready = 'true';
 
@@ -682,8 +546,36 @@ const setupSearchAutocomplete = () => {
 			return safe.replace(new RegExp(`(${escapedQuery})`, 'gi'), '<mark class="cb-search-highlight">$1</mark>');
 		};
 
-		const showPanel = () => panel.classList.remove('hidden');
-		const hidePanel = () => panel.classList.add('hidden');
+		const resultOptions = () => Array.from(resultsList.querySelectorAll('[data-search-option]'))
+			.filter((option) => option.getClientRects().length > 0);
+
+		const setActiveOption = (index) => {
+			const options = resultOptions();
+
+			if (options.length === 0) {
+				return;
+			}
+
+			activeIndex = (index + options.length) % options.length;
+			options.forEach((option, optionIndex) => {
+				option.setAttribute('aria-selected', optionIndex === activeIndex ? 'true' : 'false');
+			});
+
+			const activeOption = options[activeIndex];
+			input.setAttribute('aria-activedescendant', activeOption.id);
+			activeOption.scrollIntoView({ block: 'nearest' });
+		};
+
+		const showPanel = () => {
+			panel.classList.remove('hidden');
+			input.setAttribute('aria-expanded', 'true');
+		};
+		const hidePanel = () => {
+			panel.classList.add('hidden');
+			activeIndex = -1;
+			input.setAttribute('aria-expanded', 'false');
+			input.removeAttribute('aria-activedescendant');
+		};
 
 		const hideAllStates = () => {
 			popularSection.classList.add('hidden');
@@ -728,13 +620,19 @@ const setupSearchAutocomplete = () => {
 
 		const renderResults = (results, query) => {
 			resultsList.innerHTML = '';
+			activeIndex = -1;
+			input.removeAttribute('aria-activedescendant');
 
-			results.forEach((store) => {
+			results.forEach((store, index) => {
 				const li = document.createElement('li');
 				const a = document.createElement('a');
 
 				a.href = store.url;
 				a.className = 'cb-search-result-item';
+				a.id = `${input.id}-option-${index}`;
+				a.dataset.searchOption = 'true';
+				a.setAttribute('role', 'option');
+				a.setAttribute('aria-selected', 'false');
 
 				const thumbHtml = store.thumbnail
 					? `<img src="${escapeHtml(store.thumbnail)}" alt="${escapeHtml(store.name)}" loading="lazy">`
@@ -800,6 +698,8 @@ const setupSearchAutocomplete = () => {
 
 		input.addEventListener('input', () => {
 			clearTimeout(debounceTimer);
+			activeIndex = -1;
+			input.removeAttribute('aria-activedescendant');
 			const query = input.value.trim();
 
 			if (! query) {
@@ -816,6 +716,29 @@ const setupSearchAutocomplete = () => {
 		});
 
 		input.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowDown') {
+				if (resultOptions().length > 0) {
+					e.preventDefault();
+					setActiveOption(activeIndex + 1);
+				}
+			}
+
+			if (e.key === 'ArrowUp') {
+				if (resultOptions().length > 0) {
+					e.preventDefault();
+					setActiveOption(activeIndex - 1);
+				}
+			}
+
+			if (e.key === 'Enter' && activeIndex >= 0) {
+				const activeOption = resultOptions()[activeIndex];
+
+				if (activeOption) {
+					e.preventDefault();
+					activeOption.click();
+				}
+			}
+
 			if (e.key === 'Escape') {
 				hidePanel();
 				input.blur();
@@ -837,7 +760,6 @@ const setupSearchAutocomplete = () => {
 
 const setupPublicInteractions = () => {
 	setupFlashAlerts();
-	setupCategoryComboboxes();
 	setupImagePreviews();
 	setupRegistrationFileSizeValidation();
 	setupLocationPickers();

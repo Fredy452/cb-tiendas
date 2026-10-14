@@ -47,7 +47,7 @@
     <section class="bg-[#F0EFFF]">
         <div class="cb-shell cb-section pb-12">
             <div class="relative overflow-hidden rounded-4xl bg-(--cb-surface-strong) shadow-[0_28px_58px_rgba(22,26,50,0.08)]">
-                <div class="h-72 sm:h-96">
+                <div class="aspect-video sm:h-96 sm:aspect-auto">
                     @if ($store->cover_url)
                         <img src="{{ $store->cover_url }}" alt="{{ $store->name }}" class="h-full w-full object-cover">
                         <div class="absolute inset-0 bg-linear-to-t from-[rgba(22,26,50,0.5)] via-transparent to-transparent"></div>
@@ -74,7 +74,7 @@
 
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-3">
-                                <h1 class="cb-heading max-w-full text-[2.6rem] leading-none [overflow-wrap:anywhere]">{{ $store->name }}</h1>
+                                <h1 class="cb-heading max-w-full text-3xl leading-none [overflow-wrap:anywhere] sm:text-[2.6rem]">{{ $store->name }}</h1>
 
                                 @if ($store->is_featured)
                                     <span class="cb-pill cursor-pointer">

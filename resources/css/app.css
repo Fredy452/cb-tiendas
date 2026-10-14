@@ -81,6 +81,10 @@
         scroll-behavior: smooth;
     }
 
+    :focus-visible {
+        outline: 3px solid var(--cb-secondary);
+        outline-offset: 3px;
+    }
 
     ::selection {
         background-color: rgba(15, 82, 56, 0.18);
@@ -607,6 +611,10 @@
     }
 
     .cb-search-result-item:hover {
+        background-color: rgba(177, 240, 206, 0.35);
+    }
+
+    .cb-search-result-item[aria-selected='true'] {
         background-color: rgba(177, 240, 206, 0.35);
     }
 

@@ -32,6 +32,10 @@
                             type="search"
                             value="{{ $search }}"
                             autocomplete="off"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-controls="stores-search-suggestions"
+                            aria-expanded="false"
                             class="w-full border-none bg-transparent p-0 text-base text-(--cb-text) outline-none placeholder:text-(--cb-outline)"
                             placeholder="Buscar emprendedores, servicios o productos..."
                             data-search-input
@@ -42,7 +46,7 @@
                 </div>
 
                 {{-- Panel de autocompletar --}}
-                <div class="cb-search-panel hidden" role="listbox" aria-label="Sugerencias de búsqueda"
+                <div id="stores-search-suggestions" class="cb-search-panel hidden" aria-label="Sugerencias de búsqueda"
                      data-search-panel
                      data-search-url="{{ route('buscar.sugerencias') }}">
 
@@ -68,7 +72,7 @@
                     </div>
 
                     {{-- Lista de resultados --}}
-                    <ul data-search-results class="hidden"></ul>
+                    <ul role="listbox" data-search-results class="hidden"></ul>
                 </div>
             </form>
         </div>
@@ -189,6 +193,18 @@
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
+
+                <nav class="mb-5 grid grid-cols-3 gap-2" aria-label="Alcance del directorio">
+                    <a href="{{ route('tiendas.index', $baseScopeQuery) }}" class="{{ $selectedScope === 'all' ? 'cb-button-primary' : 'cb-button-ghost' }} px-2! py-2! text-xs!">
+                        Todos
+                    </a>
+                    <a href="{{ route('tiendas.index', array_merge($baseScopeQuery, ['scope' => 'featured'])) }}" class="{{ $selectedScope === 'featured' ? 'cb-button-primary' : 'cb-button-ghost' }} px-2! py-2! text-xs!">
+                        Destacados
+                    </a>
+                    <a href="{{ route('tiendas.index', array_merge($baseScopeQuery, ['scope' => 'new'])) }}" class="{{ $selectedScope === 'new' ? 'cb-button-primary' : 'cb-button-ghost' }} px-2! py-2! text-xs!">
+                        Nuevos
+                    </a>
+                </nav>
 
                 <div class="space-y-3">
                     @forelse ($categories as $category)

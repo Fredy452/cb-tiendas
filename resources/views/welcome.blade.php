@@ -25,6 +25,10 @@
                             name="search"
                             type="search"
                             autocomplete="off"
+                            role="combobox"
+                            aria-autocomplete="list"
+                            aria-controls="home-search-suggestions"
+                            aria-expanded="false"
                             class="w-full border-none bg-transparent p-0 text-base text-(--cb-text) outline-none placeholder:text-(--cb-outline)"
                             placeholder="Buscar emprendedores, servicios o productos..."
                             data-search-input
@@ -35,7 +39,7 @@
                 </form>
 
                 {{-- Panel de autocompletar --}}
-                <div class="cb-search-panel hidden" role="listbox" aria-label="Sugerencias de búsqueda"
+                <div id="home-search-suggestions" class="cb-search-panel hidden" aria-label="Sugerencias de búsqueda"
                      data-search-panel
                      data-search-url="{{ route('buscar.sugerencias') }}">
 
@@ -61,7 +65,7 @@
                     </div>
 
                     {{-- Lista de resultados --}}
-                    <ul data-search-results class="hidden"></ul>
+                    <ul role="listbox" data-search-results class="hidden"></ul>
                 </div>
                 </div>
 

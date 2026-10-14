@@ -93,6 +93,12 @@
         @stack('head')
     </head>
     <body class="min-h-screen overflow-x-clip antialiased">
+        <a
+            href="#contenido-principal"
+            class="sr-only fixed top-4 left-4 z-60 rounded-lg bg-(--cb-primary) px-4 py-3 font-semibold text-white focus:not-sr-only"
+        >
+            Saltar al contenido
+        </a>
         @php
             $flashAlerts = [];
             $flashMessages = [
@@ -136,7 +142,7 @@
                 @endforeach
             </noscript>
 
-            <main class="flex-1">
+            <main id="contenido-principal" class="flex-1">
                 @yield('content')
             </main>
 

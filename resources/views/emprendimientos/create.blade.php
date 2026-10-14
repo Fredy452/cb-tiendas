@@ -8,7 +8,6 @@
     @php
         $heroImageUrl = 'https://media.istockphoto.com/id/909998790/es/vector/concepto-de-compras-en-l%C3%ADnea.jpg?s=612x612&w=0&k=20&c=HYETIkYJ3yXgXbW0KtJ6tU8a4NdFBP6Ckz4szf8cRG8=';
         $selectedCategoryId = (string) old('category_id', '');
-        $selectedCategory = $categories->first(fn ($category) => (string) $category->id === $selectedCategoryId);
     @endphp
 
     <section class="overflow-hidden py-14 sm:py-16 bg-[#DEE0FF]">
@@ -110,7 +109,7 @@
 
                         <div>
                             <label for="name" class="mb-2 block text-lg font-medium text-(--cb-text)">Nombre del negocio</label>
-                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela" maxlength="255" aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}" @error('name') aria-describedby="name-error" @enderror>
+                            <input id="name" name="name" type="text" value="{{ old('name') }}" class="cb-input" placeholder="Ej: Panadería La Abuela" maxlength="255" required aria-required="true" aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}" @error('name') aria-describedby="name-error" @enderror>
                             @error('name')
                                 <p id="name-error" class="cb-field-error">{{ $message }}</p>
                             @enderror
@@ -120,8 +119,8 @@
                             <div>
                                 <label for="category_id" class="mb-2 block text-lg font-medium text-(--cb-text)">Rubro / Categoría</label>
                                 <p class="mb-2 text-sm text-(--cb-muted)">Si no existe su rubro, seleccione <span class="font-semibold text-(--cb-primary)">Otros</span>.</p>
-                                <div class="relative" data-category-combobox>
-                                    <select id="category_id" name="category_id" class="cb-input" data-category-native aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
+                                <div>
+                                    <select id="category_id" name="category_id" class="cb-input" required aria-required="true" aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
                                         <option value="">Seleccioná una categoría</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}" @selected($selectedCategoryId === (string) $category->id)>
@@ -129,35 +128,6 @@
                                             </option>
                                         @endforeach
                                     </select>
-
-                                    <div class="hidden" data-category-enhanced>
-                                        <button type="button" class="cb-input flex items-center justify-between gap-3 text-left" data-category-toggle aria-haspopup="listbox" aria-expanded="false" aria-invalid="{{ $errors->has('category_id') ? 'true' : 'false' }}" @error('category_id') aria-describedby="category-id-error" @enderror>
-                                            <span class="truncate {{ $selectedCategory ? 'text-(--cb-text)' : 'text-(--cb-outline)' }}" data-category-current>
-                                                {{ $selectedCategory?->name ?? 'Seleccioná una categoría' }}
-                                            </span>
-                                            <span class="material-symbols-outlined text-[20px] text-(--cb-outline)">expand_more</span>
-                                        </button>
-
-                                        <div class="absolute z-30 mt-2 hidden w-full rounded-2xl border border-[rgba(222,224,255,0.95)] bg-white p-2 shadow-[0_20px_34px_rgba(22,26,50,0.12)]" data-category-panel>
-                                            <label for="category-search" class="sr-only">Buscar categoría</label>
-                                            <div class="flex items-center gap-2 rounded-xl bg-(--cb-surface-soft) px-3 py-2 text-(--cb-outline)">
-                                                <span class="material-symbols-outlined text-[20px]">search</span>
-                                                <input id="category-search" type="search" class="w-full border-0 bg-transparent p-0 text-sm text-(--cb-text) outline-none placeholder:text-(--cb-outline) focus:ring-0" placeholder="Buscar categoría..." autocomplete="off" data-category-search>
-                                            </div>
-
-                                            <ul class="mt-2 max-h-60 space-y-1 overflow-auto pr-1" role="listbox" data-category-list>
-                                                @foreach ($categories as $category)
-                                                    <li>
-                                                        <button type="button" class="w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-(--cb-text) transition hover:bg-(--cb-surface-soft) focus:bg-(--cb-surface-soft) focus:outline-none" role="option" data-category-option data-value="{{ $category->id }}" data-label="{{ $category->name }}" aria-selected="{{ $selectedCategoryId === (string) $category->id ? 'true' : 'false' }}">
-                                                            {{ $category->name }}
-                                                        </button>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-
-                                            <p class="hidden px-3 py-4 text-sm text-(--cb-muted)" data-category-empty>No encontramos categorías con ese nombre.</p>
-                                        </div>
-                                    </div>
                                 </div>
                                 @error('category_id')
                                     <p id="category-id-error" class="cb-field-error">{{ $message }}</p>
@@ -166,7 +136,7 @@
 
                             <div>
                                 <label for="phone" class="mb-2 block text-lg font-medium text-(--cb-text)">Teléfono de contacto (WhatsApp)</label>
-                                <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX" maxlength="25" aria-invalid="{{ $errors->has('phone') ? 'true' : 'false' }}" @error('phone') aria-describedby="phone-error" @enderror>
+                                <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX" maxlength="25" required aria-required="true" aria-invalid="{{ $errors->has('phone') ? 'true' : 'false' }}" @error('phone') aria-describedby="phone-error" @enderror>
                                 @error('phone')
                                     <p id="phone-error" class="cb-field-error">{{ $message }}</p>
                                 @enderror
@@ -175,7 +145,7 @@
 
                         <div>
                             <label for="description" class="mb-2 block text-lg font-medium text-(--cb-text)">Breve descripción de lo que hacés</label>
-                            <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés..." maxlength="1200" aria-invalid="{{ $errors->has('description') ? 'true' : 'false' }}" @error('description') aria-describedby="description-error" @enderror>{{ old('description') }}</textarea>
+                            <textarea id="description" name="description" rows="5" class="cb-input resize-none" placeholder="Contanos qué productos o servicios ofrecés..." maxlength="1200" required aria-required="true" aria-invalid="{{ $errors->has('description') ? 'true' : 'false' }}" @error('description') aria-describedby="description-error" @enderror>{{ old('description') }}</textarea>
                             @error('description')
                                 <p id="description-error" class="cb-field-error">{{ $message }}</p>
                             @enderror
@@ -241,7 +211,7 @@
 
                         <div>
                             <label for="address" class="mb-2 block text-lg font-medium text-(--cb-text)">Dirección o zona de referencia</label>
-                            <input id="address" name="address" type="text" value="{{ old('address') }}" class="cb-input" placeholder="Ej: Centro, Coronel Bogado" maxlength="255" aria-invalid="{{ $errors->has('address') ? 'true' : 'false' }}" @error('address') aria-describedby="address-error" @enderror>
+                            <input id="address" name="address" type="text" value="{{ old('address') }}" class="cb-input" placeholder="Ej: Centro, Coronel Bogado" maxlength="255" required aria-required="true" aria-invalid="{{ $errors->has('address') ? 'true' : 'false' }}" @error('address') aria-describedby="address-error" @enderror>
                             @error('address')
                                 <p id="address-error" class="cb-field-error">{{ $message }}</p>
                             @enderror

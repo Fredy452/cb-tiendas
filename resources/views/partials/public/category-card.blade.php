@@ -40,8 +40,8 @@
             {!! $category->description ?: 'Rubros visibles dentro de la plaza digital para que la comunidad encuentre servicios y productos locales con rapidez.' !!}
         </p>
 
-        <button class="cb-button-ghost bg-white/10 mt-4">
+        <span class="cb-button-ghost bg-white/10 mt-4">
             Ver Negocios <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-        </button>
+        </span>
     </div>
 </a>
