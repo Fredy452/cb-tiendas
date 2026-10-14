@@ -73,6 +73,12 @@
                     <a href="{{ route('tiendas.index') }}" class="cb-button-ghost text-[1.2rem]">Explorar negocios</a>
                     <a href="{{ route('emprendimientos.create') }}" class="cb-button-secondary text-[1.2rem]">Registrar mi emprendimiento</a>
                 </div>
+
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    <span class="text-sm font-semibold text-(--cb-muted)">¿Qué buscás?</span>
+                    <a href="{{ route('tiendas.index', ['offer_type' => 'products']) }}" class="cb-pill px-4 py-2">Productos</a>
+                    <a href="{{ route('tiendas.index', ['offer_type' => 'services']) }}" class="cb-pill px-4 py-2">Servicios</a>
+                </div>
             </div>
         </div>
     </section>

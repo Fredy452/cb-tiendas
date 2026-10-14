@@ -27,6 +27,7 @@
         )
         : 'Negocio sin nombre';
 
+    $offerTypeLabel = App\Models\Store::offerTypeOptions()[$store->offer_type] ?? 'Productos y servicios';
     $detailRouteKey = $store->slug ?: $store->getKey();
 @endphp
 
@@ -86,6 +87,7 @@
             </p>
 
             <div class="mt-5 flex items-center justify-between gap-4">
+                <span class="cb-pill">{{ $offerTypeLabel }}</span>
                 <span class="inline-flex items-center gap-2 text-sm text-(--cb-outline)">
                     <span class="material-symbols-outlined text-[18px]">location_on</span>
                     {{ $addressExcerpt }}

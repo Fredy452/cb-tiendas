@@ -42,6 +42,7 @@
             ->take(2)
             ->map(fn ($segment) => Illuminate\Support\Str::upper(Illuminate\Support\Str::substr($segment, 0, 1)))
             ->implode('');
+        $offerTypeLabel = App\Models\Store::offerTypeOptions()[$store->offer_type] ?? 'Productos y servicios';
     @endphp
 
     <section class="bg-[#F0EFFF]">
@@ -89,6 +90,9 @@
                             </div>
 
                             <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="rounded-full bg-[rgba(177,240,206,0.5)] px-3 py-1 text-xs font-semibold text-(--cb-primary)">
+                                    {{ $offerTypeLabel }}
+                                </span>
                                 @forelse ($store->categories as $category)
                                     <span class="rounded-full bg-[rgba(222,224,255,0.85)] px-3 py-1 text-xs font-semibold text-(--cb-text)">
                                         {{ $category->name }}

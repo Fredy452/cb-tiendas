@@ -27,6 +27,7 @@ class Store extends Model
         'name',
         'slug',
         'description',
+        'offer_type',
         'address',
         'phone',
         'email',
@@ -49,6 +50,15 @@ class Store extends Model
     {
         return $query
             ->where('status', 'approved');
+    }
+
+    public static function offerTypeOptions(): array
+    {
+        return [
+            'products' => 'Productos',
+            'services' => 'Servicios',
+            'both' => 'Productos y servicios',
+        ];
     }
 
     public function user(): BelongsTo

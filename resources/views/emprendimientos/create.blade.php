@@ -135,6 +135,18 @@
                             </div>
 
                             <div>
+                                <label for="offer_type" class="mb-2 block text-lg font-medium text-(--cb-text)">Tipo de actividad del negocio</label>
+                                <select id="offer_type" name="offer_type" class="cb-input" required aria-required="true" aria-invalid="{{ $errors->has('offer_type') ? 'true' : 'false' }}" @error('offer_type') aria-describedby="offer-type-error" @enderror>
+                                    @foreach (App\Models\Store::offerTypeOptions() as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('offer_type', 'both') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('offer_type')
+                                    <p id="offer-type-error" class="cb-field-error">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="phone" class="mb-2 block text-lg font-medium text-(--cb-text)">Teléfono de contacto (WhatsApp)</label>
                                 <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" class="cb-input" placeholder="Ej: 09XX XXX XXX" maxlength="25" required aria-required="true" aria-invalid="{{ $errors->has('phone') ? 'true' : 'false' }}" @error('phone') aria-describedby="phone-error" @enderror>
                                 @error('phone')

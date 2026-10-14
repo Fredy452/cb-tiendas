@@ -27,6 +27,7 @@ class PublicPagesTest extends TestCase
         $this->get(route('tiendas.index'))
             ->assertOk()
             ->assertSeeText($store->name)
+            ->assertSeeText('Productos y servicios')
             ->assertSeeText('Explorar negocios');
 
         $this->get(route('categorias'))
@@ -67,6 +68,33 @@ class PublicPagesTest extends TestCase
             ->assertDontSeeText($hiddenStore->name);
     }
 
+    public function test_offer_type_filter_includes_businesses_that_offer_both(): void
+    {
+        [$category, $bothStore] = $this->seedCatalog();
+
+        $productsStore = Store::query()->create([
+            'name' => 'Solo productos',
+            'slug' => 'solo-productos',
+            'offer_type' => 'products',
+            'status' => 'approved',
+        ]);
+        $productsStore->categories()->attach($category);
+
+        $servicesStore = Store::query()->create([
+            'name' => 'Solo servicios',
+            'slug' => 'solo-servicios',
+            'offer_type' => 'services',
+            'status' => 'approved',
+        ]);
+        $servicesStore->categories()->attach($category);
+
+        $this->get(route('tiendas.index', ['offer_type' => 'products']))
+            ->assertOk()
+            ->assertSeeText($bothStore->name)
+            ->assertSeeText($productsStore->name)
+            ->assertDontSeeText($servicesStore->name);
+    }
+
     public function test_registration_creates_a_pending_store_and_attaches_the_category(): void
     {
         Mail::fake();
@@ -83,6 +111,7 @@ class PublicPagesTest extends TestCase
         $response = $this->post(route('emprendimientos.store'), [
             'name' => 'Panaderia La Abuela',
             'category_id' => $category->id,
+            'offer_type' => 'products',
             'phone' => '0981 000 111',
             'email' => 'contacto@laabuela.test',
             'website' => 'laabuela.test/catalogo',
@@ -108,6 +137,7 @@ class PublicPagesTest extends TestCase
         $this->assertDatabaseHas('stores', [
             'name' => 'Panaderia La Abuela',
             'slug' => 'panaderia-la-abuela',
+            'offer_type' => 'products',
             'email' => 'contacto@laabuela.test',
             'website' => 'https://laabuela.test/catalogo',
             'facebook_url' => 'https://facebook.com/panaderialaabuela',
@@ -157,6 +187,34 @@ class PublicPagesTest extends TestCase
         $this->assertDatabaseMissing('stores', [
             'name' => 'Intento con HTML',
         ]);
+    }
+
+    public function test_registration_rejects_an_invalid_offer_type(): void
+    {
+        $category = Category::query()->create([
+            'name' => 'Gastronomía',
+            'slug' => 'gastronomia',
+            'is_active' => true,
+        ]);
+
+        $this->post(route('emprendimientos.store'), [
+            'name' => 'Actividad inválida',
+            'category_id' => $category->id,
+            'offer_type' => 'unknown',
+            'phone' => '0981 000 222',
+            'address' => 'Centro, Coronel Bogado',
+            'description' => 'Actividad de prueba.',
+        ])->assertSessionHasErrors('offer_type');
+    }
+
+    public function test_stores_default_to_both_offer_types(): void
+    {
+        $store = Store::query()->create([
+            'name' => 'Negocio existente',
+            'status' => 'pending',
+        ]);
+
+        $this->assertSame('both', $store->offer_type);
     }
 
     public function test_store_status_change_sends_a_status_email(): void

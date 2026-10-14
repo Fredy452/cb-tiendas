@@ -47,6 +47,10 @@ class TiendaController extends Controller
         $selectedScope = in_array($request->input('scope'), ['featured', 'new'], true)
             ? $request->input('scope')
             : 'all';
+        $offerType = $request->input('offer_type');
+        $selectedOfferType = is_string($offerType) && array_key_exists($offerType, Store::offerTypeOptions())
+            ? $offerType
+            : null;
 
         $stores = Store::query()
             ->publicVisible()
@@ -67,6 +71,13 @@ class TiendaController extends Controller
                     $categoryQuery->whereIn('categories.id', $selectedCategoryIds);
                 });
             })
+            ->when($selectedOfferType !== null, function (Builder $query) use ($selectedOfferType) {
+                $query->whereIn('offer_type', match ($selectedOfferType) {
+                    'products' => ['products', 'both'],
+                    'services' => ['services', 'both'],
+                    'both' => ['both'],
+                });
+            })
             ->when($selectedScope === 'featured', function (Builder $query) {
                 $query->where('is_featured', true);
             })
@@ -85,10 +96,11 @@ class TiendaController extends Controller
             'search' => $search,
             'selected_category_ids' => $selectedCategoryIds,
             'selected_scope' => $selectedScope,
+            'selected_offer_type' => $selectedOfferType,
             'result_count' => $stores->total(),
         ]);
 
-        return view('tienda', compact('stores', 'categories', 'search', 'selectedCategoryIds', 'selectedScope'));
+        return view('tienda', compact('stores', 'categories', 'search', 'selectedCategoryIds', 'selectedScope', 'selectedOfferType'));
     }
 
     public function categorias(): View
@@ -127,6 +139,7 @@ class TiendaController extends Controller
             'name' => $validated['name'],
             'slug' => $this->generateStoreSlug($validated['name']),
             'description' => $validated['description'],
+            'offer_type' => $validated['offer_type'],
             'phone' => $validated['phone'],
             'email' => $validated['email'] ?? null,
             'website' => $validated['website'] ?? null,

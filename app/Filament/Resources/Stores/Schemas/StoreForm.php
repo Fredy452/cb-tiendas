@@ -54,6 +54,12 @@ class StoreForm
                                     ->preload()
                                     ->multiple(),
 
+                                Select::make('offer_type')
+                                    ->label('Tipo de actividad')
+                                    ->options(Store::offerTypeOptions())
+                                    ->required()
+                                    ->default('both'),
+
                                 Textarea::make('description')
                                     ->label('Descripción')
                                     ->columnSpanFull()

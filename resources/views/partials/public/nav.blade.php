@@ -1,9 +1,12 @@
 @php
     $backUrl = url()->previous() !== url()->current() ? url()->previous() : route('home');
+    $directoryQuery = request()->routeIs('tiendas.*') ? request()->except('page', 'offer_type') : [];
 
     $links = [
         ['label' => 'Inicio', 'route' => route('home'), 'active' => request()->routeIs('home')],
-        ['label' => 'Negocios', 'route' => route('tiendas.index'), 'active' => request()->routeIs('tiendas.*')],
+        ['label' => 'Negocios', 'route' => route('tiendas.index', $directoryQuery), 'active' => request()->routeIs('tiendas.*') && ! request()->filled('offer_type')],
+        ['label' => 'Productos', 'route' => route('tiendas.index', array_merge($directoryQuery, ['offer_type' => 'products'])), 'active' => request('offer_type') === 'products'],
+        ['label' => 'Servicios', 'route' => route('tiendas.index', array_merge($directoryQuery, ['offer_type' => 'services'])), 'active' => request('offer_type') === 'services'],
         ['label' => 'Categorías', 'route' => route('categorias'), 'active' => request()->routeIs('categorias')],
         ['label' => 'Sobre nosotros', 'route' => route('sobre-nosotros'), 'active' => request()->routeIs('sobre-nosotros')],
     ];
@@ -22,18 +25,18 @@
                 Volver
             </a>
         @else
-            <nav class="hidden items-center gap-8 md:flex">
+            <nav class="hidden items-center gap-5 lg:flex">
                 @foreach ($links as $link)
                     <a
                         href="{{ $link['route'] }}"
-                        class="border-b-2 pb-1 text-lg font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
+                        class="border-b-2 pb-1 text-base font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
                     >
                         {{ $link['label'] }}
                     </a>
                 @endforeach
             </nav>
 
-            <div class="hidden items-center gap-3 md:flex">
+            <div class="hidden items-center gap-3 lg:flex">
                 @auth
                     <a href="{{ route('filament.admin.resources.stores.index') }}" class="cb-button-primary">Mis tiendas</a>
                 @else
@@ -44,7 +47,7 @@
 
             <button
                 type="button"
-                class="flex cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary) shadow-[0_10px_24px_rgba(22,27,45,0.08)] md:hidden"
+                class="flex cursor-pointer items-center rounded-full border border-(--cb-border) bg-white p-2 text-(--cb-primary) shadow-[0_10px_24px_rgba(22,27,45,0.08)] lg:hidden"
                 aria-controls="mobile-nav-drawer"
                 aria-expanded="false"
                 data-mobile-nav-toggle
@@ -52,7 +55,7 @@
                 <span class="material-symbols-outlined">menu</span>
             </button>
 
-            <div class="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300 ease-out md:hidden" style="width: 100vw; height: 100dvh; overflow: hidden; opacity: 0;" data-mobile-nav-layer>
+            <div class="pointer-events-none fixed inset-0 z-50 transition-opacity duration-300 ease-out lg:hidden" style="width: 100vw; height: 100dvh; overflow: hidden; opacity: 0;" data-mobile-nav-layer>
                 <button
                     type="button"
                     class="absolute inset-0 bg-[#111827]/55"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Store;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -63,6 +64,7 @@ class StoreRegistrationRequest extends FormRequest
                 'integer',
                 Rule::exists('categories', 'id')->where(fn ($query) => $query->where('is_active', true)),
             ],
+            'offer_type' => ['required', Rule::in(array_keys(Store::offerTypeOptions()))],
             'phone' => ['required', 'string', 'max:25', 'regex:/^[0-9+()\s.\-]+$/'],
             'email' => ['nullable', 'email', 'max:255'],
             'website' => ['nullable', 'url:http,https', 'max:255'],
@@ -106,6 +108,7 @@ class StoreRegistrationRequest extends FormRequest
         return [
             'name' => 'nombre del negocio',
             'category_id' => 'rubro o categoría',
+            'offer_type' => 'tipo de actividad',
             'phone' => 'teléfono de contacto',
             'email' => 'correo electrónico',
             'website' => 'sitio web o catálogo',
