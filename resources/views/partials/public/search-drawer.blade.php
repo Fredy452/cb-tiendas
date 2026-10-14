@@ -64,7 +64,7 @@
                 <span class="font-medium text-(--cb-muted)">Frecuentes:</span>
                 @foreach ($categories->take(3) as $category)
                     <a href="{{ route('tiendas.index', array_merge($searchContext ?? [], ['category' => $category->slug ?: $category->getKey()])) }}"
-                        class="cb-pill-desc px-3 py-1.5">
+                        class="cb-pill-desc hover:bg-(--cb-primary-soft) px-3 py-1.5">
                         {{ $category->name }}
                     </a>
                 @endforeach
