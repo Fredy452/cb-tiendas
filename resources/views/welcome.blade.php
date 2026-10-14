@@ -144,17 +144,6 @@
                     @endforeach
                     </div>
                 </div>
-                <div class="pointer-events-none absolute inset-y-0 inset-x-0 flex items-center justify-between px-2 sm:px-3">
-                    <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver negocios destacados anteriores" data-carousel-prev>
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver más negocios destacados" data-carousel-next>
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
-                </div>
-                <button type="button" class="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-pressed="false" aria-label="Pausar avance automático" title="Pausar avance automático" data-carousel-toggle>
-                    <span class="material-symbols-outlined" data-carousel-toggle-icon>pause</span>
-                </button>
             </div>
         @endif
     </section>
@@ -218,17 +207,6 @@
                         @endforeach
                         </div>
                     </div>
-                    <div class="pointer-events-none absolute inset-y-0 inset-x-0 flex items-center justify-between px-2 sm:px-3">
-                        <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver tiendas anteriores" data-carousel-prev>
-                            <span class="material-symbols-outlined">chevron_left</span>
-                        </button>
-                        <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver más tiendas" data-carousel-next>
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    </div>
-                    <button type="button" class="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-pressed="false" aria-label="Pausar avance automático" title="Pausar avance automático" data-carousel-toggle>
-                        <span class="material-symbols-outlined" data-carousel-toggle-icon>pause</span>
-                    </button>
                 </div>
 
                 <div class="cb-home-carousel mt-8 hidden md:block" data-home-carousel>
@@ -272,17 +250,6 @@
                         @endforeach
                         </div>
                     </div>
-                    <div class="pointer-events-none absolute inset-y-0 inset-x-0 flex items-center justify-between px-2 sm:px-3">
-                        <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver tiendas anteriores" data-carousel-prev>
-                            <span class="material-symbols-outlined">chevron_left</span>
-                        </button>
-                        <button type="button" class="pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-label="Ver más tiendas" data-carousel-next>
-                            <span class="material-symbols-outlined">chevron_right</span>
-                        </button>
-                    </div>
-                    <button type="button" class="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-(--cb-primary) shadow-md transition hover:bg-(--cb-primary) hover:text-white" aria-pressed="false" aria-label="Pausar avance automático" title="Pausar avance automático" data-carousel-toggle>
-                        <span class="material-symbols-outlined" data-carousel-toggle-icon>pause</span>
-                    </button>
                 </div>
             @endif
         </div>
