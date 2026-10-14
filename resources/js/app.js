@@ -233,6 +233,7 @@ const setupFeaturedCarousels = () => {
 		const prevButton = carousel.querySelector('[data-carousel-prev]');
 		const nextButton = carousel.querySelector('[data-carousel-next]');
 		const toggleButton = carousel.querySelector('[data-carousel-toggle]');
+		const toggleIcon = carousel.querySelector('[data-carousel-toggle-icon]');
 
 		if (! viewport) {
 			return;
@@ -272,9 +273,13 @@ const setupFeaturedCarousels = () => {
 			}
 
 			toggleButton.disabled = reducedMotion.matches;
-			toggleButton.textContent = isPaused ? 'Reanudar' : 'Pausar';
 			toggleButton.setAttribute('aria-pressed', isPaused ? 'true' : 'false');
 			toggleButton.setAttribute('aria-label', isPaused ? 'Reanudar avance automático' : 'Pausar avance automático');
+			toggleButton.title = isPaused ? 'Reanudar avance automático' : 'Pausar avance automático';
+
+			if (toggleIcon) {
+				toggleIcon.textContent = isPaused ? 'play_arrow' : 'pause';
+			}
 		};
 
 		updateToggle();
