@@ -222,10 +222,10 @@
 
             <div class="grid gap-6 lg:grid-cols-3">
                 <a href="{{ route('sobre-nosotros') }}" class="cb-card flex h-full flex-col p-7">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(177,240,206,0.55)]">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(177,240,206,0.55)] lg:flex">
                         <span class="material-symbols-outlined">groups</span>
                     </div>
-                    <h3 class="mt-5 text-2xl font-medium tracking-tight">Sobre nosotros</h3>
+                    <h3 class="inline-block align-middle text-2xl font-medium tracking-tight lg:mt-5 lg:block">Sobre nosotros</h3>
                     <p class="mt-3 flex-1 leading-7 text-xl font-light">
                         Nuestra misión es fortalecer la comunidad apoyando el talento y esfuerzo de los emprendedores locales.
                     </p>
@@ -235,10 +235,10 @@
                 </a>
 
                 <a href="{{ route('categorias') }}" class="cb-card flex h-full flex-col p-7">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(212,227,255,0.7)] text-(--cb-secondary)">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(212,227,255,0.7)] text-(--cb-secondary) lg:flex">
                         <span class="material-symbols-outlined">category</span>
                     </div>
-                    <h3 class="mt-5 text-2xl font-medium tracking-tight">Categorías</h3>
+                    <h3 class="inline-block align-middle text-2xl font-medium tracking-tight lg:mt-5 lg:block">Categorías</h3>
                     <p class="mt-3 flex-1 leading-7 text-xl font-light">
                         Explora negocios por sector y descubre {{ $categories->count() }} rubros visibles dentro del directorio local.
                     </p>
@@ -248,10 +248,10 @@
                 </a>
 
                 <a href="{{ route('tiendas.index') }}" class="cb-card flex h-full flex-col p-7">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(222,224,255,0.85)] text-(--cb-text)">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(222,224,255,0.85)] text-(--cb-text) lg:flex">
                         <span class="material-symbols-outlined">storefront</span>
                     </div>
-                    <h3 class="mt-5 text-2xl font-medium tracking-tight">Negocios</h3>
+                    <h3 class="inline-block align-middle text-2xl font-medium tracking-tight lg:mt-5 lg:block">Negocios</h3>
                     <p class="mt-3 flex-1 leading-7 text-xl font-light">
                         Accede al directorio completo de emprendedores aprobados y ubica fácilmente productos o servicios en la ciudad.
                     </p>
