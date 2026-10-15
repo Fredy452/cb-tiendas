@@ -108,9 +108,6 @@
                     @if ($search !== '')
                         <span class="cb-pill">Búsqueda: {{ $search }}</span>
                     @endif
-                    @if ($selectedOfferType)
-                        <span class="cb-pill">{{ App\Models\Store::offerTypeOptions()[$selectedOfferType] }}</span>
-                    @endif
                 </div>
 
                 @if ($stores->isEmpty())
