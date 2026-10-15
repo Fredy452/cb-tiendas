@@ -1,4 +1,5 @@
 import './bootstrap';
+import Alpine from 'alpinejs';
 import EmblaCarousel from 'embla-carousel';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -824,6 +825,58 @@ const setupPublicInteractions = () => {
 	setupMobileNavDrawer();
 	setupSearchAutocomplete();
 };
+
+Alpine.data('infiniteStores', (nextPageUrl, initialCount) => ({
+	nextPageUrl,
+	loadedCount: Number(initialCount),
+	isLoading: false,
+	errorMessage: '',
+	supportsObserver: 'IntersectionObserver' in window,
+	observer: null,
+	init() {
+		if (! this.supportsObserver || ! this.nextPageUrl) {
+			return;
+		}
+
+		this.observer = new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting) {
+				this.loadMore();
+			}
+		}, { rootMargin: '250px' });
+		this.observer.observe(this.$refs.sentinel);
+	},
+	async loadMore() {
+		if (! this.nextPageUrl || this.isLoading) {
+			return;
+		}
+
+		this.isLoading = true;
+		this.errorMessage = '';
+
+		try {
+			const response = await fetch(this.nextPageUrl, {
+				headers: { Accept: 'application/json' },
+			});
+
+			if (! response.ok) {
+				throw new Error('No se pudieron cargar más negocios.');
+			}
+
+			const page = await response.json();
+			this.$refs.grid.insertAdjacentHTML('beforeend', page.html);
+			this.loadedCount = Number(page.loaded_count);
+			this.nextPageUrl = page.next_page_url;
+		} catch {
+			this.errorMessage = 'No se pudieron cargar más negocios. Intentá de nuevo.';
+		} finally {
+			this.isLoading = false;
+		}
+	},
+	destroy() {
+		this.observer?.disconnect();
+	},
+}));
+Alpine.start();
 
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', setupPublicInteractions);

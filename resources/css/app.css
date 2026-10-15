@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 @import 'tailwindcss';
 
+[x-cloak] {
+    display: none !important;
+}
+
 @font-face {
     font-family: 'Cera Pro';
     src: url('../fonts/cera-pro/CeraPro-Thin.woff2') format('woff2');

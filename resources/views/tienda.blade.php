@@ -98,38 +98,50 @@
             </aside>
 
             <div>
-                <div class="cb-panel flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-lg ">
-                            Mostrando <span class="font-semibold text-(--cb-text)">{{ $stores->firstItem() ?? 0 }}</span> a <span class="font-semibold text-(--cb-text)">{{ $stores->lastItem() ?? 0 }}</span> de <span class="font-semibold text-(--cb-text)">{{ $stores->total() }}</span> negocios
-                        </p>
+                <div x-data="infiniteStores(@js($stores->nextPageUrl()), {{ $stores->count() }})">
+                    <div class="cb-panel flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-lg ">
+                                Mostrando <span class="font-semibold text-(--cb-text)" x-text="loadedCount">{{ $stores->count() }}</span> de <span class="font-semibold text-(--cb-text)">{{ $stores->total() }}</span> negocios
+                            </p>
+                        </div>
+
+                        @if ($search !== '')
+                            <span class="cb-pill">Búsqueda: {{ $search }}</span>
+                        @endif
                     </div>
 
-                    @if ($search !== '')
-                        <span class="cb-pill">Búsqueda: {{ $search }}</span>
+                    @if ($stores->isEmpty())
+                        <div class="mt-8">
+                            @include('partials.public.empty-state', [
+                                'title' => 'No encontramos negocios con esos filtros',
+                                'description' => 'Probá con otra búsqueda, quitá algún filtro o registrá el primer emprendimiento de ese rubro.',
+                                'actionLabel' => 'Registrar emprendimiento',
+                                'actionUrl' => route('emprendimientos.create'),
+                            ])
+                        </div>
+                    @else
+                        <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3" x-ref="grid" aria-live="polite">
+                            @include('partials.public.store-cards', ['stores' => $stores])
+                        </div>
+
+                        <div class="mt-10 flex flex-col items-center gap-3" aria-live="polite">
+                            <div x-ref="sentinel" class="h-1 w-full" aria-hidden="true"></div>
+                            <p x-cloak x-show="isLoading" role="status" class="text-sm text-(--cb-muted)">Cargando más negocios...</p>
+                            <p x-cloak x-show="errorMessage" x-text="errorMessage" role="alert" class="text-sm text-[#93000a]"></p>
+                            <button
+                                type="button"
+                                x-cloak
+                                x-show="(!supportsObserver && nextPageUrl) || errorMessage"
+                                x-on:click="loadMore()"
+                                x-bind:disabled="isLoading"
+                                class="cb-button-ghost"
+                            >
+                                <span x-text="errorMessage ? 'Reintentar' : 'Cargar más negocios'"></span>
+                            </button>
+                        </div>
                     @endif
                 </div>
-
-                @if ($stores->isEmpty())
-                    <div class="mt-8">
-                        @include('partials.public.empty-state', [
-                            'title' => 'No encontramos negocios con esos filtros',
-                            'description' => 'Probá con otra búsqueda, quitá algún filtro o registrá el primer emprendimiento de ese rubro.',
-                            'actionLabel' => 'Registrar emprendimiento',
-                            'actionUrl' => route('emprendimientos.create'),
-                        ])
-                    </div>
-                @else
-                    <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                        @foreach ($stores as $store)
-                            @include('partials.public.store-card', ['store' => $store])
-                        @endforeach
-                    </div>
-
-                    <div class="mt-10">
-                        {{ $stores->links() }}
-                    </div>
-                @endif
             </div>
         </div>
 
