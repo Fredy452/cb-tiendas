@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRegistrationRequest;
 use App\Models\Category;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -40,7 +41,7 @@ class TiendaController extends Controller
         return view('welcome', compact('featuredStores', 'newStores', 'categories', 'storesCount'));
     }
 
-    public function index(Request $request): View
+    public function index(Request $request): View|JsonResponse
     {
         $search = trim((string) $request->input('search'));
         $selectedCategoryIds = $this->resolveSelectedCategoryIds($request);
@@ -88,6 +89,14 @@ class TiendaController extends Controller
             ->latest()
             ->paginate(9)
             ->withQueryString();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('partials.public.store-cards', ['stores' => $stores])->render(),
+                'next_page_url' => $stores->nextPageUrl(),
+                'loaded_count' => $stores->lastItem() ?? 0,
+            ]);
+        }
 
         // Mostrar solo las categorías con uno o mas negocios públicos visibles
         $categories = $this->publicCategoriesWithCounts()->filter(fn (Category $category) => $category->public_stores_count > 0);
