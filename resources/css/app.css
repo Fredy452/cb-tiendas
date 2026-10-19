@@ -131,7 +131,7 @@
     }
 
     .cb-display {
-        @apply text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl;
+        @apply text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl color: #16a34a;
     }
 
     .cb-heading {
