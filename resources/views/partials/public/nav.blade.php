@@ -29,7 +29,7 @@
                 @foreach ($links as $link)
                     <a
                         href="{{ $link['route'] }}"
-                        class="border-b-2 pb-1 text-base font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:text-(--cb-primary)' }}"
+                        class="border-b-2 pb-1 text-base font-medium transition {{ $link['active'] ? 'border-(--cb-primary) text-(--cb-primary)' : 'border-transparent text-(--cb-muted) hover:border-(--cb-primary) hover:text-(--cb-primary)' }}"
                     >
                         {{ $link['label'] }}
                     </a>
