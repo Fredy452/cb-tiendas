@@ -9,9 +9,9 @@
 
         <div class="cb-shell cb-section relative py-10 md:p-28">
             <div class="mx-auto max-w-4xl text-center">
-                <h1 class="cb-display mx-auto max-w-4xl">
-                    Descubre y apoya lo nuestro.
-                </h1>
+                <h1 class="cb-heading text-(--cb-primary)">
+    			Descubre y apoya lo nuestro.
+		</h1>
                 <p class="mx-auto mt-6 max-w-2xl font-light text-lg leading-8 sm:text-xl">
                     El directorio oficial de emprendedores de Coronel Bogado. Conectando talento local con nuestra comunidad.
                 </p>

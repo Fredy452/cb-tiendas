@@ -8,7 +8,7 @@
     <section class="min-h-[calc(100dvh-5rem)] bg-(--cb-surface-soft) py-10 sm:py-16">
         <div class="cb-shell grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(24rem,0.7fr)] lg:gap-20">
             <div class="order-2 max-w-xl lg:order-1">
-                <span class="cb-pill">Panel de emprendedores</span>
+                <span class="cb-heading text-(--cb-primary)">Panel de emprendedores</span>
                 <h1 class="cb-display mt-5 text-(--cb-text)">Protegé tu cuenta.</h1>
                 <p class="mt-5 text-lg leading-8 text-(--cb-muted)">
                     Elegí una contraseña segura para volver a administrar tus emprendimientos.

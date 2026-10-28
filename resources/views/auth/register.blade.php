@@ -8,7 +8,7 @@
     <section class="min-h-[calc(100dvh-5rem)] bg-[#F0EFFF] py-10 sm:py-16">
         <div class="cb-shell grid items-center gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(24rem,0.72fr)] lg:gap-20">
             <div class="max-w-xl">
-                <span class="cb-pill">Cuenta de emprendedor</span>
+                <span class="cb-heading text-(--cb-primary)">Cuenta de emprendedor</span>
                 <h1 class="cb-display mt-5 text-(--cb-text)">Hacé crecer tu presencia local.</h1>
                 <p class="mt-5 text-lg leading-8 text-(--cb-muted)">
                     Creá una cuenta para registrar más de una tienda, mantener sus datos actualizados y seguir cada solicitud.
