@@ -6,20 +6,18 @@
 @section('content')
     <section class="bg-[#DEE0FF]">
         <div class="cb-shell cb-section text-center">
-	
-<div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-8 md:gap-12">
-    <img
-        src="{{ asset('img/instituciones/cyt.png') }}"
-        alt="Facultad de Ciencias y Tecnología"
-        class="h-24 w-24 object-contain md:h-32 md:w-32"
-    >
 
+<div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-8">
     <img
         src="{{ asset('img/instituciones/uni.png') }}"
         alt="Universidad Nacional de Itapúa"
         class="h-24 w-24 object-contain md:h-32 md:w-32"
     >
-
+    <img
+        src="{{ asset('img/instituciones/cyt.png') }}"
+        alt="Facultad de Ciencias y Tecnología"
+        class="h-24 w-24 object-contain md:h-32 md:w-32"
+    >
     <img
         src="{{ asset('img/instituciones/muni.png') }}"
         alt="Municipalidad"
