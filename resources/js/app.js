@@ -824,6 +824,57 @@ const setupPublicInteractions = () => {
 	setupMobileCategoryPanels();
 	setupMobileNavDrawer();
 	setupSearchAutocomplete();
+	setupPageLoader();
+};
+
+const setupPageLoader = () => {
+	const loader = document.querySelector('[data-page-loader]');
+
+	if (! loader) {
+		return;
+	}
+
+	const start = () => {
+		loader.classList.add('is-active');
+		loader.setAttribute('aria-hidden', 'false');
+		document.body.setAttribute('aria-busy', 'true');
+	};
+	const stop = () => {
+		loader.classList.remove('is-active');
+		loader.setAttribute('aria-hidden', 'true');
+		document.body.removeAttribute('aria-busy');
+	};
+
+	// Bubble phase: runs after element handlers, so defaultPrevented is reliable.
+	document.addEventListener('click', (event) => {
+		const link = event.target.closest?.('a[href]');
+
+		if (
+			! link
+			|| event.defaultPrevented
+			|| event.button !== 0
+			|| event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+			|| (link.target && link.target !== '_self')
+			|| link.hasAttribute('download')
+			|| link.origin !== location.origin
+			|| (link.pathname === location.pathname && link.search === location.search && link.hash)
+		) {
+			return;
+		}
+
+		start();
+	});
+
+	document.addEventListener('submit', (event) => {
+		const target = event.submitter?.getAttribute('formtarget') || event.target.target;
+
+		if (! event.defaultPrevented && (! target || target === '_self')) {
+			start();
+		}
+	});
+
+	// Back/forward cache restores the page with the loader still active.
+	window.addEventListener('pageshow', stop);
 };
 
 Alpine.data('infiniteStores', (nextPageUrl, initialCount) => ({

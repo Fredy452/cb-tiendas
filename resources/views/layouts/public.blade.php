@@ -124,6 +124,8 @@
             }
         @endphp
 
+        <div class="cb-page-loader" data-page-loader role="progressbar" aria-label="Cargando página" aria-hidden="true"></div>
+
         <div hidden data-flash-alerts="{{ json_encode($flashAlerts) }}"></div>
 
         <div class="flex min-h-screen flex-col">

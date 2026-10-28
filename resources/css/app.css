@@ -5,6 +5,35 @@
     display: none !important;
 }
 
+.cb-page-loader {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 70;
+    height: 4px;
+    background: var(--cb-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cb-page-loader.is-active {
+    opacity: 1;
+    animation: cb-page-loader 6s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes cb-page-loader {
+    from { transform: scaleX(0.3); }
+    to { transform: scaleX(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cb-page-loader.is-active {
+        animation: none;
+        transform: scaleX(1);
+    }
+}
+
 @font-face {
     font-family: 'Cera Pro';
     src: url('../fonts/cera-pro/CeraPro-Thin.woff2') format('woff2');
