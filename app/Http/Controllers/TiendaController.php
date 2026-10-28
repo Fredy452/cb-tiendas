@@ -113,20 +113,21 @@ class TiendaController extends Controller
     }
 
     public function categorias(): View
-    {
-        $categories = Category::query()
-            ->active()
-            ->withCount([
-                'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
-            ])
-            ->having('public_stores_count', '>=', 1)
-            ->orderBy('public_stores_count', 'desc')
-            ->orderBy('name')
-            ->paginate(6)
-            ->withQueryString();
+{
+    $categories = Category::query()
+        ->active()
+        ->whereHas('stores', fn (Builder $query) => $query->publicVisible())
+        ->withCount([
+            'stores as public_stores_count' => fn (Builder $query) => $query->publicVisible(),
+        ])
+        ->orderBy('public_stores_count', 'desc')
+        ->orderBy('name')
+        ->paginate(6)
+        ->withQueryString();
 
-        return view('categorias', compact('categories'));
-    }
+    return view('categorias', compact('categories'));
+}
+
 
     public function create(): View
     {
