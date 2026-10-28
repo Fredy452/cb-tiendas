@@ -82,9 +82,9 @@
         <meta name="twitter:image:alt" content="{{ $metaImageAlt }}">
         <title>{{ $metaTitle }}</title>
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+        @foreach (['cera-pro/CeraPro-Light', 'cera-pro/CeraPro-Regular', 'cera-pro/CeraPro-Medium', 'cera-pro/CeraPro-Bold', 'material-symbols/MaterialSymbolsOutlined-subset'] as $preloadFont)
+            <link rel="preload" href="{{ Vite::asset("resources/fonts/{$preloadFont}.woff2") }}" as="font" type="font/woff2" crossorigin>
+        @endforeach
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script type="application/ld+json">
