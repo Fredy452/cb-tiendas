@@ -21,7 +21,7 @@
 
         @if ($variant === 'minimal')
             <a href="{{ $backUrl }}" class="inline-flex items-center gap-2 text-sm font-semibold text-(--cb-text) transition hover:text-(--cb-primary)">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                <span class="material-symbols-outlined text-[30px]">arrow_back</span>
                 Volver
             </a>
         @else
@@ -77,11 +77,11 @@
 
                         <button
                             type="button"
-                            class="ml-auto inline-flex items-center gap-1 rounded-full border border-(--cb-border) px-3 py-1.5 text-sm font-medium text-(--cb-text)"
+                            class="ml-auto inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--cb-border) text-(--cb-primary) shadow-sm transition hover:bg-[rgba(177,240,206,0.45)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cb-primary)"
+                            aria-label="Cerrar menú"
                             data-mobile-nav-close
                         >
-                            
-                            &times
+                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
                         </button>
                     </div>
 
