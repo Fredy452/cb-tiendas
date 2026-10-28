@@ -61,6 +61,7 @@
                     class="absolute inset-0 bg-[#111827]/55"
                     aria-label="Cerrar menú"
                     data-mobile-nav-overlay
+
                 ></button>
 
                 <aside
@@ -79,8 +80,8 @@
                             class="ml-auto inline-flex items-center gap-1 rounded-full border border-(--cb-border) px-3 py-1.5 text-sm font-medium text-(--cb-text)"
                             data-mobile-nav-close
                         >
-                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                            Volver
+                            
+                            &times
                         </button>
                     </div>
 
