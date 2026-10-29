@@ -8,21 +8,27 @@
         <div class="cb-shell cb-section text-center">
 
 <div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-8">
-    <img
-        src="{{ asset('img/instituciones/uni.png') }}"
-        alt="Universidad Nacional de Itapúa"
-        class="h-24 w-24 object-contain md:h-32 md:w-32"
-    >
-    <img
-        src="{{ asset('img/instituciones/cyt.png') }}"
-        alt="Facultad de Ciencias y Tecnología"
-        class="h-24 w-24 object-contain md:h-32 md:w-32"
-    >
-    <img
-        src="{{ asset('img/instituciones/muni.png') }}"
-        alt="Municipalidad"
-        class="h-24 w-24 object-contain md:h-32 md:w-32"
-    >
+    <a href="https://uni.edu.py/" target="_blank" rel="noopener noreferrer" aria-label="Universidad Nacional de Itapúa (abre en una pestaña nueva)" class="inline-block transition-transform duration-200 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-4">
+        <img
+            src="{{ asset('img/instituciones/uni.png') }}"
+            alt="Universidad Nacional de Itapúa"
+            class="h-24 w-24 object-contain md:h-32 md:w-32"
+        >
+    </a>
+    <a href="https://facyt.uni.edu.py/" target="_blank" rel="noopener noreferrer" aria-label="Facultad de Ciencias y Tecnología (abre en una pestaña nueva)" class="inline-block transition-transform duration-200 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-4">
+        <img
+            src="{{ asset('img/instituciones/cyt.png') }}"
+            alt="Facultad de Ciencias y Tecnología"
+            class="h-24 w-24 object-contain md:h-32 md:w-32"
+        >
+    </a>
+    <a href="https://bogado.gov.py/" target="_blank" rel="noopener noreferrer" aria-label="Municipalidad de Coronel Bogado (abre en una pestaña nueva)" class="inline-block transition-transform duration-200 ease-out hover:scale-110 focus-visible:scale-110 focus-visible:outline-2 focus-visible:outline-offset-4">
+        <img
+            src="{{ asset('img/instituciones/muni.png') }}"
+            alt="Municipalidad de Coronel Bogado"
+            class="h-24 w-24 object-contain md:h-32 md:w-32"
+        >
+    </a>
 </div>
 
             <h1 class="cb-heading text-(--cb-primary)">El corazón digital de Coronel Bogado</h1>
