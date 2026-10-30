@@ -50,6 +50,9 @@ composer run test
 
 ## Documentacion del proyecto
 
+El modulo de auditoria de Filament (menu, listado y detalle) esta reservado al rol
+`super_admin`, conservando los permisos de auditoria configurados en Shield.
+
 | Documento | Ubicacion |
 |-----------|-----------|
 | Descripcion y alcance | [`.github/project/description.md`](.github/project/description.md) |

@@ -6,6 +6,7 @@ use App\Filament\Resources\ActivityLog\Pages\ListActivityLogs;
 use App\Filament\Resources\ActivityLog\Pages\ViewActivityLog;
 use App\Models\User;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -31,6 +32,12 @@ class ActivityLogResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Auditoría';
 
     protected static ?int $navigationSort = 1;
+
+    public static function canAccess(): bool
+    {
+        return (Filament::auth()->user()?->hasRole(config('filament-shield.super_admin.name')) ?? false)
+            && parent::canAccess();
+    }
 
     public static function table(Table $table): Table
     {
